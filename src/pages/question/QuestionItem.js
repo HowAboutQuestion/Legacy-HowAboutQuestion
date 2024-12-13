@@ -79,8 +79,9 @@ function QuestionItem({question}) {
             
             <div className="p-5 px-6">
               <img
+                art=""
                 src="https://www.hkn24.com/news/photo/202012/316113_176385_144.jpg"
-                className="bg-gray-400 rounded aspect-video min-w-[200px] max-w-[400px]"
+                className="bg-gray-400 rounded aspect-video min-w-[10vw] max-w-[20vw]"
               />
             </div>
           </div>
@@ -184,7 +185,7 @@ function QuestionItem({question}) {
             <div className="p-5 px-6">
               <img
                 src="https://www.hkn24.com/news/photo/202012/316113_176385_144.jpg"
-                className="bg-gray-400 rounded aspect-video min-w-[200px] max-w-[400px]"
+                className="bg-gray-400 rounded aspect-video min-w-[10vw] max-w-[20vw]"
               />
             </div>
           </div>

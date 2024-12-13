@@ -22,7 +22,7 @@ const beforeQuestion = () => {
 };
 
   return (
-    <main className="ml-20  bg-gray-50">
+    <main className="ml-20">
           <div className="sm:rounded-lg">
             <div className="p-4 flex justify-between border-b">
               <div>
@@ -45,7 +45,7 @@ const beforeQuestion = () => {
           <div className="fixed z-40 bottom-5 right-5 flex gap-2">
             <div 
             onClick={beforeQuestion}
-            className="rounded-full p-2 text-white bg-blue-300 hover:bg-blue-500 shadow">
+            className="rounded-full p-2 text-white bg-blue-500 hover:scale-105 shadow">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -64,7 +64,7 @@ const beforeQuestion = () => {
 
             <div 
             onClick={nextQuestion}
-            className="rounded-full p-2 text-white bg-blue-300 hover:bg-blue-500 shadow">
+            className="rounded-full p-2 text-white bg-blue-500 hover:scale-105 shadow">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
