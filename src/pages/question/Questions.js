@@ -3,12 +3,11 @@ import { questionsAtom, allTagAtom } from "state/data";
 import { useRecoilValue } from "recoil";
 import QuestionItem from 'pages/question/QuestionItem';
 
-//const questions = useRecoilValue(questionsAtom);
-//const questionsItems = questions.map(question => <QuestionItem question = {question}></QuestionItem>)
-
 function Questions() {
     const questions = useRecoilValue(questionsAtom);
-    const questionsItems = questions.map((question, index) => <QuestionItem key={index} question = {question}></QuestionItem>)
+    const questionsItems = questions.map((question, index) => 
+      <QuestionItem  key={index} question = {question}></QuestionItem>
+    )
 
     const allTag = useRecoilValue(allTagAtom);
     const allTagItems = allTag.map((tagName, index) => <span key={index} className="whitespace-nowrap py-1 px-2 rounded-xl text-xs font-semibold bg-gray-300 border-none">
@@ -91,7 +90,7 @@ function Questions() {
                 </div>
               </div>
             </div>
-            <table className="text-left rtl:text-right text-gray-500 m-5 rounded-xl bg-gray-50" >
+            <table className="text-left rtl:text-right text-gray-500 m-5 rounded-xl bg-gray-50 " >
               <thead className="text-sm font-bold text-gray-700 uppercase border-b">
                 <tr className="px-10 bg-gray-100">
                   <th scope="col" className="py-4 px-8 rounded-tl-xl">

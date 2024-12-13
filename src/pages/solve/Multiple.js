@@ -2,7 +2,7 @@ import React from 'react';
 
 
 function Multiple ({question, index}) {
-  console.log(index+1, question)
+  console.log(index, question);
  
       return (
         <div className="flex flex-col gap-5 p-10 items-center ">
