@@ -25,20 +25,19 @@ function Questions() {
     };
 
     const allTagItems = allTag.map((tagName, index) => {
-      const isSelected = selectedTag.includes(tagName); // 선택 여부 확인
-      return (
-        <span 
-          onClick={() => handleTagClick(tagName)}
-          key={index} 
-          className={`cursor-pointer whitespace-nowrap py-1 px-2 rounded-xl text-xs font-semibold border-none ${
-            isSelected ? "bg-blue-500 text-white" : "bg-gray-300 text-black"
-          }`}
-        >
-          {tagName}
-        </span>
-      );
-    });
-    
+    const isSelected = selectedTag.includes(tagName); // 선택 여부 확인
+    return (
+      <span 
+        onClick={() => handleTagClick(tagName)}
+        key={index} 
+        className={`cursor-pointer whitespace-nowrap py-1 px-2 rounded-xl text-xs font-semibold border-none ${
+          isSelected ? "bg-blue-500 text-white" : "bg-gray-300 text-black"
+        }`}
+      >
+        {tagName}
+      </span>
+    );
+  });
 
 
     // 태그가 변경될 때마다 필터링 실행
@@ -276,10 +275,10 @@ function Questions() {
             onClick={insertEvent}
             className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2"
           >
-            추가하기
+            저장하기
           </div>
           <div
-            onClick={() => setThumbnail(null)}
+            onClick={() => setBottomModal(false)}
             className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2"
           >
             <svg
