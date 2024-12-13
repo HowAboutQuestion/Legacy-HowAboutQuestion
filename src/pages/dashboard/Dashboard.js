@@ -353,11 +353,12 @@ const Dashboard = () => {
                         </option>
                       ))}
                     </select>
+                    문제
                   </div>
 
                   {/* 선택된 문제 수에 따른 표시 */}
                   <p className="text-2xl font-bold mt-4">
-                    풀어야 할 문제: {selectedProblemCount}문제
+                    
                   </p>
                 </>
               )}
