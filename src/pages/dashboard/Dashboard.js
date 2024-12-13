@@ -69,6 +69,9 @@ const Dashboard = () => {
   // 문제 추천 상태 관리
   const [recommendedQuestions, setRecommendedQuestions] = useState([]);
   const [loadingRecommendations, setLoadingRecommendations] = useState(true);
+  
+  // 사용자가 선택한 풀 문제 수
+  const [selectedProblemCount, setSelectedProblemCount] = useState(1);
 
   // 오늘 날짜 상수
   const today = useMemo(() => new Date(), []);
@@ -334,11 +337,28 @@ const Dashboard = () => {
                   {/* 추천 문제가 있는 경우 */}
                   <p className="text-xl font-semibold">오늘의 추천 문제</p>
                   <p className="text-2xl font-bold mt-2">총 추천 문제: {recommendedQuestions.length}문제</p>
-                  {problemsToSolveToday === 0 ? (
-                    <p className="text-2xl font-bold mt-2">추천 문제를 다 풀었습니다</p>
-                  ) : (
-                    <p className="text-2xl font-bold mt-2">풀어야 할 문제: {problemsToSolveToday}문제</p>
-                  )}
+                  
+                  {/* 문제 수 선택 UI 추가 */}
+                  <div className="mt-4 flex items-center justify-center">
+                    <label htmlFor="problemCount" className="mr-2 text-lg">풀 문제 수:</label>
+                    <select
+                      id="problemCount"
+                      value={selectedProblemCount}
+                      onChange={(e) => setSelectedProblemCount(Number(e.target.value))}
+                      className="border border-gray-300 rounded p-2"
+                    >
+                      {Array.from({ length: problemsToSolveToday }, (_, i) => i + 1).map((num) => (
+                        <option key={num} value={num}>
+                          {num}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* 선택된 문제 수에 따른 표시 */}
+                  <p className="text-2xl font-bold mt-4">
+                    풀어야 할 문제: {selectedProblemCount}문제
+                  </p>
                 </>
               )}
             </div>
@@ -353,7 +373,15 @@ const Dashboard = () => {
               ) : (
                 /* 추천 문제가 있고, 아직 풀어야 할 문제가 있는 경우에만 문제풀기 버튼 표시 */
                 problemsToSolveToday !== 0 && (
-                  <button className="w-[300px] h-10 bg-blue-600 rounded-lg text-white font-bold hover:bg-blue-700 transition">
+                  <button
+                    className="w-[300px] h-10 bg-blue-600 rounded-lg text-white font-bold hover:bg-blue-700 transition"
+                    onClick={() => {
+                      // 선택된 문제 수에 따라 문제풀기 로직 추가
+                      // 예: 라우팅 또는 문제풀이 페이지로 이동
+                      console.log(`풀 문제 수: ${selectedProblemCount}`);
+                      // 예시: window.location.href = `/solve?count=${selectedProblemCount}`;
+                    }}
+                  >
                     문제풀기
                   </button>
                 )
@@ -362,6 +390,8 @@ const Dashboard = () => {
           </div>
         </section>
 
+        {/* 나머지 대시보드 섹션들 ... */}
+        
         {/* 대시보드 섹션 */}
         <section className="p-8 bg-white rounded">
           <h2 className="text-2xl font-bold mb-6">대시보드</h2>
