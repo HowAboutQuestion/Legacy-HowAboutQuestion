@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -6,7 +6,7 @@ function Navbar() {
    const navigate = useNavigate();
    const goDashBoard = () => {navigate("/dashboard")}
    const goQuestions = () => {navigate("/questions")}
-   const goSolve = () => {navigate("/solve")}
+   const goSolve = () => {navigate("/select")}
   
    return (
         <aside className="fixed top-0 left-0 z-40 w-20 h-full shadow-xl " >

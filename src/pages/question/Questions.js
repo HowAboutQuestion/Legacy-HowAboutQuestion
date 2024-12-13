@@ -96,8 +96,10 @@ function Questions() {
     const setQuestions = useSetRecoilState(questionsAtom);
 
     const insertEvent = () => {
+      if(!title || !answer || !select1 || !select2 || !select3 || !select4 ) alert("입력잘해라");
 
-      const tags = [...new Set(tag.split(",").map((item) => item.trim()))];
+
+      const tags = tag ? [...new Set(tag.split(",").map((item) => item.trim()))] : [];
 
       const question = {
         title,
@@ -113,7 +115,6 @@ function Questions() {
         tag:tags,
       };
   
-      console.log("new question:", question);
       setTitle("");
       setSelect1("");
       setSelect2("");
@@ -301,6 +302,7 @@ function Questions() {
           placeholder="문제를 입력해주세요"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          required
         />
         <select
           className="block border-b-2 text-sm px-2 py-1 h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500"

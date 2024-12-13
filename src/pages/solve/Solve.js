@@ -3,13 +3,16 @@ import Single from 'pages/solve/Single';
 import Multiple from 'pages/solve/Multiple';
 import { questionsAtom } from 'state/data';
 import { useRecoilValue } from "recoil";
+import { useLocation } from "react-router-dom";
+
 
 
 function Solve () {  
-  const questions = useRecoilValue(questionsAtom);
-const [questionIndex, setQuestionIndex] = useState(0); // 현재 문제의 인덱스
-console.log("solve questions", questions );
-//const curQuestion = questions[questionIndex]; // 현재 문제 데이터
+  const location = useLocation();
+  const questions = location.state.questions;
+  const [questionIndex, setQuestionIndex] = useState(0); // 현재 문제의 인덱스
+  console.log("solve questions", questions );
+  //const curQuestion = questions[questionIndex]; // 현재 문제 데이터
 
 const nextQuestion = () => {
   setQuestionIndex((prevIndex) =>
