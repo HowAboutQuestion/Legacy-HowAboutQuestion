@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -13,7 +13,7 @@ import {
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; // Calendar CSS import
 import Papa from 'papaparse'; // PapaParse import
-import { parseISO, isValid, isSameDay } from 'date-fns'; // date-fns import
+import { parseISO, isValid, isSameDay, addDays } from 'date-fns'; // date-fns import
 
 // Chart.js 등록
 ChartJS.register(
@@ -51,7 +51,6 @@ const Dashboard = () => {
       },
       title: {
         display: true,
-        text: '최근 7일 정답률',
       },
     },
     scales: {
@@ -64,11 +63,18 @@ const Dashboard = () => {
 
   // 히스토리 데이터 상태 관리
   const [historyData, setHistoryData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingHistory, setLoadingHistory] = useState(true);
   const [historyView, setHistoryView] = useState('list'); // 'list' 또는 'calendar'
 
+  // 문제 추천 상태 관리
+  const [recommendedQuestions, setRecommendedQuestions] = useState([]);
+  const [loadingRecommendations, setLoadingRecommendations] = useState(true);
+
+  // 오늘 날짜 상수
+  const today = useMemo(() => new Date(), []);
+
   useEffect(() => {
-    // CSV 파일 가져오기 및 파싱
+    // CSV 파일 가져오기 및 파싱 (히스토리 데이터)
     Papa.parse('/history.csv', {
       download: true,
       header: true,
@@ -94,17 +100,74 @@ const Dashboard = () => {
           .filter((row) => row !== null); // 유효한 날짜만 필터링
 
         // 디버깅을 위해 파싱된 데이터 콘솔에 출력
-        console.log('Parsed Data:', parsedData);
+        console.log('Parsed History Data:', parsedData);
 
         setHistoryData(parsedData);
-        setLoading(false);
+        setLoadingHistory(false);
       },
       error: (error) => {
         console.error('CSV 파싱 오류:', error);
-        setLoading(false);
+        setLoadingHistory(false);
       },
     });
-  }, []);
+
+    // 문제 추천 CSV 파일 가져오기 및 파싱
+    const fetchAndProcessRecommendations = async () => {
+      try {
+        const response = await fetch('/dummy.csv');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const csvText = await response.text();
+
+        // Parse CSV data
+        const parsedData = Papa.parse(csvText, { header: true }).data;
+
+        // Process recommendations
+        const recommendations = parsedData
+          .map((item) => {
+            // level이 없거나 숫자로 변환이 안될 경우 기본값 0 사용
+            let level = parseInt(item.level, 10);
+            if (isNaN(level)) {
+              level = 0;
+            }
+
+            // updateDate가 유효하지 않을 경우 today를 기본값으로 사용
+            let updateDate = isValid(parseISO(item.update)) ? parseISO(item.update) : today;
+
+            let recommendedDate;
+
+            if (level === 0) {
+              // updateDate가 today와 같은 날이라면 다음날 추천, 아니면 오늘 바로 추천
+              recommendedDate = isSameDay(updateDate, today) ? addDays(today, 1) : today;
+            } else {
+              // level에 따라 updateDate로부터 level+1일 후 추천
+              recommendedDate = addDays(updateDate, level + 1);
+            }
+
+            // recommendedDate가 오늘이거나 이미 지났다면 추천 목록에 포함
+            if (isSameDay(recommendedDate, today) || recommendedDate < today) {
+              return {
+                ...item,
+                recommendedDate,
+              };
+            }
+
+            // 위 조건에 해당되지 않으면 null 반환
+            return null;
+          })
+          .filter((q) => q !== null);
+
+        setRecommendedQuestions(recommendations);
+      } catch (error) {
+        console.error('Error fetching or processing recommendations:', error);
+      } finally {
+        setLoadingRecommendations(false);
+      }
+    };
+
+    fetchAndProcessRecommendations();
+  }, [today]); // 'today'를 의존성 배열에 추가하여 날짜 변경 시 업데이트
 
   // 날짜를 YYYY-MM-DD 형식으로 포맷
   const formatDate = (date) => {
@@ -118,15 +181,13 @@ const Dashboard = () => {
   useEffect(() => {
     if (historyData.length === 0) return;
 
-    // 최근 7일 데이터 준비
-    const recentHistory = historyData
-      .sort((a, b) => b.date - a.date) // 날짜 내림차순 정렬
-      .slice(0, 7)
-      .reverse(); // 차트는 오름차순으로 표시
+    // 모든 날짜 데이터 준비
+    const allHistory = historyData
+      .sort((a, b) => a.date - b.date); // 날짜 오름차순 정렬
 
     // 레이블과 데이터 추출
-    const labels = recentHistory.map((entry) => formatDate(entry.date));
-    const correctRates = recentHistory.map((entry) => entry.correctRate);
+    const labels = allHistory.map((entry) => formatDate(entry.date));
+    const correctRates = allHistory.map((entry) => entry.correctRate);
 
     setChartData({
       labels,
@@ -155,12 +216,9 @@ const Dashboard = () => {
     return null;
   };
 
-  if (loading) {
+  if (loadingHistory || loadingRecommendations) {
     return <div>로딩 중...</div>;
   }
-
-  // 오늘 날짜 가져오기
-  const today = new Date();
 
   // 전체 데이터를 날짜 기준으로 정렬 (내림차순)
   const sortedHistory = [...historyData].sort((a, b) => b.date - a.date);
@@ -180,14 +238,27 @@ const Dashboard = () => {
     : 0;
 
   // 어제의 데이터 찾기 (오늘 바로 이전 날짜)
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterday = addDays(today, -1);
   const yesterdayEntry = sortedHistory.find(entry => isSameDay(entry.date, yesterday));
 
   // 어제와 오늘의 정답률 비교
   const rateChange = todayEntry && yesterdayEntry
     ? todayCorrectRate - (yesterdayEntry.solvedCount > 0 ? Math.round((yesterdayEntry.correctCount / yesterdayEntry.solvedCount) * 100) : 0)
     : 0;
+
+  // 풀어야 할 문제 수 계산 (recommendedDate가 오늘인 문제의 개수)
+  const problemsToSolveToday = recommendedQuestions.filter(q => {
+    return isSameDay(q.recommendedDate, today) || q.recommendedDate < today;
+  }).length;
+  // 총 추천 문제 수
+  const totalProblems = recommendedQuestions.length;
+
+  // 이미 푼 문제 수 (완료된 문제 수)
+  const completedProblems = totalProblems - problemsToSolveToday;
+
+  // 완료 퍼센트 계산
+  const completionRate = totalProblems > 0 ? Math.round((completedProblems / totalProblems) * 100) : 0;
+
 
   return (
     <div className="flex">
@@ -244,18 +315,49 @@ const Dashboard = () => {
           <div className="flex flex-col items-center bg-neutral-50 p-6 rounded-lg">
             {/* 오늘의 추천 문제 */}
             <div className="w-full text-center mb-4">
-              <p className="text-xl font-semibold">오늘의 추천 문제</p>
-              <p className="text-3xl font-bold">50문제</p>
+              {/* 추천 문제가 없는 경우 */}
+              {recommendedQuestions.length === 0 ? (
+                <>
+                  {/* 문제 없음 이미지 표시 */}
+                  <div className="w-full h-40 mx-auto mb-4 relative">
+                    {/* 이미지가 부모 컨테이너 크기에 맞게 조정되도록 설정 */}
+                    <img
+                      src="/images/no-problems.png"
+                      alt="No recommended problems"
+                      className="object-contain w-full h-full"
+                    />
+                  </div>
+                  <p className="text-2xl font-bold mt-2">문제가 없어요 문제를 생성하러 가볼까요?</p>
+                </>
+              ) : (
+                <>
+                  {/* 추천 문제가 있는 경우 */}
+                  <p className="text-xl font-semibold">오늘의 추천 문제</p>
+                  <p className="text-2xl font-bold mt-2">총 추천 문제: {recommendedQuestions.length}문제</p>
+                  {problemsToSolveToday === 0 ? (
+                    <p className="text-2xl font-bold mt-2">추천 문제를 다 풀었습니다</p>
+                  ) : (
+                    <p className="text-2xl font-bold mt-2">풀어야 할 문제: {problemsToSolveToday}문제</p>
+                  )}
+                </>
+              )}
             </div>
-            {/* 진행 상황 */}
-            <div className="w-full text-center mb-4">
-              <p className="text-xl font-semibold">25개 / 50문제</p>
-            </div>
-            {/* 문제풀기 버튼 */}
+
+
             <div>
-              <button className="w-[300px] h-10 bg-blue-600 rounded-lg text-white font-bold hover:bg-blue-700 transition">
-                문제풀기
-              </button>
+              {/* 추천 문제가 없는 경우: 문제 생성 버튼 표시 */}
+              {recommendedQuestions.length === 0 ? (
+                <button className="w-[300px] h-10 bg-blue-600 rounded-lg text-white font-bold hover:bg-blue-700 transition">
+                  문제 생성
+                </button>
+              ) : (
+                /* 추천 문제가 있고, 아직 풀어야 할 문제가 있는 경우에만 문제풀기 버튼 표시 */
+                problemsToSolveToday !== 0 && (
+                  <button className="w-[300px] h-10 bg-blue-600 rounded-lg text-white font-bold hover:bg-blue-700 transition">
+                    문제풀기
+                  </button>
+                )
+              )}
             </div>
           </div>
         </section>
@@ -274,7 +376,7 @@ const Dashboard = () => {
             </div>
             <div className="p-4 bg-yellow-100 rounded">
               <h3 className="text-lg font-semibold">학습 진도</h3>
-              <p className="text-2xl font-bold mt-2">45% 완료</p>
+              <p className="text-2xl font-bold mt-2">{completionRate}% 완료</p>
             </div>
           </div>
           <div className="h-auto mb-4 rounded bg-gray-50 dark:bg-gray-800 p-6">
@@ -289,12 +391,20 @@ const Dashboard = () => {
                   {rateChange >= 0 ? `+${rateChange}%` : `${rateChange}%`}
                 </p>
               </div>
-              <div className="w-full h-full mt-4">
-                {/* 차트 영역 */}
-                <Line data={chartData} options={options} />
+
+              {/* 그래프 영역 */}
+              <div className="w-full h-64 mt-4">
+                <Line
+                  data={chartData}
+                  options={{
+                    ...options,
+                    maintainAspectRatio: false, // 부모 컨테이너에 맞춰 크기 조정
+                  }}
+                />
               </div>
             </div>
           </div>
+
         </section>
 
         {/* 히스토리 섹션 */}
@@ -351,7 +461,7 @@ const Dashboard = () => {
             <div className="mt-4 flex justify-center items-center">
               <Calendar
                 tileContent={tileContent}
-                // 추가로 상세 정보를 표시하려면 onClickDay 등을 사용할 수 있습니다.
+              // 추가로 상세 정보를 표시하려면 onClickDay 등을 사용할 수 있습니다.
               />
             </div>
           )}
