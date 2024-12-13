@@ -7,3 +7,7 @@
 * {
     font-family: "Noto Sans KR", serif;
 }
+
+.width-fill-available {
+    width: -webkit-fill-available;
+  }
