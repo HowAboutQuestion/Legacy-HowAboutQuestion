@@ -1,7 +1,6 @@
 
 // import { useRecoilState, useResetRecoilState } from "recoil";
 // import { questionsAtom } from "state/questionsAtom";
-// import Papa from "papaparse";
 
 // // public 폴더의 question.csv 파일 경로
 // const csvFilePath = "/question.csv";
