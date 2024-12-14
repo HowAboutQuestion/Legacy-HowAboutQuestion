@@ -1,60 +1,56 @@
 import React, { useState } from 'react';
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 
 function Card () {  
   const [questionIndex, setQuestionIndex] = useState(0); // 현재 문제의 인덱스
   const location = useLocation();
   const questions = location.state.questions;
+  const tags = location.state.tags;
+  const navigate = useNavigate();
+  const goResult = () => {navigate("/card/result", {state : { "questions" : questions, "tags" : tags, "result" : {"correct" : correctCount, "wrong" : wrongCount}}})}
+
+
 
   const [showAnswer, setShowAnswer] = useState(false);
 
 
-  
-  let correctCount = 0;
-  let wrongCount = 0;
-  
+  const [correctCount, setCorrectCount] = useState(0); 
+  const [wrongCount, setWrongCount] = useState(0); 
 
   const nextQuestion = () => {
     if(questionIndex === questions.length - 1){
-      alert("전체문제:" + questions.length + "맞은수 :" + correctCount + ", 틀린수 :" + wrongCount )
-      return;
+      goResult();
     }
-    setQuestionIndex(questionIndex+1);
+    setQuestionIndex(questionIndex + 1);
   };
-
-  const beforeQuestion = () => {
-    setQuestionIndex((prevIndex) => (prevIndex === 0 ? prevIndex : prevIndex - 1));
-  };
-
 
   const correct = () => {
+    setCorrectCount(correctCount + 1);
     setShowAnswer(false);
     nextQuestion();
-    correctCount++;
   }
 
   const wrong = () => {
+    setWrongCount(wrongCount + 1);
     setShowAnswer(false);
     nextQuestion();
-    wrongCount++
   }
 
 
 
   return (
-    <main className="ml-20">
-      <div className="sm:rounded-lg">
+    <main className="ml-20 h-[100vh]">
+      <div className="sm:rounded-lg h-full flex flex-col">
         <div className="p-4 flex justify-between border-b">
           <div>
-            <h1 className="text-2xl font-semibold">MVC Pattern</h1>
+            <h1 className="text-2xl font-semibold">{tags.map((tag) => tag + " ")}</h1>
             <h1 className=" text-md font-normal text-gray-400">총 {questions.length} 문제</h1>
           </div>
-          <div className="hidden bg-white text-right items-center flex">
-          </div>
+         
         </div>
 
-        <div className="flex flex-col gap-5 p-10 items-center bg-gray-50">
+        <div className="flex-1 flex flex-col gap-5 p-10 items-center bg-gray-50">
           
           {questions[questionIndex].img && (<div className="flex w-3/4 h-[300px] bg-white rounded-2xl">
             <img
@@ -70,9 +66,10 @@ function Card () {
               </div>
 
               <div className="text-md font-semibold mt-2 text-gray-500">
-                <span>
+                {showAnswer && (<span>
                   {questions[questionIndex].answer}
-                </span>
+                </span>)}
+                
               </div>
             </div>
           </div>)}
@@ -88,9 +85,10 @@ function Card () {
               </div>
 
               <div className="w-full text-md whitespace-nowrap font-semibold mt-5 text-gray-500 flex justify-center items-center">
-                <div>
+                {showAnswer && (<div>
                   {questions[questionIndex].answer}
-                </div>
+                </div>)}
+                
               </div>
 
             </div>
@@ -99,14 +97,14 @@ function Card () {
 
 
 
-          {showAnswer && (<div className="flex  justify-center">
+          {!showAnswer && (<div className="flex  justify-center">
             <div 
             onClick={() => setShowAnswer(true)}
             className="cursor-pointer rounded-2xl bg-blue-500 font-bold text-white py-2 w-40 text-center text-sm">
               정답
             </div>
           </div>)}
-          {!showAnswer && (
+          {showAnswer && (
             <div className="flex gap-5 justify-center">
             <div 
               onClick={wrong}
@@ -123,8 +121,8 @@ function Card () {
           <div className="w-3/4 bg-gray-200 rounded-full h-2 dark:bg-gray-700">
             <div
               className="bg-blue-500 h-2 rounded-full"
-              style={{ width: "45%" }}
-            />
+              style={{ width: `${(questionIndex / questions.length) * 100}%` }}
+              />
           </div>
         </div>
       </div>

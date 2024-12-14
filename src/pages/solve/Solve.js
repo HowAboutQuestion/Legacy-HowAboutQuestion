@@ -3,46 +3,76 @@ import Single from 'pages/solve/Single';
 import Multiple from 'pages/solve/Multiple';
 import { questionsAtom } from 'state/data';
 import { useRecoilValue } from "recoil";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 
 
 function Solve () {  
   const location = useLocation();
+  const navigate = useNavigate();
+
   const questions = location.state.questions;
+  const tags = location.state.tags;
+  const [answers, setAnswers] = useState([...questions]);
+  
   const [questionIndex, setQuestionIndex] = useState(0); // 현재 문제의 인덱스
-  console.log("solve questions", questions );
-  //const curQuestion = questions[questionIndex]; // 현재 문제 데이터
+  const nextQuestion = () => {
+    setQuestionIndex((prevIndex) =>
+      prevIndex === questions.length - 1 ? prevIndex : prevIndex + 1
+    );
+  };
 
-const nextQuestion = () => {
-  setQuestionIndex((prevIndex) =>
-    prevIndex === questions.length - 1 ? prevIndex : prevIndex + 1
-  );
-};
+  const beforeQuestion = () => {
+    setQuestionIndex((prevIndex) => (prevIndex === 0 ? prevIndex : prevIndex - 1));
+  };
 
-const beforeQuestion = () => {
-  setQuestionIndex((prevIndex) => (prevIndex === 0 ? prevIndex : prevIndex - 1));
-};
+  const handleAnswerChange = (index, selectedAnswer) => {
+    setAnswers((prev) => {
+      const updatedAnswers = [...prev];
+      updatedAnswers[index].selected = selectedAnswer;
+      return updatedAnswers;
+    });  
+  };
+  
+  const submit = () => {
+    navigate("/solve/result", {state : { "answers" : answers, "tags" : tags}});
+
+  }
+
+
+
 
   return (
     <main className="ml-20">
           <div className="sm:rounded-lg">
             <div className="p-4 flex justify-between border-b">
               <div>
-                <h1 className="text-2xl font-semibold">MVC Pattern</h1>
+                <h1 className="text-2xl font-semibold">{tags.map((tag) => tag + " ")}</h1>
                 <h1 className="text-md font-normal text-gray-400">총 {questions.length}문제</h1>
               </div>
               <div className="text-right items-center flex gap-2">
                 <div className="border-2 border-gray-200 hover:bg-blue-300 hover:border-blue-300 rounded-xl p-2.5 text-center me-2 mb-2"></div>
-                <div className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2">
+                <div 
+                onClick={submit}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2">
                   제출
                 </div>
               </div>
             </div>
             {questions[questionIndex].type === "주관식" ? (
-                <Single question={questions[questionIndex]} index={questionIndex} />
+                <Single 
+                  key={questionIndex}
+                  onAnswerChange={handleAnswerChange}
+                  question={answers[questionIndex]} 
+                  index={questionIndex}
+                />
+
               ) : (
-                <Multiple question={questions[questionIndex]} index={questionIndex} />
+                <Multiple 
+                key={questionIndex}
+                onAnswerChange={handleAnswerChange}
+                question={answers[questionIndex]} 
+                index={questionIndex} />
               )}
           </div>
           <div className="fixed z-40 bottom-5 right-5 flex gap-2">
