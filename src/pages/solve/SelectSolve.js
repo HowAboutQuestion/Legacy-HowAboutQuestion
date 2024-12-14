@@ -6,11 +6,6 @@ import { useNavigate } from 'react-router-dom';
 
 
 function SelectSolve () {  
-  const navigate = useNavigate();
-  const goSolve = () => {navigate("/solve", {state : { "questions" : questions}})}
-  const goCard = () => {navigate("/card", {state : { "questions" : questions}})}
-
-
   //모든 문제 전역에서 불러오기
   const questions = useRecoilValue(questionsAtom);
   const [filterQuestions, setFilterQuestions] = useState([]);
@@ -19,6 +14,18 @@ function SelectSolve () {
   const allTag = useRecoilValue(allTagAtom);
   const [selectedTag, setSelectedTag] = useState([]); // 선택된 태그 상태
   
+  const navigate = useNavigate();
+  const goSolve = () => {navigate("/solve", {state : { "questions" : questions, "tags" : selectedTag}})}
+  const goCard = () => {
+    let tags = [...selectedTag];
+    if(tags.length === 0) tags = [...allTag];
+
+    navigate("/card", { state : 
+        { "questions" : questions, 
+          "tags" : tags
+        }
+  })}
+
   
 
    // 태그 선택/해제 핸들러

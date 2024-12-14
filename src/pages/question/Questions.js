@@ -96,9 +96,6 @@ function Questions() {
     const setQuestions = useSetRecoilState(questionsAtom);
 
     const insertEvent = () => {
-      if(!title || !answer || !select1 || !select2 || !select3 || !select4 ) alert("입력잘해라");
-
-
       const tags = tag ? [...new Set(tag.split(",").map((item) => item.trim()))] : [];
 
       const question = {
