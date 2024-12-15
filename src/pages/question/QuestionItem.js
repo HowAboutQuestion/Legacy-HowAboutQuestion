@@ -35,22 +35,9 @@ function QuestionItem({question}) {
           <div className="font-medium text-sm whitespace-nowrap">{question.type}</div>
         </td>
         <td className="px-10 py-2 align-top">
-          <div className="rounded hover:bg-gray-200 text-blue-600 p-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="size-5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
-              />
-            </svg>
-          </div>
+          <div className="rounded-xl hover:font-bold hover:bg-gray-100 w-max text-xs cursor-pointer text-blue-600 p-2">
+            수정
+        </div>
         </td>
       </tr>
       <tr className={` hover:shadow transition-all duration-500 ${isCollapsed ? "border-b" : ""}`}>
@@ -80,8 +67,8 @@ function QuestionItem({question}) {
             <div className="p-5 px-6">
               <img
                 art=""
-                src="https://www.hkn24.com/news/photo/202012/316113_176385_144.jpg"
-                className="bg-gray-400 rounded aspect-video min-w-[10vw] max-w-[20vw]"
+                src={question.img}
+                className="bg-gray-200 rounded aspect-video min-w-[10vw] max-w-[20vw]"
               />
             </div>
           </div>
@@ -116,22 +103,9 @@ function QuestionItem({question}) {
           <div className="font-medium text-sm whitespace-nowrap">{question.type}</div>
         </td>
         <td className="px-10 py-2 align-top">
-          <div className="rounded hover:bg-gray-200 text-blue-600 p-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="size-5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
-              />
-            </svg>
-          </div>
+        <div className="rounded-xl hover:font-bold hover:bg-gray-100 w-max text-xs cursor-pointer text-blue-600 p-2">
+            수정
+        </div>
         </td>
       </tr>
       <tr className={` hover:shadow transition-all duration-500 ${isCollapsed ? "border-b" : ""}`}>
@@ -184,8 +158,9 @@ function QuestionItem({question}) {
             
             <div className="p-5 px-6">
               <img
-                src="https://www.hkn24.com/news/photo/202012/316113_176385_144.jpg"
-                className="bg-gray-400 rounded aspect-video min-w-[10vw] max-w-[20vw]"
+
+                src={question.img}
+                className="bg-gray-200 rounded aspect-video min-w-[10vw] max-w-[20vw]"
               />
             </div>
           </div>
