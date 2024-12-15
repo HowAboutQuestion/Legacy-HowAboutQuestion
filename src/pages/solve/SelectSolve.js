@@ -15,13 +15,13 @@ function SelectSolve () {
   const [selectedTag, setSelectedTag] = useState([]); // 선택된 태그 상태
   
   const navigate = useNavigate();
-  const goSolve = () => {navigate("/solve", {state : { "questions" : questions, "tags" : selectedTag}})}
+  const goSolve = () => {navigate("/solve", {state : { "questions" : filterQuestions, "tags" : selectedTag}})}
   const goCard = () => {
     let tags = [...selectedTag];
     if(tags.length === 0) tags = [...allTag];
 
     navigate("/card", { state : 
-        { "questions" : questions, 
+        { "questions" : filterQuestions, 
           "tags" : tags
         }
   })}
@@ -75,9 +75,9 @@ function SelectSolve () {
   return (
     <main className="bg-gray-50 ml-20 flex items-center h-screen justify-center">
 
-      <div className='bg-white shadow flex p-10 items-center justify-center flex-col gap-5 rounded-xl'>
+      <div className='bg-white shadow flex m-10 p-10 items-center justify-center flex-col gap-5 rounded-xl'>
         <div className='text-lg font-bold'>문제집 선택</div>
-        <div className='flex gap-3'>{allTagItems}</div>
+        <div className='flex gap-3 flex-wrap'>{allTagItems}</div>
         <div className='text-sm font-bold text-gray-500'> 총 {filterQuestions.length} 문제</div>
         <div className='flex gap-5'>
           <div 
