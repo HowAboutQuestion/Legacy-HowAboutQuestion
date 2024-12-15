@@ -4,7 +4,7 @@ function Single({ question, index, onAnswerChange }) {
   const [answer, setAnswer] = useState(question.selected);
 
   const handleAnswerChange = (e) => {
-    const selectedAnswer = e.target.value;
+    const selectedAnswer = e.target.value.trim();
     setAnswer(selectedAnswer); // 로컬 상태 업데이트
     onAnswerChange(index, selectedAnswer); // 부모 컴포넌트에 전달
   };
