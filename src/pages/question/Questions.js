@@ -123,6 +123,28 @@ function Questions() {
       }
     };
 
+    const handleDownload = () => {
+      // questions 배열을 CSV로 변환
+      const csv = Papa.unparse(filterQuestions, {
+        header: true, // 첫 번째 줄에 헤더 포함
+      });
+  
+      // Blob을 사용하여 CSV 데이터를 파일로 변환
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  
+      // 다운로드 링크 생성
+      const link = document.createElement("a");
+      if (link.download !== undefined) {
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", "questions.csv"); // 다운로드할 파일 이름 설정
+        link.style.visibility = "hidden";
+        document.body.appendChild(link);
+        link.click(); // 다운로드 실행
+        document.body.removeChild(link); // 링크 제거
+      }
+    };
+
 
 
     
@@ -253,7 +275,7 @@ function Questions() {
             <div className="px-8 py-4 flex justify-between border-b">
               <div>
                 <h1 className="text-2xl font-semibold">문제 관리</h1>
-                <h1 className="text-md font-normal text-gray-400">총 {questions.length} 문제</h1>
+                <h1 className="text-md font-normal text-gray-400">총 {filterQuestions.length} 문제</h1>
               </div>
               <div className="bg-white items-center flex">
                 <div 
@@ -281,7 +303,9 @@ function Questions() {
                   type='file' accept='.csv' className='opacity-0 h-full w-full'></input>
 
                 </div>
-                <div className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2 mb-2">
+                <div 
+                onClick={handleDownload}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2 mb-2">
                 <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
