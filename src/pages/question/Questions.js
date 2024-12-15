@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import { questionsAtom, allTagAtom } from "state/data";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-
 import QuestionItem from 'pages/question/QuestionItem';
+import Papa from "papaparse";
 
 function Questions() {
     //모든 문제 전역에서 불러오기
@@ -27,7 +27,7 @@ function Questions() {
     const allTagItems = allTag.map((tagName, index) => {
     const isSelected = selectedTag.includes(tagName); // 선택 여부 확인
     return (
-      <span 
+      <div 
         onClick={() => handleTagClick(tagName)}
         key={index} 
         className={`cursor-pointer whitespace-nowrap py-1 px-2 rounded-xl text-xs font-semibold border-none ${
@@ -35,7 +35,7 @@ function Questions() {
         }`}
       >
         {tagName}
-      </span>
+      </div>
     );
   });
 
@@ -57,6 +57,93 @@ function Questions() {
     const questionsItems = filterQuestions.map((question, index) => (
       <QuestionItem key={index} question={question} />
     ));
+
+
+    //csv 파일 업로드 이벤트
+    const insertCSV = async (file) => {
+      try {
+        const response = await fetch(file);
+        if (!response.ok) throw new Error("CSV 파일을 찾을 수 없습니다.");
+  
+        const csvText = await response.text();
+  
+        Papa.parse(csvText, {
+          header: true, // 첫 줄을 헤더로 사용
+          skipEmptyLines: true, // 빈 줄 무시
+          complete: (result) => {
+            const tagSet = new Set(); // 태그 중복 제거용
+            const today = new Date().toISOString().split("T")[0]; // 오늘 날짜
+  
+            const parsedData = result.data.map((item) => {
+              // __parsed_extra 필드가 있으면 tag에 추가
+              if (item.__parsed_extra) {
+                const extraTags = item.__parsed_extra.map((tag) => tag.trim());
+                item.tag = [
+                  ...(item.tag ? item.tag.split(",").map((tag) => tag.trim()) : []),
+                  ...extraTags,
+                ];
+              } else if (item.tag) {
+                // tag가 문자열 형태로 존재하면 리스트로 변환
+                item.tag = item.tag.split(",").map((tag) => tag.trim());
+              }
+              item.tag?.forEach((tag) => tagSet.add(tag)); // 태그 중복 제거
+  
+              // 필요한 필드만 유지, 기본값 설정
+              return {
+                title: item.title || "",
+                type: item.type || "",
+                select1: item.select1 || "",
+                select2: item.select2 || "",
+                select3: item.select3 || "",
+                select4: item.select4 || "",
+                answer: item.answer || "",
+                img: item.img || "",
+                level: 0, // 기본값
+                date: today, // 오늘 날짜
+                tag: item.tag || [],
+              };
+            });
+  
+            // 기존 questions 배열에 새 데이터를 추가
+            setQuestions([...parsedData, ...questions]);
+            setAlltag([...tagSet, ...allTag]);
+
+          },
+        });
+      } catch (error) {
+        console.error("CSV 파일 읽기 실패:", error);
+      }
+    };
+    
+    const handleFileUpload = (event) => {
+    const file = event.target.files[0]; // 사용자가 업로드한 파일
+    if (file) {
+      const fileUrl = URL.createObjectURL(file); // 파일 URL 생성
+      insertCSV(fileUrl); // insertQuestion 함수 호출
+      }
+    };
+
+    const handleDownload = () => {
+      // questions 배열을 CSV로 변환
+      const csv = Papa.unparse(filterQuestions, {
+        header: true, // 첫 번째 줄에 헤더 포함
+      });
+  
+      // Blob을 사용하여 CSV 데이터를 파일로 변환
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  
+      // 다운로드 링크 생성
+      const link = document.createElement("a");
+      if (link.download !== undefined) {
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", "questions.csv"); // 다운로드할 파일 이름 설정
+        link.style.visibility = "hidden";
+        document.body.appendChild(link);
+        link.click(); // 다운로드 실행
+        document.body.removeChild(link); // 링크 제거
+      }
+    };
 
 
 
@@ -94,6 +181,7 @@ function Questions() {
     const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
 
     const setQuestions = useSetRecoilState(questionsAtom);
+    const setAlltag = useSetRecoilState(allTagAtom);
 
     const insertEvent = () => {
       const tags = tag ? [...new Set(tag.split(",").map((item) => item.trim()))] : [];
@@ -118,6 +206,7 @@ function Questions() {
       setSelect3("");
       setSelect4("");
       setAnswer("");
+      setThumbnail(null);
 
       setQuestions((prevQuestions) => [question, ...prevQuestions]);
     };
@@ -153,7 +242,7 @@ function Questions() {
 
               </div>
 
-            <div className="w-full p-5 ">
+            <div className="hidden w-full p-5 ">
               
 
               {!isCollapsed && <div className="font-bold">문제검색</div>}
@@ -166,9 +255,10 @@ function Questions() {
           </div>
 
             {!isCollapsed && (
-              <div className="w-full p-5 ">
+              <div 
+               className="w-full p-5 h-max overflow-auto css-tag-scroll">
                 <div 
-                className="font-bold">필터태그</div>
+                className="font-bold">문제집 선택</div>
                 <div className="flex gap-2 py-2 w-full flex-wrap">
                   {allTagItems}
                   
@@ -185,40 +275,48 @@ function Questions() {
             <div className="px-8 py-4 flex justify-between border-b">
               <div>
                 <h1 className="text-2xl font-semibold">문제 관리</h1>
-                <h1 className="text-md font-normal text-gray-400">총 {questions.length} 문제</h1>
+                <h1 className="text-md font-normal text-gray-400">총 {filterQuestions.length} 문제</h1>
               </div>
               <div className="bg-white items-center flex">
                 <div 
-                  onClick={() => setBottomModal(true)}
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2">
+                className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2">
                     문제추가
                 </div>
-                <div className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2 mb-2">
-                  <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="size-4"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z"
-                        clipRule="evenodd"
-                      />
-                  </svg>
-                </div>
-                <div className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2 mb-2">
+                <div 
+                className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2 mb-2">
+                  
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     fill="currentColor"
-                    className="size-4"
+                    className="size-4 absolute"
                   >
                     <path
                       fillRule="evenodd"
                       d="M11.47 2.47a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 0 1-1.06 1.06l-3.22-3.22V16.5a.75.75 0 0 1-1.5 0V4.81L8.03 8.03a.75.75 0 0 1-1.06-1.06l4.5-4.5ZM3 15.75a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z"
                       clipRule="evenodd"
                     />
+                  </svg>
+
+                  <input 
+                  onChange={handleFileUpload}
+                  type='file' accept='.csv' className='opacity-0 h-full w-full'></input>
+
+                </div>
+                <div 
+                onClick={handleDownload}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2 mb-2">
+                <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="size-4 absolute"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z"
+                        clipRule="evenodd"
+                      />
                   </svg>
                 </div>
               </div>
