@@ -7,3 +7,18 @@
 * {
     font-family: "Noto Sans KR", serif;
 }
+
+.width-fill-available {
+    width: -webkit-fill-available;
+  }
+
+*::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  
+*::-webkit-scrollbar-thumb {
+    background: #d7d7d7; 
+    border-radius: 20px;
+  }
+

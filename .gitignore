@@ -1,1 +1,23 @@
-/node_modules
+# 시스템 파일
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 빌드 결과물
+/dist
+/out
+/build/
+/win-unpacked/
+/app.asar
+
+# Node.js
+node_modules/
+# package-lock.json
+
+# IDE/에디터 설정
+.vscode/
+.idea/
+
+# 로그 파일
+*.log
+
