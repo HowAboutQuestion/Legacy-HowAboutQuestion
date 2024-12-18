@@ -265,15 +265,13 @@ const Dashboard = () => {
             ) : (
               <>
                 {/* 추천 문제가 있는 경우 */}
-                <p className="text-xl font-semibold">오늘의 추천 문제</p>
+                <p className="text-3xl font-bold">오늘의 추천 문제</p>
                 {/* **수정: 풀어야 할 문제 수 / 총 문제 수 표시** */}
-                <p className="text-2xl font-bold mt-2">
-                  풀어야할 문제 수: {problemsToSolveToday} / 총 문제 수: {totalProblems}문제
-                </p>
-                
-                {/* 문제 수 선택 UI 추가 */}
+
+
+                {/* 풀어야 할 문제 수 선택 UI 추가 */}
                 <div className="mt-4 flex items-center justify-center">
-                  <label htmlFor="problemCount" className="mr-2 text-lg">풀어야 할 문제 수:</label> {/* **수정된 부분** */}
+                  <label htmlFor="problemCount" className="mr-2 text-lg font-bold">풀어야 할 문제 수:</label> {/* **수정된 부분** */}
                   <select
                     id="problemCount"
                     value={selectedProblemCount}
@@ -286,8 +284,14 @@ const Dashboard = () => {
                       </option>
                     ))}
                   </select>
-                  문제
+                  <p className="mr-2 text-lg font-bold">문제 </p>
+
+                  <p className="text-2xl font-bold mt-2">
+                    / 총 {totalProblems}문제
+                  </p>
                 </div>
+
+
               </>
             )}
           </div>
