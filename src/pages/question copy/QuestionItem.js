@@ -1,10 +1,12 @@
 import React, {useState}  from 'react';
 
-function QuestionItem({question, onUpdateClick}) {
+function QuestionItem({question}) {
   const tag = question.tag.map((tagName, index) => <span key={index}      className="font-medium text-xs whitespace-nowrap bg-gray-200 rounded-xl py-1 px-2">{tagName}</span>);
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const toggle = () => {setIsCollapsed((state) => !(state))}
+
+
 
  
   if(question.type === '주관식'){
@@ -33,23 +35,8 @@ function QuestionItem({question, onUpdateClick}) {
           <div className="font-medium text-sm whitespace-nowrap">{question.type}</div>
         </td>
         <td className="px-10 py-2 align-top">
-          <div 
-          onClick={() => onUpdateClick(question)}
-          className="rounded-xl hover:font-bold hover:bg-gray-100 w-max text-xs cursor-pointer text-blue-600 p-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="size-4"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
-              />
-            </svg>
+          <div className="rounded-xl hover:font-bold hover:bg-gray-100 w-max text-xs cursor-pointer text-blue-600 p-2">
+            수정
         </div>
         </td>
       </tr>
@@ -116,23 +103,8 @@ function QuestionItem({question, onUpdateClick}) {
           <div className="font-medium text-sm whitespace-nowrap">{question.type}</div>
         </td>
         <td className="px-10 py-2 align-top">
-        <div 
-          onClick={() => onUpdateClick(question)}
-          className="rounded-xl hover:font-bold hover:bg-gray-100 w-max text-xs cursor-pointer text-blue-600 p-2">
-             <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="size-4"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
-              />
-            </svg>
+        <div className="rounded-xl hover:font-bold hover:bg-gray-100 w-max text-xs cursor-pointer text-blue-600 p-2">
+            수정
         </div>
         </td>
       </tr>

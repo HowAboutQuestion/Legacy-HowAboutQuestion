@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
+// Chart.js 구성 요소 등록
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 function CardResult() {
@@ -12,6 +13,9 @@ function CardResult() {
   const result = location.state.result;
   const navigate = useNavigate();
   const goCard = () => { navigate("/card", { state :  { "questions" : questions, "tags" : tags }})}
+
+
+
 
 
   // 차트 데이터 구성

@@ -1,11 +1,13 @@
 {
   "name": "my-app",
   "version": "0.1.0",
+  "main": "src/main.js",
   "private": true,
   "dependencies": {
     "chart.js": "^4.4.7",
     "cra-template": "1.2.0",
     "date-fns": "^4.1.0",
+    "electron-squirrel-startup": "^1.0.1",
     "papaparse": "^5.4.1",
     "react": "^18.2.0",
     "react-calendar": "^5.1.0",
@@ -17,10 +19,13 @@
     "web-vitals": "^4.2.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start:react": "react-scripts start",
+    "start:electron": "electron-forge start",
+    "start": "npm-run-all --parallel start:react start:electron",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "electron": "electron .",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "eslintConfig": {
     "extends": [
@@ -41,6 +46,16 @@
     ]
   },
   "devDependencies": {
+    "@electron-forge/cli": "^7.6.0",
+    "@electron-forge/maker-deb": "^7.6.0",
+    "@electron-forge/maker-rpm": "^7.6.0",
+    "@electron-forge/maker-squirrel": "^7.6.0",
+    "@electron-forge/maker-zip": "^7.6.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.6.0",
+    "@electron-forge/plugin-fuses": "^7.6.0",
+    "@electron/fuses": "^1.8.0",
+    "electron": "^33.2.1",
+    "npm-run-all": "^4.1.5",
     "tailwindcss": "^3.4.16"
   }
 }

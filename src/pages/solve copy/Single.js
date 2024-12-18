@@ -6,7 +6,7 @@ function Single({ question, index, onAnswerChange }) {
   const handleAnswerChange = (e) => {
     const selectedAnswer = e.target.value;
     setAnswer(selectedAnswer); // 로컬 상태 업데이트
-    onAnswerChange(index, selectedAnswer.trim()); // 부모 컴포넌트에 전달
+    onAnswerChange(index, selectedAnswer); // 부모 컴포넌트에 전달
   };
 
   return (

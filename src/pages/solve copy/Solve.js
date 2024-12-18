@@ -3,14 +3,12 @@ import Single from 'pages/solve/Single';
 import Multiple from 'pages/solve/Multiple';
 import { questionsAtom } from 'state/data';
 import { useRecoilValue } from "recoil";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 
 
 function Solve () {  
   const location = useLocation();
-  const navigate = useNavigate();
-
   const questions = location.state.questions;
   const tags = location.state.tags;
   const [answers, setAnswers] = useState([...questions]);
@@ -31,13 +29,11 @@ function Solve () {
       const updatedAnswers = [...prev];
       updatedAnswers[index].selected = selectedAnswer;
       return updatedAnswers;
-    });  
+    });
+  
+    console.log("answers", answers);
   };
   
-  const submit = () => {
-    navigate("/solve/result", {state : { "answers" : answers, "tags" : tags}});
-
-  }
 
 
 
@@ -52,9 +48,7 @@ function Solve () {
               </div>
               <div className="text-right items-center flex gap-2">
                 <div className="border-2 border-gray-200 hover:bg-blue-300 hover:border-blue-300 rounded-xl p-2.5 text-center me-2 mb-2"></div>
-                <div 
-                onClick={submit}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2">
+                <div className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2">
                   제출
                 </div>
               </div>
