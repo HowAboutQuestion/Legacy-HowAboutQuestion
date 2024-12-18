@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom"; // useNavigate 추가
 import { Line } from "react-chartjs-2";
 import Calendar from "react-calendar";
 import Papa from "papaparse";
-import { parseISO, isValid, isSameDay, addDays, format } from "date-fns";
+import { parseISO, isValid, isSameDay, isBefore, addDays, format } from "date-fns"; // isBefore 추가
 import { useRecoilState } from "recoil";
 import { historyDataAtom, recommendedQuestionsAtom } from "state/data";
 import {
@@ -53,6 +53,10 @@ const Dashboard = () => {
   // 오늘 날짜 상수
   const today = useMemo(() => new Date(), []);
 
+  // **풀어야 할 문제 수와 푼 문제 수 상태 관리**
+  const [toSolveCount, setToSolveCount] = useState(0); // 풀어야 할 문제 수
+  const [solvedCount, setSolvedCount] = useState(0); // 푼 문제 수
+
   // 문제 추천 데이터 로드 함수 (useCallback으로 메모이제이션)
   const loadRecommendedQuestions = useCallback(async () => {
     try {
@@ -62,25 +66,46 @@ const Dashboard = () => {
       const csvText = await response.text();
       const parsedData = Papa.parse(csvText, { header: true, skipEmptyLines: true }).data;
 
+      let toSolve = 0;   // 풀어야 할 문제 수
+      let solved = 0;    // 푼 문제 수
+
       const recommendations = parsedData
         .map((item) => {
-          const updateDate = isValid(parseISO(item.update)) ? parseISO(item.update) : today;
-          const recommendDate = isValid(parseISO(item.recommenddate)) ? parseISO(item.recommenddate) : today;
+          const updateDate = isValid(parseISO(item.update)) ? parseISO(item.update) : null;
+          const recommendDate = isValid(parseISO(item.recommenddate)) ? parseISO(item.recommenddate) : null;
+          const solvedDate = isValid(parseISO(item.solveddate)) ? parseISO(item.solveddate) : null;
+
+          if (!recommendDate || !updateDate) {
+            // 필수 날짜가 유효하지 않은 경우 건너뜀
+            return null;
+          }
 
           if (isSameDay(recommendDate, today)) {
-            // recommenddate가 오늘인 경우 카운트
-            return { ...item, recommendDate: format(recommendDate, 'yyyy-MM-dd') };
-          } else {
-            if (updateDate <= today) {
-              // updateDate가 오늘보다 작은 경우 카운트
-              return { ...item, recommendDate: format(recommendDate, 'yyyy-MM-dd') };
+            if (!solvedDate || !isSameDay(solvedDate, today)) {
+              // recommenddate가 오늘이고, solveddate가 오늘이 아니면 풀어야 할 문제 수 카운트
+              toSolve += 1;
             }
+
+            if (solvedDate && isSameDay(solvedDate, today)) {
+              // recommenddate가 오늘이고, solveddate도 오늘인 경우 푼 문제 수 카운트
+              solved += 1;
+            }
+
+            return { ...item, recommendDate: format(recommendDate, 'yyyy-MM-dd') };
+          } else if (isBefore(updateDate, today)) {
+            // recommenddate가 오늘이 아니고, updateDate가 오늘보다 이전인 경우 풀어야 할 문제 수 카운트
+            toSolve += 1;
+            return { ...item, recommendDate: format(recommendDate, 'yyyy-MM-dd') };
           }
+
+          // 위 조건에 해당하지 않는 경우 건너뜀
           return null;
         })
         .filter((q) => q !== null);
 
       setRecommendedQuestions(recommendations);
+      setToSolveCount(toSolve);
+      setSolvedCount(solved);
     } catch (error) {
       console.error('Error fetching or processing recommendations:', error);
     } finally {
@@ -100,8 +125,8 @@ const Dashboard = () => {
         complete: (results) => {
           const parsedData = results.data
             .map((row) => {
-              const date = parseISO(row.date.trim());
-              if (!isValid(date)) return null;
+              const date = isValid(parseISO(row.date.trim())) ? parseISO(row.date.trim()) : null;
+              if (!date) return null;
               const solvedCount = row.solvedCount;
               const correctCount = row.correctCount;
               const correctRate = solvedCount > 0 ? Math.round((correctCount / solvedCount) * 100) : 0;
@@ -172,19 +197,17 @@ const Dashboard = () => {
     return 0;
   }, [todayEntry, yesterdayEntry, todayCorrectRate]);
 
-  // 풀어야 할 문제 수 계산 (recommendDate가 오늘이거나 과거인 문제의 개수)
-  const problemsToSolveToday = useMemo(() => {
-    return recommendedQuestions.filter(q => {
-      const recDate = parseISO(q.recommendDate);
-      return isSameDay(recDate, today) || recDate < today;
-    }).length;
-  }, [recommendedQuestions, today]);
+  // **수정: 총 추천 문제 수를 풀어야 할 문제 수와 푼 문제 수의 합으로 설정**
+  const totalRecommendToday = useMemo(() => toSolveCount + solvedCount, [toSolveCount, solvedCount]);
+
+  // 풀어야 할 문제 수 계산 (recommendDate가 오늘이면서 solveddate가 오늘이 아닌 문제 + updateDate가 오늘보다 이전인 문제의 개수)
+  const problemsToSolveToday = useMemo(() => toSolveCount, [toSolveCount]);
 
   // 총 추천 문제 수
-  const totalProblems = useMemo(() => recommendedQuestions.length, [recommendedQuestions]);
+  const totalProblems = useMemo(() => totalRecommendToday, [totalRecommendToday]);
 
   // 이미 푼 문제 수 (완료된 문제 수)
-  const completedProblems = useMemo(() => totalProblems - problemsToSolveToday, [totalProblems, problemsToSolveToday]);
+  const completedProblems = useMemo(() => solvedCount, [solvedCount]);
 
   // 완료 퍼센트 계산
   const completionRate = useMemo(() => totalProblems > 0 ? Math.round((completedProblems / totalProblems) * 100) : 0, [totalProblems, completedProblems]);
@@ -227,7 +250,7 @@ const Dashboard = () => {
           {/* 오늘의 추천 문제 */}
           <div className="w-full text-center mb-4">
             {/* 추천 문제가 없는 경우 */}
-            {recommendedQuestions.length === 0 ? (
+            {totalRecommendToday === 0 ? (
               <>
                 {/* 문제 없음 이미지 표시 */}
                 <div className="w-full h-40 mx-auto mb-4 relative">
@@ -243,11 +266,14 @@ const Dashboard = () => {
               <>
                 {/* 추천 문제가 있는 경우 */}
                 <p className="text-xl font-semibold">오늘의 추천 문제</p>
-                <p className="text-2xl font-bold mt-2">총 추천 문제: {recommendedQuestions.length}문제</p>
+                {/* **수정: 풀어야 할 문제 수 / 총 문제 수 표시** */}
+                <p className="text-2xl font-bold mt-2">
+                  풀어야할 문제 수: {problemsToSolveToday} / 총 문제 수: {totalProblems}문제
+                </p>
                 
                 {/* 문제 수 선택 UI 추가 */}
                 <div className="mt-4 flex items-center justify-center">
-                  <label htmlFor="problemCount" className="mr-2 text-lg">풀 문제 수:</label>
+                  <label htmlFor="problemCount" className="mr-2 text-lg">풀어야 할 문제 수:</label> {/* **수정된 부분** */}
                   <select
                     id="problemCount"
                     value={selectedProblemCount}
@@ -268,7 +294,7 @@ const Dashboard = () => {
 
           <div>
             {/* 추천 문제가 없는 경우: 문제 생성 버튼 표시 */}
-            {recommendedQuestions.length === 0 ? (
+            {totalRecommendToday === 0 ? (
               <button
                 onClick={goToQuestions}
                 className="w-[300px] h-10 bg-blue-600 rounded-lg text-white font-bold hover:bg-blue-700 transition"
@@ -387,7 +413,10 @@ const Dashboard = () => {
               <tbody>
                 {sortedHistory.slice(0, 7).map((entry, index) => (
                   <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                    <td className="py-2 px-4">{formatDate(entry.date)}</td><td className="py-2 px-4">{entry.solvedCount}</td><td className="py-2 px-4">{entry.correctCount}</td><td className="py-2 px-4">{entry.correctRate}%</td>
+                    <td className="py-2 px-4">{formatDate(entry.date)}</td>
+                    <td className="py-2 px-4">{entry.solvedCount}</td>
+                    <td className="py-2 px-4">{entry.correctCount}</td>
+                    <td className="py-2 px-4">{entry.correctRate}%</td>
                   </tr>
                 ))}
               </tbody>

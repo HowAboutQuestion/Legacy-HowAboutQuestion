@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const Papa = require('papaparse');
-const { parseISO, isValid, isSameDay, addDays, format } = require('date-fns');
+const { parseISO, isValid, isBefore, isAfter, format } = require('date-fns');
 
 let mainWindow;
 
@@ -19,6 +19,8 @@ function updateRecommendDates() {
     const parsed = Papa.parse(csvFile, { header: true, skipEmptyLines: true });
 
     const today = new Date();
+    const formattedToday = format(today, 'yyyy-MM-dd'); // 오늘 날짜를 'yyyy-MM-dd' 형식으로 포맷
+
     const updatedData = parsed.data.map((row) => {
       const recommendDate = parseISO(row.recommenddate);
       const updateDate = parseISO(row.update);
@@ -28,18 +30,15 @@ function updateRecommendDates() {
         return row;
       }
 
-      if (isSameDay(recommendDate, today)) {
-        // recommenddate가 오늘인 경우 카운트 (변경 없음)
-        return row;
-      } else {
-        if (updateDate > today) {
-          // updateDate가 오늘보다 큰 경우 recommenddate를 updateDate로 변경
+      if (isBefore(recommendDate, today)) { // recommenddate가 오늘보다 이전인 경우
+        if (isAfter(updateDate, today)) { // updateDate가 오늘보다 이후인 경우
           return { ...row, recommenddate: format(updateDate, 'yyyy-MM-dd') };
-        } else if (updateDate <= today) {
-          // updateDate가 오늘보다 작거나 같은 경우 카운트 (변경 없음)
-          return row;
+        } else { // updateDate가 오늘보다 이전이거나 같은 경우
+          return { ...row, recommenddate: formattedToday };
         }
       }
+
+      // recommenddate가 오늘이거나 이후인 경우 변경하지 않음
       return row;
     });
 
@@ -53,6 +52,7 @@ function updateRecommendDates() {
     return { success: false, message: 'recommenddate 업데이트에 실패했습니다.' };
   }
 }
+
 
 function createWindow() {
  // 먼저 recommenddate 업데이트 실행
