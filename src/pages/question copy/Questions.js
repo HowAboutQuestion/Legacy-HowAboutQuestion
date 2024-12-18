@@ -3,7 +3,6 @@ import { questionsAtom, allTagAtom } from "state/data";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import QuestionItem from 'pages/question/QuestionItem';
 import Papa from "papaparse";
-import UpdateModal from 'pages/question/UpdateModal';
 
 function Questions() {
     //모든 문제 전역에서 불러오기
@@ -41,20 +40,24 @@ function Questions() {
   });
 
 
-  useEffect(() => {
-    if (selectedTag.length === 0) {
-      setFilterQuestions(questions.map((question, index) => ({ question, index })));
-      return;
-    }
-  
-    const filtered = questions
-      .map((question, index) => ({ question, index })) // 각 질문과 인덱스를 묶음
-      .filter(({ question }) =>
+    // 태그가 변경될 때마다 필터링 실행
+    useEffect(() => {
+      if(selectedTag.length == 0) {
+        setFilterQuestions([...questions]);
+        return;
+      }
+
+      const filtered = questions.filter((question) =>
         question.tag.some((tag) => selectedTag.includes(tag))
       );
-    setFilterQuestions(filtered);
-  }, [questions, selectedTag]); // 의존성 배열에 `selectedTag`와 `questions` 추가
-  
+      setFilterQuestions(filtered);
+      }, [questions, selectedTag]); // 의존성 배열에 `selectedTag`와 `questions` 추가
+
+    // 동적 렌더링
+    const questionsItems = filterQuestions.map((question, index) => (
+      <QuestionItem key={index} question={question} />
+    ));
+
 
     //csv 파일 업로드 이벤트
     const insertCSV = async (file) => {
@@ -165,14 +168,7 @@ function Questions() {
     const [isCollapsed, setIsCollapsed] = useState(true);
     //문제추가모달 토글
     const [insertModal, setInsertModal] = useState(false);
-    const [updateQuestion, setUpdateQuestion] = useState(null); // 수정할 질문 객체 (모달 제어 포함)
-    const [updateIndex, setUpdateIndex] = useState(null);
 
-    const handleUpdateClick = (question, index) => {
-      setUpdateIndex(index);
-      setUpdateQuestion({ ...question });
-    };
-    
     //문제추가폼
     const [title, setTitle] = useState("");
     const [type, setType] = useState("객관식");
@@ -215,16 +211,6 @@ function Questions() {
       setQuestions((prevQuestions) => [question, ...prevQuestions]);
     };
 
-    // 테이블 데이터 랜더링
-    const questionsItems = filterQuestions.map(({question, index}) => (
-      <QuestionItem
-        key={index}
-        question={question}
-        onUpdateClick={() => handleUpdateClick(question, index)} // index 전달
-      />
-    ));
-    
-
       return (
 
         <main className="ml-20 flex">
@@ -257,6 +243,8 @@ function Questions() {
               </div>
 
             <div className="hidden w-full p-5 ">
+              
+
               {!isCollapsed && <div className="font-bold">문제검색</div>}
               {!isCollapsed && (
                 <input
@@ -297,6 +285,7 @@ function Questions() {
                 </div>
                 <div 
                 className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2 mb-2">
+                  
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -318,7 +307,8 @@ function Questions() {
                 <div 
                 onClick={handleDownload}
                 className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2 mb-2">
-                <svg xmlns="http://www.w3.org/2000/svg"
+                <svg
+                      xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
                       fill="currentColor"
                       className="size-4 absolute"
@@ -375,151 +365,140 @@ function Questions() {
                 }`}
               >
                 <div className="h-full w-full p-7 flex flex-col gap-2">
-                    <div className="flex justify-between">
-                      <div className="font-bold text-xl pl-1">문제 추가하기</div>
-                      <div className="items-center flex">
-                        <div
-                          onClick={insertEvent}
-                          className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2"
-                        >
-                          저장하기
-                        </div>
-                        <div
-                          onClick={() => setInsertModal(false)}
-                          className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth="2"
-                            stroke="currentColor"
-                            className="size-4"
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex gap-3">
-                      <input
-                        type="text"
-                        className="block min-w-[50%] outline-none border-b-2 border-gray-200 focus:border-blue-500 text-sm px-2 py-1 h-10"
-                        placeholder="문제를 입력해주세요"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        required
-                      />
-                      <select
-                        className="block border-b-2 text-sm px-2 py-1 h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500"
-                        value={type}
-                        onChange={(e) => setType(e.target.value)}
-                      >
-                        <option value="객관식">객관식</option>
-                        <option value="주관식">주관식</option>
-                      </select>
-                    </div>
-                    <input
-                      type="text"
-                      className="block outline-none border-b-2 border-gray-200 focus:border-blue-500 text-sm px-2 py-1 h-10 w-1/2 flex-none"
-                      placeholder="태그를 입력해주세요"
-                      value={tag}
-                      onChange={(e) => setTag(e.target.value)}
-                    />
-                    <div className="flex gap-5">
-                      <div className="flex flex-1 flex-col gap-2">
-                        <div className="flex gap-3">
-                          <input
-                            type="radio"
-                            name="answer"
-                            onChange={() => setAnswer(select1)}
-                          />
-                          <input
-                            type="text"
-                            className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
-                            placeholder="선택지1"
-                            value={select1}
-                            onChange={(e) => setSelect1(e.target.value)}
-                          />
-                        </div>
-                        <div className="flex gap-3">
-                          <input
-                            type="radio"
-                            name="answer"
-                            onChange={() => setAnswer(select2)}
-                          />
-                          <input
-                            type="text"
-                            className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
-                            placeholder="선택지2"
-                            value={select2}
-                            onChange={(e) => setSelect2(e.target.value)}
-                          />
-                        </div>
-                      </div>
-                      <div className="flex flex-1 flex-col gap-2">
-                        <div className="flex gap-3">
-                          <input
-                            type="radio"
-                            name="answer"
-                            onChange={() => setAnswer(select3)}
-                          />
-                          <input
-                            type="text"
-                            className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
-                            placeholder="선택지3"
-                            value={select3}
-                            onChange={(e) => setSelect3(e.target.value)}
-                          />
-                        </div>
-                        <div className="flex gap-3">
-                          <input
-                            type="radio"
-                            name="answer"
-                            onChange={() => setAnswer(select4)}
-                          />
-                          <input
-                            type="text"
-                            className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
-                            placeholder="선택지4"
-                            value={select4}
-                            onChange={(e) => setSelect4(e.target.value)}
-                          />
-                        </div>
-                      </div>
-                      <div
-                        className="bg-gray-50 flex rounded"
-                        style={{
-                          backgroundImage: thumbnail ? `url(${thumbnail})` : "none",
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
-                        }}
-                      >
-                        <input
-                          type="file"
-                          accept=".jpg, .jpeg, .png"
-                          className="w-full h-full text-xs opacity-0"
-                          onChange={handleFileChange}
-                        />
-                      </div>
-                    </div>
-                  
-                  </div>
+      <div className="flex justify-between">
+        <div className="font-bold text-xl pl-1">문제 추가하기</div>
+        <div className="items-center flex">
+          <div
+            onClick={insertEvent}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2"
+          >
+            저장하기
+          </div>
+          <div
+            onClick={() => setInsertModal(false)}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="2"
+              stroke="currentColor"
+              className="size-4"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div className="flex gap-3">
+        <input
+          type="text"
+          className="block min-w-[50%] outline-none border-b-2 border-gray-200 focus:border-blue-500 text-sm px-2 py-1 h-10"
+          placeholder="문제를 입력해주세요"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
+        />
+        <select
+          className="block border-b-2 text-sm px-2 py-1 h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500"
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+        >
+          <option value="객관식">객관식</option>
+          <option value="주관식">주관식</option>
+        </select>
+      </div>
+      <input
+        type="text"
+        className="block outline-none border-b-2 border-gray-200 focus:border-blue-500 text-sm px-2 py-1 h-10 w-1/2 flex-none"
+        placeholder="태그를 입력해주세요"
+        value={tag}
+        onChange={(e) => setTag(e.target.value)}
+      />
+      <div className="flex gap-5">
+        <div className="flex flex-1 flex-col gap-2">
+          <div className="flex gap-3">
+            <input
+              type="radio"
+              name="answer"
+              onChange={() => setAnswer(select1)}
+            />
+            <input
+              type="text"
+              className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+              placeholder="선택지1"
+              value={select1}
+              onChange={(e) => setSelect1(e.target.value)}
+            />
+          </div>
+          <div className="flex gap-3">
+            <input
+              type="radio"
+              name="answer"
+              onChange={() => setAnswer(select2)}
+            />
+            <input
+              type="text"
+              className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+              placeholder="선택지2"
+              value={select2}
+              onChange={(e) => setSelect2(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="flex flex-1 flex-col gap-2">
+          <div className="flex gap-3">
+            <input
+              type="radio"
+              name="answer"
+              onChange={() => setAnswer(select3)}
+            />
+            <input
+              type="text"
+              className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+              placeholder="선택지3"
+              value={select3}
+              onChange={(e) => setSelect3(e.target.value)}
+            />
+          </div>
+          <div className="flex gap-3">
+            <input
+              type="radio"
+              name="answer"
+              onChange={() => setAnswer(select4)}
+            />
+            <input
+              type="text"
+              className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+              placeholder="선택지4"
+              value={select4}
+              onChange={(e) => setSelect4(e.target.value)}
+            />
+          </div>
+        </div>
+        <div
+          className="bg-gray-50 flex rounded"
+          style={{
+            backgroundImage: thumbnail ? `url(${thumbnail})` : "none",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        >
+          <input
+            type="file"
+            accept=".jpg, .jpeg, .png"
+            className="w-full h-full text-xs opacity-0"
+            onChange={handleFileChange}
+          />
+        </div>
+      </div>
+     
+    </div>
            
             
           </div>
 
-          
-          {updateQuestion && (
-            <UpdateModal
-              question={updateQuestion} // 수정할 질문 객체 전달
-              setUpdateQuestion={setUpdateQuestion}
-              isCollapsed={isCollapsed}
-              index={updateIndex}
-            />
-          )}
-
-           
 
 
 
