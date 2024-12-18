@@ -319,8 +319,7 @@ const Dashboard = () => {
                     ))}
                   </select>
                   <p className="mr-2 text-lg font-bold">문제 </p>
-
-                  <p className="text-2xl font-bold mt-2">
+                  <p className="text-2xl font-bold">
                     / 총 {totalProblems}문제
                   </p>
                 </div>
