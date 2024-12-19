@@ -65,7 +65,7 @@ const Dashboard = () => {
   const loadRecommendedQuestions = useCallback(async () => {
     try {
       // 캐시 방지를 위해 타임스탬프 추가
-      const response = await fetch(`/dummy.csv?timestamp=${Date.now()}`);
+      const response = await fetch(`/question.csv?timestamp=${Date.now()}`);
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const csvText = await response.text();
       const parsedData = Papa.parse(csvText, { header: true, skipEmptyLines: true }).data;
@@ -295,8 +295,9 @@ const Dashboard = () => {
    * 문제 생성 페이지로 이동
    */
   const goToQuestions = () => {
-    navigate("/questions");
+    navigate("/questions", { state: { openModal: true } });
   };
+  
 
   /**
    * 문제풀기 버튼 클릭 핸들러

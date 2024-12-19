@@ -4,8 +4,10 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import QuestionItem from 'pages/question/QuestionItem';
 import Papa from "papaparse";
 import UpdateModal from 'pages/question/UpdateModal';
+import { useLocation } from "react-router-dom";
 
 function Questions() {
+    const location = useLocation(); 
     //모든 문제 전역에서 불러오기
     const questions = useRecoilValue(questionsAtom);
     const [filterQuestions, setFilterQuestions] = useState([]);
@@ -15,7 +17,11 @@ function Questions() {
     const allTag = useRecoilValue(allTagAtom);
     const [selectedTag, setSelectedTag] = useState([]); // 선택된 태그 상태
     
-    
+    useEffect(() => {
+      if (location.state?.openModal) {
+        setInsertModal(true);
+      }
+    }, [location.state]);
 
      // 태그 선택/해제 핸들러
     const handleTagClick = (tagName) => {
