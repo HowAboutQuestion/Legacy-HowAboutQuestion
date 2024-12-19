@@ -232,41 +232,46 @@ function Questions() {
       setQuestions((prevQuestions) => [question, ...prevQuestions]);
     };
 
-    // 개별 체크박스 상태 동기화
-    const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
+    const [isAllChecked, setIsAllChecked] = useState(false); // 전체 체크박스 상태 관리
 
+    // 전체 체크박스 상태 변경
     const handleAllCheckboxChange = () => {
-      const isAllChecked = filterQuestions.every(({ question }) => question.checked); // 모든 항목이 checked인지 확인
+      const newCheckedState = !isAllChecked;
 
       setFilterQuestions((prevQuestions) =>
         prevQuestions.map(({ question, index }) => ({
           question: {
             ...question,
-            checked: !isAllChecked, // 모든 항목이 checked라면 false로, 아니라면 true로
+            checked: newCheckedState, // 전체 체크박스 상태에 따라 변경
           },
-          index, // index 유지
+          index,
         }))
       );
 
-      // 전체 체크 상태를 업데이트
-      setIsCheckboxChecked(!isAllChecked);
+      setIsAllChecked(newCheckedState);
     };
 
+    // 개별 체크박스 상태 변경
     const handleCheckboxChange = (index) => {
-      setFilterQuestions((prevQuestions) =>
-        prevQuestions.map(({ question, index: idx }) => ({
+      setFilterQuestions((prevQuestions) => {
+        const updatedQuestions = prevQuestions.map(({ question, index: idx }) => ({
           question: {
             ...question,
-            checked: idx === index ? !question.checked : question.checked, // 해당 index만 상태를 토글
+            checked: idx === index ? !question.checked : question.checked, // 해당 index만 변경
           },
           index: idx,
-        }))
-      );
+        }));
 
-      // 전체 체크박스 상태 동기화
-      const isAllChecked = filterQuestions.every(({ question }) => question.checked);
-      setIsCheckboxChecked(isAllChecked);
+        // 전체 체크박스 상태 업데이트
+        const allChecked = updatedQuestions.every(({ question }) => question.checked);
+        setIsAllChecked(allChecked);
+
+        return updatedQuestions;
+      });
     };
+
+
+
 
     // 테이블 데이터 랜더링
     const questionsItems = filterQuestions.map(({question, index}) => (
@@ -397,7 +402,7 @@ function Questions() {
                       <input
                         type="checkbox"
                         onClick={handleAllCheckboxChange} // 클릭 시 전체 선택/해제
-                        checked={isCheckboxChecked} // 모든 항목이 체크된 상태에 따라 체크박스 상태 변경
+                        checked={isAllChecked} // 모든 항목이 체크된 상태에 따라 체크박스 상태 변경
                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                       />
                     </div>

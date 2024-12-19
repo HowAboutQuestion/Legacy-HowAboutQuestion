@@ -1,11 +1,11 @@
 // Dashboard.js
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { useNavigate } from "react-router-dom"; // useNavigate 추가
+import { useNavigate } from "react-router-dom";
 import { Line } from "react-chartjs-2";
 import Calendar from "react-calendar";
 import Papa from "papaparse";
-import { parseISO, isValid, isSameDay, isBefore, addDays, format } from "date-fns"; // isBefore 추가
+import { parseISO, isValid, isSameDay, isBefore, addDays, format } from "date-fns";
 import { useRecoilState } from "recoil";
 import { historyDataAtom, recommendedQuestionsAtom } from "state/data";
 import {
@@ -149,6 +149,42 @@ const Dashboard = () => {
     loadRecommendedQuestions();
   }, [loadRecommendedQuestions, setHistoryData]);
 
+  // **풀어야 할 문제들 필터링**
+  const problemsToSolve = useMemo(() => {
+    return recommendedQuestions.filter((question) => {
+      const recommendDate = parseISO(question.recommenddate);
+      const solvedDate = question.solveddate ? parseISO(question.solveddate) : null;
+
+      // recommenddate가 오늘이고, solveddate가 없거나 오늘이 아닌 경우
+      const isRecommendToday = isSameDay(recommendDate, today);
+      const isNotSolvedToday = !solvedDate || !isSameDay(solvedDate, today);
+
+      // updateDate가 오늘보다 이전인 경우
+      const updateDate = parseISO(question.update);
+      const isUpdateBeforeToday = isBefore(updateDate, today);
+
+      return (isRecommendToday && isNotSolvedToday) || isUpdateBeforeToday;
+    });
+  }, [recommendedQuestions, today]);
+
+  // **오늘 풀어야 할 문제들 리스트 정의**
+  const todayProblemsToSolve = useMemo(() => {
+    return recommendedQuestions.filter((question) => {
+      const recommendDate = parseISO(question.recommenddate);
+      const solvedDate = question.solveddate ? parseISO(question.solveddate) : null;
+
+      const isRecommendToday = isSameDay(recommendDate, today);
+      const isNotSolvedToday = !solvedDate || !isSameDay(solvedDate, today);
+
+      return isRecommendToday && isNotSolvedToday;
+    });
+  }, [recommendedQuestions, today]);
+
+  // **수정된 useEffect**
+  useEffect(() => {
+    console.log("오늘 풀어야 할 문제들:", todayProblemsToSolve);
+  }, [todayProblemsToSolve]);
+
   // 차트 데이터 상태 관리 (Recoil에서 관리)
   const chartData = useMemo(() => {
     if (historyData.length === 0) return { labels: [], datasets: [] };
@@ -265,11 +301,9 @@ const Dashboard = () => {
             ) : (
               <>
                 {/* 추천 문제가 있는 경우 */}
-                <p className="text-3xl font-bold">오늘의 추천 문제</p>
-                {/* **수정: 풀어야 할 문제 수 / 총 문제 수 표시** */}
-
-
-                {/* 풀어야 할 문제 수 선택 UI 추가 */}
+                <p className="text-2xl font-bold">오늘의 추천 문제</p>
+                
+                {/* 문제 수 선택 UI 추가 */}
                 <div className="mt-4 flex items-center justify-center">
                   <label htmlFor="problemCount" className="mr-2 text-lg font-bold">풀어야 할 문제 수:</label> {/* **수정된 부분** */}
                   <select
@@ -285,13 +319,10 @@ const Dashboard = () => {
                     ))}
                   </select>
                   <p className="mr-2 text-lg font-bold">문제 </p>
-
-                  <p className="text-2xl font-bold mt-2">
+                  <p className="text-2xl font-bold">
                     / 총 {totalProblems}문제
                   </p>
                 </div>
-
-
               </>
             )}
           </div>
