@@ -1,5 +1,3 @@
-// src/pages/solve/Solve.js
-
 import React, { useState, useEffect } from 'react';
 import Single from './Single';
 import Multiple from './Multiple';
