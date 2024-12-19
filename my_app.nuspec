@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<package>
-  <metadata>
-    <id>my_app</id> <!-- 애플리케이션의 ID -->
-    <version>1.0.0</version> <!-- 애플리케이션의 버전 -->
-    <authors>Choi,Kweon</authors> <!-- 작성자 정보 -->
-    <description>Prepare Exem</description> <!-- 애플리케이션 설명 -->
-  </metadata>
-</package>

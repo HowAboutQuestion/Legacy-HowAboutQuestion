@@ -9,6 +9,7 @@ function Questions() {
     //모든 문제 전역에서 불러오기
     const questions = useRecoilValue(questionsAtom);
     const [filterQuestions, setFilterQuestions] = useState([]);
+
     
     //존재하는 중복 없는 모든 태그
     const allTag = useRecoilValue(allTagAtom);
@@ -121,8 +122,15 @@ function Questions() {
     };
 
     const handleDownload = () => {
-      // questions 배열을 CSV로 변환
-      const csv = Papa.unparse(filterQuestions, {
+      const downloadQuestions = questions.some((question) => question.checked)
+      ? questions.filter((question) => question.checked).map(({ checked, ...rest }) => rest)
+      : filterQuestions.map(({ checked, ...rest }) => rest);
+    
+
+      console.log(downloadQuestions); // 결과 확인
+
+
+      const csv = Papa.unparse(downloadQuestions, {
         header: true, // 첫 번째 줄에 헤더 포함
       });
   
@@ -158,6 +166,15 @@ function Questions() {
         };
         reader.readAsDataURL(image);
       }
+    };
+
+    //문제삭제
+    const deleteQuestionsAll = () => {
+      if(!window.confirm("진짜 삭제?")) return;   
+      console.log(questions.filter((question) => !question.checked))
+      setQuestions((prevQuestions) =>
+        prevQuestions.filter((question) => !question.checked) // checked가 true가 아닌 항목만 남기기
+      );
     };
     
 
@@ -215,15 +232,54 @@ function Questions() {
       setQuestions((prevQuestions) => [question, ...prevQuestions]);
     };
 
+    // 개별 체크박스 상태 동기화
+    const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
+
+    const handleAllCheckboxChange = () => {
+      const isAllChecked = filterQuestions.every(({ question }) => question.checked); // 모든 항목이 checked인지 확인
+
+      setFilterQuestions((prevQuestions) =>
+        prevQuestions.map(({ question, index }) => ({
+          question: {
+            ...question,
+            checked: !isAllChecked, // 모든 항목이 checked라면 false로, 아니라면 true로
+          },
+          index, // index 유지
+        }))
+      );
+
+      // 전체 체크 상태를 업데이트
+      setIsCheckboxChecked(!isAllChecked);
+    };
+
+    const handleCheckboxChange = (index) => {
+      setFilterQuestions((prevQuestions) =>
+        prevQuestions.map(({ question, index: idx }) => ({
+          question: {
+            ...question,
+            checked: idx === index ? !question.checked : question.checked, // 해당 index만 상태를 토글
+          },
+          index: idx,
+        }))
+      );
+
+      // 전체 체크박스 상태 동기화
+      const isAllChecked = filterQuestions.every(({ question }) => question.checked);
+      setIsCheckboxChecked(isAllChecked);
+    };
+
     // 테이블 데이터 랜더링
     const questionsItems = filterQuestions.map(({question, index}) => (
       <QuestionItem
         key={index}
         question={question}
         onUpdateClick={() => handleUpdateClick(question, index)} // index 전달
+        handleCheckboxChange={() => handleCheckboxChange(index)}
       />
     ));
     
+
+
 
       return (
 
@@ -340,6 +396,8 @@ function Questions() {
                     <div className="flex items-center">
                       <input
                         type="checkbox"
+                        onClick={handleAllCheckboxChange} // 클릭 시 전체 선택/해제
+                        checked={isCheckboxChecked} // 모든 항목이 체크된 상태에 따라 체크박스 상태 변경
                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                       />
                     </div>
@@ -351,7 +409,24 @@ function Questions() {
                   <th scope="col" className="px-6 py-3 whitespace-nowrap">
                     유형
                   </th>
-                  <th scope="col" className="px-6 py-3 rounded-tr-xl"></th>
+                  <th scope="col" className="px-3 py-3"></th>
+                  <th scope='col' className='px-5 py-3 rounded-tr-xl'>
+                    <svg
+                        onClick={deleteQuestionsAll}
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth="1.5"
+                        stroke="currentColor"
+                        className="size-4"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                        />
+                    </svg>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -426,7 +501,8 @@ function Questions() {
                       value={tag}
                       onChange={(e) => setTag(e.target.value)}
                     />
-                    <div className="flex gap-5">
+
+                    {type === "객관식" ? (<div className="flex gap-5">
                       <div className="flex flex-1 flex-col gap-2">
                         <div className="flex gap-3">
                           <input
@@ -502,9 +578,35 @@ function Questions() {
                           onChange={handleFileChange}
                         />
                       </div>
-                    </div>
-                  
+                    </div>) : (
+                      
+                      <div className="flex gap-3 flex-1">
+                                  <input
+                                    type="text"
+                                    className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                                    placeholder="정답"
+                                    value={answer}
+                                    onChange={(e) => setAnswer(e.target.value)}
+                                  />
+                                  <div
+                                    className="bg-gray-50 flex rounded"
+                                    style={{
+                                      backgroundImage: thumbnail ? `url(${thumbnail})` : "none",
+                                      backgroundSize: "cover",
+                                      backgroundPosition: "center",
+                                    }}
+                                  >
+                                    <input
+                                      type="file"
+                                      accept=".jpg, .jpeg, .png"
+                                      className="w-full h-full text-xs opacity-0"
+                                      onChange={handleFileChange}
+                                    />
+                                  </div>
+                        </div>
+                    )}                  
                   </div>
+                  
            
             
           </div>
