@@ -1,6 +1,6 @@
 import React, {useState}  from 'react';
 
-function QuestionItem({question, onUpdateClick}) {
+function QuestionItem({key, question, onUpdateClick, handleCheckboxChange}) {
   const tag = question.tag.map((tagName, index) => <span key={index}      className="font-medium text-xs whitespace-nowrap bg-gray-200 rounded-xl py-1 px-2">{tagName}</span>);
 
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -16,6 +16,8 @@ function QuestionItem({question, onUpdateClick}) {
             <input
               id="checkbox-table-search-1"
               type="checkbox"
+              checked={question.checked} // boolean 값으로 설정
+              onChange={handleCheckboxChange} // 체크 상태 변경 이벤트 핸들러 추가
               className="w-4 h-4 text-blue-600 bg-gray-100 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             />
           </div>
@@ -32,7 +34,7 @@ function QuestionItem({question, onUpdateClick}) {
         <td className="px-6 py-4 align-top ">
           <div className="font-medium text-sm whitespace-nowrap">{question.type}</div>
         </td>
-        <td className="px-10 py-2 align-top">
+        <td className="px-3 py-2 align-top">
           <div 
           onClick={() => onUpdateClick(question)}
           className="rounded-xl hover:font-bold hover:bg-gray-100 w-max text-xs cursor-pointer text-blue-600 p-2">
@@ -99,6 +101,8 @@ function QuestionItem({question, onUpdateClick}) {
             <input
               id="checkbox-table-search-1"
               type="checkbox"
+              checked={question.checked} // boolean 값으로 설정
+              onChange={() => handleCheckboxChange(key)} // 체크 상태 변경 이벤트 핸들러 추가
               className="w-4 h-4 text-blue-600 bg-gray-100 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             />
           </div>
@@ -115,7 +119,7 @@ function QuestionItem({question, onUpdateClick}) {
         <td className="px-6 py-4 align-top ">
           <div className="font-medium text-sm whitespace-nowrap">{question.type}</div>
         </td>
-        <td className="px-10 py-2 align-top">
+        <td className="px-3 py-2 align-top">
         <div 
           onClick={() => onUpdateClick(question)}
           className="rounded-xl hover:font-bold hover:bg-gray-100 w-max text-xs cursor-pointer text-blue-600 p-2">

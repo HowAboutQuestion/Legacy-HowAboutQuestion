@@ -4,7 +4,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 
 function UpdateModal({question, setUpdateQuestion, isCollapsed, index}) {
     const [title, setTitle] = useState(question.title ? question.title : "");
-    const [type, setType] = useState("객관식");
+    const [type, setType] = useState(question.type ? question.type :"객관식");
     const [select1, setSelect1] = useState(question.select1 ? question.select1 : "");
     const [select2, setSelect2] = useState(question.select2 ? question.select2 : "");
     const [select3, setSelect3] = useState(question.select3 ? question.select3 : "");
@@ -26,17 +26,16 @@ function UpdateModal({question, setUpdateQuestion, isCollapsed, index}) {
 
      // question이 변경될 때마다 상태 업데이트
     useEffect(() => {
-    setTitle(question.title || "");
-    setType("객관식"); // 기본값 설정
-    setSelect1(question.select1 || "");
-    setSelect2(question.select2 || "");
-    setSelect3(question.select3 || "");
-    setSelect4(question.select4 || "");
-    setAnswer(question.answer || "");
-    setTag(question.tag.join(", "));
-    setDate(question.date || "");
-  }, [question]); // 의존성 배열에 question 추가
-
+      setTitle(question.title || "");
+      setType(question.type || "객관식"); // 기본값 설정
+      setSelect1(question.select1 || "");
+      setSelect2(question.select2 || "");
+      setSelect3(question.select3 || "");
+      setSelect4(question.select4 || "");
+      setAnswer(question.answer || "");
+      setTag(question.tag.join(", "));
+      setDate(question.date || "");
+    }, [question]); // 의존성 배열에 question 추가
 
 
     const setQuestions = useSetRecoilState(questionsAtom);
@@ -105,6 +104,9 @@ function UpdateModal({question, setUpdateQuestion, isCollapsed, index}) {
                 </div>
               </div>
             </div>
+
+
+            
             <div className="flex gap-3">
               <input
                 type="text"
@@ -123,6 +125,8 @@ function UpdateModal({question, setUpdateQuestion, isCollapsed, index}) {
                 <option value="주관식">주관식</option>
               </select>
             </div>
+
+
             <input
               type="text"
               className="block outline-none border-b-2 border-gray-200 focus:border-blue-500 text-sm px-2 py-1 h-10 w-1/2 flex-none"
@@ -130,14 +134,15 @@ function UpdateModal({question, setUpdateQuestion, isCollapsed, index}) {
               value={tag}
               onChange={(e) => setTag(e.target.value)}
             />
-            <div className="flex gap-5">
+
+            {type === "객관식" ? (<div className="flex gap-5">
               <div className="flex flex-1 flex-col gap-2">
                 <div className="flex gap-3">
                   <input
                     type="radio"
                     name="answer"
                     onChange={() => setAnswer(select1)}
-                    checked={question.answer === select1} 
+                    checked={answer === select1} 
                     />
                   <input
                     type="text"
@@ -151,7 +156,7 @@ function UpdateModal({question, setUpdateQuestion, isCollapsed, index}) {
                   <input
                     type="radio"
                     name="answer"
-                    checked={question.answer === select2} 
+                    checked={answer === select2} 
                     onChange={() => setAnswer(select2)}
                   />
                   <input
@@ -168,7 +173,7 @@ function UpdateModal({question, setUpdateQuestion, isCollapsed, index}) {
                   <input
                     type="radio"
                     name="answer"
-                    checked={question.answer === select3} 
+                    checked={answer === select3} 
                     onChange={() => setAnswer(select3)}
                   />
                   <input
@@ -183,7 +188,7 @@ function UpdateModal({question, setUpdateQuestion, isCollapsed, index}) {
                   <input
                     type="radio"
                     name="answer"
-                    checked={question.answer === select4} 
+                    checked={answer === select4} 
                     onChange={() => setAnswer(select4)}
                   />
                   <input
@@ -210,7 +215,32 @@ function UpdateModal({question, setUpdateQuestion, isCollapsed, index}) {
                   onChange={handleFileChange}
                 />
               </div>
-            </div>
+            </div>) : (                      
+              <div className="flex gap-3 flex-1">
+                                  <input
+                                    type="text"
+                                    className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                                    placeholder="정답"
+                                    value={answer}
+                                    onChange={(e) => setAnswer(e.target.value)}
+                                  />
+                                  <div
+                                    className="bg-gray-50 flex rounded"
+                                    style={{
+                                      backgroundImage: thumbnail ? `url(${thumbnail})` : "none",
+                                      backgroundSize: "cover",
+                                      backgroundPosition: "center",
+                                    }}
+                                  >
+                                    <input
+                                      type="file"
+                                      accept=".jpg, .jpeg, .png"
+                                      className="w-full h-full text-xs opacity-0"
+                                      onChange={handleFileChange}
+                                    />
+                                  </div>
+                        </div>)}
+            
           
           </div>
        
