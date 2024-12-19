@@ -122,12 +122,19 @@ function Questions() {
     };
 
     const handleDownload = () => {
-      const downloadQuestions = questions.some((question) => question.checked)
-      ? questions.filter((question) => question.checked).map(({ checked, ...rest }) => rest)
-      : filterQuestions.map(({ checked, ...rest }) => rest);
-    
+      const downloadQuestions = filterQuestions.some(({index, question}) => question.checked)
+        ? filterQuestions
+            .filter(({index, question}) => question.checked)  // question.checked가 true인 것만 필터링
+            .map(({index, question}) => {
+                const { checked, ...rest } = question; 
+                return rest;
+              })
+        : filterQuestions
+            .map(({index, question}) => {
+              const { checked, ...rest } = question;  // checked 제외한 데이터만 추출
+              return rest;
+            });
 
-      console.log(downloadQuestions); // 결과 확인
 
 
       const csv = Papa.unparse(downloadQuestions, {

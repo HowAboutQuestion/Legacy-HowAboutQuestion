@@ -8,7 +8,6 @@ function QuestionItem({question, onUpdateClick, handleCheckboxChange}) {
   const toggle = () => {setIsCollapsed((state) => !(state))}
 
   const [isChecked, setIsChecked] = useState(question.checked || false); // 기본값 설정
-  // question 상태가 변경되면 체크 상태 업데이트
   useEffect(() => {
     setIsChecked(question.checked);
   }, [question]);
@@ -117,6 +116,7 @@ function QuestionItem({question, onUpdateClick, handleCheckboxChange}) {
               type="checkbox"
               checked={isChecked} 
               onChange={handleCheckboxChange} 
+              onClick={(e) => e.stopPropagation()}
               className="w-4 h-4 text-blue-600 bg-gray-100 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             />
           </div>
