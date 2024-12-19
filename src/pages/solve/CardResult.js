@@ -13,7 +13,7 @@ function CardResult() {
   const navigate = useNavigate();
   const goCard = () => { navigate("/card", { state :  { "questions" : questions, "tags" : tags }})}
 
-
+  
   // 차트 데이터 구성
   const data = {
     labels: ["정답", "오답"],

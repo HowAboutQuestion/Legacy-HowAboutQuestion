@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 
 
@@ -8,8 +8,16 @@ function Card () {
   const questions = location.state.questions;
   const tags = location.state.tags;
   const navigate = useNavigate();
-  const goResult = () => {navigate("/card/result", {state : { "questions" : questions, "tags" : tags, "result" : {"correct" : correctCount, "wrong" : wrongCount}}})}
-
+  const goResult = (correct, wrong) => {
+    navigate("/card/result", {
+      state: {
+        questions: questions,
+        tags: tags,
+        result: { correct: correct, wrong: wrong },
+      },
+    });
+  };
+  
 
 
   const [showAnswer, setShowAnswer] = useState(false);
@@ -17,26 +25,42 @@ function Card () {
 
   const [correctCount, setCorrectCount] = useState(0); 
   const [wrongCount, setWrongCount] = useState(0); 
-
+  
+  const correct = () => {
+    setCorrectCount((prevCount) => {
+      const updatedCount = prevCount + 1;
+      if (questionIndex === questions.length - 1) {
+        goResult(updatedCount, wrongCount);
+      } else {
+        nextQuestion();
+      }
+      return updatedCount;
+    });
+    setShowAnswer(false);
+  };
+  
+  const wrong = () => {
+    setWrongCount((prevCount) => {
+      const updatedCount = prevCount + 1;
+      if (questionIndex === questions.length - 1) {
+        goResult(correctCount, updatedCount);
+      } else {
+        nextQuestion();
+      }
+      return updatedCount;
+    });
+    setShowAnswer(false);
+  };
+  
+  
+ 
   const nextQuestion = () => {
-    if(questionIndex === questions.length - 1){
-      goResult();
-    }
-    setQuestionIndex(questionIndex + 1);
+    setQuestionIndex((prevIndex) => prevIndex + 1);
   };
 
-  const correct = () => {
-    setCorrectCount(correctCount + 1);
-    setShowAnswer(false);
-    nextQuestion();
-  }
-
-  const wrong = () => {
-    setWrongCount(wrongCount + 1);
-    setShowAnswer(false);
-    nextQuestion();
-  }
-
+  
+  
+  
 
 
   return (

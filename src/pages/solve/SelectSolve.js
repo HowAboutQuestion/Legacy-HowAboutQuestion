@@ -82,10 +82,10 @@ function SelectSolve () {
         <div className='flex gap-5'>
           <div 
             onClick={goSolve}
-            className='bg-blue-500 rounded-xl text-white font-semibold text-xs w-20 py-3 text-center hover:scale-105'>시험</div>
+            className='bg-blue-500 rounded-xl text-white font-semibold text-xs w-20 py-3 text-center hover:scale-105 cursor-pointer'>시험</div>
           <div 
             onClick={goCard}
-            className='bg-blue-500 rounded-xl text-white font-semibold text-xs w-20 py-3 text-center hover:scale-105'>카드</div>
+            className='bg-blue-500 rounded-xl text-white font-semibold text-xs w-20 py-3 text-center hover:scale-105 cursor-pointer'>카드</div>
         </div>
 
       </div>
