@@ -1,10 +1,22 @@
-import React, {useState}  from 'react';
+import React, {useEffect, useState}  from 'react';
 
-function QuestionItem({key, question, onUpdateClick, handleCheckboxChange}) {
-  const tag = question.tag.map((tagName, index) => <span key={index}      className="font-medium text-xs whitespace-nowrap bg-gray-200 rounded-xl py-1 px-2">{tagName}</span>);
+function QuestionItem({question, onUpdateClick, handleCheckboxChange}) {
+  const tags = question.tag || [];
+  const tag = tags.map((tagName, index) => <span key={index}      className="font-medium text-xs whitespace-nowrap bg-gray-200 rounded-xl py-1 px-2">{tagName}</span>);
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const toggle = () => {setIsCollapsed((state) => !(state))}
+
+  const [isChecked, setIsChecked] = useState(question.checked || false); // 기본값 설정
+  // question 상태가 변경되면 체크 상태 업데이트
+  useEffect(() => {
+    setIsChecked(question.checked);
+  }, [question]);
+
+  const updateClick = (event) => {
+    event.stopPropagation();
+    onUpdateClick();
+  }
 
  
   if(question.type === '주관식'){
@@ -16,8 +28,9 @@ function QuestionItem({key, question, onUpdateClick, handleCheckboxChange}) {
             <input
               id="checkbox-table-search-1"
               type="checkbox"
-              checked={question.checked} // boolean 값으로 설정
-              onChange={handleCheckboxChange} // 체크 상태 변경 이벤트 핸들러 추가
+              checked={isChecked} // boolean 
+              onChange={handleCheckboxChange} 
+              onClick={(e) => e.stopPropagation()}
               className="w-4 h-4 text-blue-600 bg-gray-100 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             />
           </div>
@@ -36,7 +49,8 @@ function QuestionItem({key, question, onUpdateClick, handleCheckboxChange}) {
         </td>
         <td className="px-3 py-2 align-top">
           <div 
-          onClick={() => onUpdateClick(question)}
+          onClick={(e) => updateClick(e)}
+
           className="rounded-xl hover:font-bold hover:bg-gray-100 w-max text-xs cursor-pointer text-blue-600 p-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -83,7 +97,7 @@ function QuestionItem({key, question, onUpdateClick, handleCheckboxChange}) {
               <img
                 art=""
                 src={question.img}
-                className="bg-gray-200 rounded aspect-video min-w-[10vw] max-w-[20vw]"
+                className="rounded aspect-video min-w-[10vw] max-w-[20vw]"
               />
             </div>
           </div>
@@ -101,8 +115,8 @@ function QuestionItem({key, question, onUpdateClick, handleCheckboxChange}) {
             <input
               id="checkbox-table-search-1"
               type="checkbox"
-              checked={question.checked} // boolean 값으로 설정
-              onChange={() => handleCheckboxChange(key)} // 체크 상태 변경 이벤트 핸들러 추가
+              checked={isChecked} 
+              onChange={handleCheckboxChange} 
               className="w-4 h-4 text-blue-600 bg-gray-100 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             />
           </div>
@@ -121,7 +135,7 @@ function QuestionItem({key, question, onUpdateClick, handleCheckboxChange}) {
         </td>
         <td className="px-3 py-2 align-top">
         <div 
-          onClick={() => onUpdateClick(question)}
+          onClick={(e) => updateClick(e)}
           className="rounded-xl hover:font-bold hover:bg-gray-100 w-max text-xs cursor-pointer text-blue-600 p-2">
              <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -192,7 +206,7 @@ function QuestionItem({key, question, onUpdateClick, handleCheckboxChange}) {
               <img
 
                 src={question.img}
-                className="bg-gray-200 rounded aspect-video min-w-[10vw] max-w-[20vw]"
+                className="rounded aspect-video min-w-[10vw] max-w-[20vw]"
               />
             </div>
           </div>
