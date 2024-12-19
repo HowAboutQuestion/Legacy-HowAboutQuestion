@@ -1,20 +1,20 @@
 title,type,select1,select2,select3,select4,answer,img,level,date,update,recommenddate,solveddate,tag
-Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,객관식,git add,git stash,git push,git commit,git stash,,2,2024-03-17,2024-12-16,2024-12-19,,Software Spring Git
-Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,주관식,,,,,정답_Git_2,,2,2024-02-12,2024-12-19,2024-12-19,,Git Spring Database
-데이터베이스의 트랜잭션 ACID 속성 중 'C'는 무엇을 의미하나요?,객관식,일관성,결합성,연결성,확장성,확장성,,0,2024-10-26,2024-12-22,2024-12-19,2024-12-19,Database
-Spring MVC에서 View Resolver의 역할은 무엇인가요?,객관식,View 경로 처리,데이터베이스 연결,Model 생성,JSON 변환,데이터베이스 연결,,2,2024-11-10,2024-12-18,2024-12-19,,Spring Programming Database
-Controller에서 요청을 처리한 결과를 반환하는 방식은 무엇인가요?,객관식,ModelAndView,String,ResponseEntity,JSON,ModelAndView,,2,2024-05-13,2024-12-19,2024-12-19,,Software
+Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,객관식,git add,git stash,git push,git commit,git stash,,2,2024-03-17,1970-01-01,2024-12-19,,Software Spring Git
+Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,주관식,,,,,정답_Git_2,,2,2024-02-12,1970-01-01,2024-12-19,,Git Spring Database
+데이터베이스의 트랜잭션 ACID 속성 중 'C'는 무엇을 의미하나요?,객관식,일관성,결합성,연결성,확장성,확장성,,0,2024-10-26,1970-01-01,2024-12-19,2024-12-19,Database
+Spring MVC에서 View Resolver의 역할은 무엇인가요?,객관식,View 경로 처리,데이터베이스 연결,Model 생성,JSON 변환,데이터베이스 연결,,2,2024-11-10,1970-01-01,2024-12-19,,Spring Programming Database
+Controller에서 요청을 처리한 결과를 반환하는 방식은 무엇인가요?,객관식,ModelAndView,String,ResponseEntity,JSON,ModelAndView,,2,2024-05-13,1970-01-01,2024-12-19,,Software
 Controller에서 요청을 처리한 결과를 반환하는 방식은 무엇인가요?,객관식,ModelAndView,String,ResponseEntity,JSON,String,,0,2024-03-28,2024-12-22,2024-12-19,2024-12-19,Programming
 Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,객관식,git add,git stash,git push,git commit,git add,,2,2024-06-14,2024-12-22,2024-12-19,2024-12-19,Database Spring Programming
 Controller에서 요청을 처리한 결과를 반환하는 방식은 무엇인가요?,주관식,,,,,정답_Spring MVC_8,,0,2024-03-08,2024-12-22,2024-12-19,2024-12-19,Git
 Spring MVC의 주요 구성 요소는 무엇인가요?,객관식,Controller,View,Model,Database,Controller,,1,2024-08-22,2024-12-22,2024-12-19,2024-12-19,Spring Software
 Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,객관식,git add,git stash,git push,git commit,git add,,0,2024-07-31,2024-12-18,2024-12-19,2024-12-18,Software
-Spring MVC의 주요 구성 요소는 무엇인가요?,객관식,Controller,View,Model,Database,Controller,,1,2024-05-05,2024-12-22,2024-12-18,2024-12-18,Software
-데이터베이스 정규화의 목적은 무엇인가요?,주관식,,,,,정답_Database_12,,2,2024-11-01,2024-12-22,2024-12-18,2024-12-18,Programming
-Spring MVC에서 View Resolver의 역할은 무엇인가요?,객관식,View 경로 처리,데이터베이스 연결,Model 생성,JSON 변환,데이터베이스 연결,,0,2024-11-24,2024-12-22,2024-12-18,2024-12-18,Git Spring Database
-Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,객관식,git add,git stash,git push,git commit,git stash,,1,2024-08-19,2024-12-22,2024-12-18,2024-12-18,Software Database Spring
-Spring MVC에서 View Resolver의 역할은 무엇인가요?,주관식,,,,,정답_Spring MVC_15,,2,2024-03-31,2024-12-22,2024-12-18,2024-12-18,Spring
-Spring MVC에서 View Resolver의 역할은 무엇인가요?,주관식,,,,,정답_Spring MVC_16,,2,2024-06-17,2024-12-22,2024-12-18,2024-12-18,Software
+Spring MVC의 주요 구성 요소는 무엇인가요?,객관식,Controller,View,Model,Database,Controller,,1,2024-05-05,2024-12-22,2024-12-22,2024-12-18,Software
+데이터베이스 정규화의 목적은 무엇인가요?,주관식,,,,,정답_Database_12,,2,2024-11-01,2024-12-22,2024-12-22,2024-12-18,Programming
+Spring MVC에서 View Resolver의 역할은 무엇인가요?,객관식,View 경로 처리,데이터베이스 연결,Model 생성,JSON 변환,데이터베이스 연결,,0,2024-11-24,2024-12-22,2024-12-22,2024-12-18,Git Spring Database
+Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,객관식,git add,git stash,git push,git commit,git stash,,1,2024-08-19,2024-12-22,2024-12-22,2024-12-18,Software Database Spring
+Spring MVC에서 View Resolver의 역할은 무엇인가요?,주관식,,,,,정답_Spring MVC_15,,2,2024-03-31,2024-12-22,2024-12-22,2024-12-18,Spring
+Spring MVC에서 View Resolver의 역할은 무엇인가요?,주관식,,,,,정답_Spring MVC_16,,2,2024-06-17,2024-12-22,2024-12-22,2024-12-18,Software
 데이터베이스 정규화의 목적은 무엇인가요?,주관식,,,,,정답_Database_17,,2,2024-02-03,2024-12-15,2024-12-19,2024-12-18,Database Spring
 Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,객관식,git add,git stash,git push,git commit,git add,,0,2024-03-11,2024-12-16,2024-12-19,,Database
 Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,주관식,,,,,정답_Git_19,,1,2024-02-10,2024-12-16,2024-12-19,,Spring
