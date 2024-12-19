@@ -6,10 +6,9 @@ const { parseISO, isValid, isBefore, isAfter, format } = require('date-fns');
 
 let mainWindow;
 
-// updateRecommendDates 함수 정의
 function updateRecommendDates() {
   try {
-    const csvPath ="./public/dummy.csv";
+    const csvPath = path.join(__dirname, 'public', 'dummy.csv'); // 절대 경로 사용 권장
     if (!fs.existsSync(csvPath)) {
       console.error(`CSV 파일을 찾을 수 없습니다: ${csvPath}`);
       return { success: false, message: 'CSV 파일을 찾을 수 없습니다.' };
@@ -18,7 +17,7 @@ function updateRecommendDates() {
     const csvFile = fs.readFileSync(csvPath, 'utf-8');
     const parsed = Papa.parse(csvFile, { header: true, skipEmptyLines: true });
 
-    const today = new Date();
+    const today = startOfDay(new Date()); // 오늘 날짜의 시작 (00:00:00)
     const formattedToday = format(today, 'yyyy-MM-dd'); // 오늘 날짜를 'yyyy-MM-dd' 형식으로 포맷
 
     const updatedData = parsed.data.map((row) => {
@@ -30,9 +29,12 @@ function updateRecommendDates() {
         return row;
       }
 
-      if (isBefore(recommendDate, today)) { // recommenddate가 오늘보다 이전인 경우
-        if (isAfter(updateDate, today)) { // updateDate가 오늘보다 이후인 경우
-          return { ...row, recommenddate: format(updateDate, 'yyyy-MM-dd') };
+      const recommendDateStart = startOfDay(recommendDate);
+      const updateDateStart = startOfDay(updateDate);
+
+      if (isBefore(recommendDateStart, today)) { // recommenddate가 오늘보다 이전인 경우
+        if (isAfter(updateDateStart, today)) { // updateDate가 오늘보다 이후인 경우
+          return { ...row, recommenddate: format(updateDateStart, 'yyyy-MM-dd') };
         } else { // updateDate가 오늘보다 이전이거나 같은 경우
           return { ...row, recommenddate: formattedToday };
         }
