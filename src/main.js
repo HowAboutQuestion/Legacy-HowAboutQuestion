@@ -8,7 +8,7 @@ let mainWindow;
 
 function updateRecommendDates() {
   try {
-    const csvPath = path.join(__dirname, 'public', 'dummy.csv'); // 절대 경로 사용 권장
+    const csvPath = path.join(__dirname, 'public', 'question.csv'); // 절대 경로 사용 권장
     if (!fs.existsSync(csvPath)) {
       console.error(`CSV 파일을 찾을 수 없습니다: ${csvPath}`);
       return { success: false, message: 'CSV 파일을 찾을 수 없습니다.' };
