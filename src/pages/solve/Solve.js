@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Single from 'pages/solve/Single';
 import Multiple from 'pages/solve/Multiple';
+import QuestionNav from 'pages/solve/QuestionNav';
 import { questionsAtom } from 'state/data';
 import { useRecoilValue } from "recoil";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -10,6 +11,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 function Solve () {  
   const location = useLocation();
   const navigate = useNavigate();
+  const [navCollapse, setNavCollapse] = useState(false);
 
   const questions = location.state.questions;
   const tags = location.state.tags;
@@ -51,7 +53,15 @@ function Solve () {
                 <h1 className="text-md font-normal text-gray-400">총 {questions.length}문제</h1>
               </div>
               <div className="text-right items-center flex gap-2">
-                <div className="border-2 border-gray-200 hover:bg-blue-300 hover:border-blue-300 rounded-xl p-2.5 text-center me-2 mb-2"></div>
+                <div 
+                  onClick={() => setNavCollapse(!navCollapse)}
+                  className="border-2 border-gray-200 hover:bg-blue-300 hover:border-blue-300 rounded-xl p-2.5 text-center me-2 mb-2">
+                  {navCollapse && (<div className='absolute right-5 top-20 bg-white shadow p-4 rounded-lg w-40 h-50' >
+                    <QuestionNav questions={questions} setQuestionIndex={setQuestionIndex}></QuestionNav>
+                  </div>)}
+                  
+                  
+                </div>
                 <div 
                 onClick={submit}
                 className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2">
