@@ -4,6 +4,7 @@ import Multiple from './Multiple';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { questionsAtom } from 'state/data';
+import QuestionNav from 'pages/solve/QuestionNav';
 
 function Solve() {
   const location = useLocation();
@@ -68,8 +69,11 @@ function Solve() {
           <div className="text-right items-center flex gap-2">
             <div
               onClick={() => setNavCollapse(!navCollapse)}
-              className="border-2 border-gray-200 hover:bg-blue-300 hover:border-blue-300 rounded-xl p-2.5 text-center me-2 mb-2 cursor-pointer"
-            >
+              className="border-2 border-gray-200 hover:bg-blue-300 hover:border-blue-300 rounded-xl p-2.5 text-center me-2 mb-2">
+              {navCollapse && (<div className='absolute right-5 top-20 bg-white shadow p-4 rounded-lg w-40 h-50' >
+                <QuestionNav questions={passedQuestions} setQuestionIndex={setQuestionIndex}></QuestionNav>
+              </div>)}
+
 
             </div>
             <div
