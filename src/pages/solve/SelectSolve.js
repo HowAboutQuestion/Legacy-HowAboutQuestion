@@ -1,5 +1,3 @@
-// src/pages/solve/SelectSolve.js
-
 import React, { useState, useEffect } from 'react';
 import { questionsAtom, allTagAtom } from 'state/data';
 import { useRecoilValue } from "recoil";
