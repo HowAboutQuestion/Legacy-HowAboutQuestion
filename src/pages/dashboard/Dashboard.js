@@ -318,15 +318,15 @@ const Dashboard = () => {
   return (
     <main className="ml-20 p-5 flex flex-col gap-4 flex-1">
       {/* 문제 추천 섹션 */}
-     <ProblemRecommendation
-  totalRecommendToday={totalRecommendToday}
-  toSolveCount={toSolveCount}
-  solvedCount={solvedCount}
-  selectedProblemCount={selectedProblemCount}
-  setSelectedProblemCount={setSelectedProblemCount}
-  problemsToSolveToday={problemsToSolveTodayArray} // 배열로 전달
-  goToQuestions={goToQuestionsPage}
-/>
+      <ProblemRecommendation
+        totalRecommendToday={totalRecommendToday}
+        toSolveCount={toSolveCount}
+        solvedCount={solvedCount}
+        selectedProblemCount={selectedProblemCount}
+        setSelectedProblemCount={setSelectedProblemCount}
+        problemsToSolveToday={problemsToSolveTodayArray} // 배열로 전달
+        goToQuestions={goToQuestionsPage}
+      />
 
       {/* 대시보드 섹션 */}
       <DashboardStats
