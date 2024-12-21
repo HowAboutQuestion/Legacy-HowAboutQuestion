@@ -272,7 +272,7 @@ const ProblemRecommendation = ({
           {totalRecommendToday === 0 ? (
             <button
               onClick={goToQuestions}
-              className="w-[300px] h-10 bg-blue-600 rounded-lg text-white font-bold hover:bg-blue-700 transition"
+              className="w-[300px] h-10 bg-blue-600 rounded-lg text-white font-bold hover:scale-105 transition"
             >
               문제 생성
             </button>
@@ -280,7 +280,7 @@ const ProblemRecommendation = ({
             /* 추천 문제가 있고, 아직 풀어야 할 문제가 있는 경우에만 문제풀기 버튼 표시 */
             problemsToSolveToday.length !== 0 && (
               <button
-                className="w-[300px] h-10 bg-blue-600 rounded-lg text-white font-bold hover:bg-blue-700 transition"
+                className="w-[300px] h-10 bg-blue-600 rounded-lg text-white font-bold hover:scale-105 transition"
                 onClick={handleSolveClick} // 새로운 핸들러 사용
               >
                 문제풀기
