@@ -1,5 +1,7 @@
 import React from 'react';
 import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css'; 
+import './Calendar.css';
 import { formatDate } from 'utils/formatDate';
 import { isSameDay } from 'date-fns';
 
@@ -18,14 +20,14 @@ const HistorySection = ({
           {historyView === 'list' ? (
             <button
               onClick={() => setHistoryView('calendar')}
-              className="text-sm font-bold px-4 py-2 rounded transition bg-gray-100 hover:bg-gray-300"
+              className="text-sm font-bold px-4 py-2 rounded transition bg-gray-100 hover:scale-105"
             >
-              달력 보기
+              달력   보기
             </button>
           ) : (
             <button
               onClick={() => setHistoryView('list')}
-              className="text-sm font-bold px-4 py-2 rounded transition bg-gray-100 hover:bg-gray-300"
+              className="text-sm font-bold px-4 py-2 rounded transition bg-gray-100 hover:scale-105"
             >
               리스트 보기
             </button>

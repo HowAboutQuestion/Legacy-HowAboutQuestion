@@ -286,11 +286,15 @@ const Dashboard = () => {
   const tileContent = ({ date, view }) => {
     if (view === 'month') {
       const hasData = historyData.some((entry) => isSameDay(entry.date, date));
-      return hasData ? (
-        <div className="mt-1">
-          <span className="inline-block w-2 h-2 bg-green-500 rounded-full"></span>
+      return (
+        <div className="dot-container mt-1 flex justify-center">
+          <span
+            className={`inline-block w-2 h-2 rounded-full ${
+              hasData ? 'bg-green-500' : 'bg-transparent'
+            }`}
+          ></span>
         </div>
-      ) : null;
+      );
     }
     return null;
   };
