@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css'; 
+import 'react-calendar/dist/Calendar.css';
 import './Calendar.css';
 import { formatDate } from 'utils/formatDate';
 import { isSameDay } from 'date-fns';
@@ -78,20 +78,20 @@ const HistorySection = ({
         </div>
       ) : (
         <div className="mt-4 flex justify-center items-center relative">
-          <Calendar 
-            tileContent={tileContent} 
-            onClickDay={handleDateClick} 
+          <Calendar
+            tileContent={tileContent}
+            onClickDay={handleDateClick}
           />
           {isModalOpen && selectedDate && (
             <Modal onClose={closeModal}>
-              <div className="p-4">
-                <h3 className="text-xl font-semibold mb-2">{formatDate(selectedDate.date)}</h3>
+              <div className="p-4 text-center">
+                <h3 className="text-xl font-semibold mb-2">⭐️{formatDate(selectedDate.date)}⭐️</h3>
                 <p>푼 문제 수: {selectedDate.solvedCount}</p>
                 <p>맞춘 문제 수: {selectedDate.correctCount}</p>
                 <p>정답률: {selectedDate.correctRate}%</p>
-                <button 
-                  onClick={closeModal} 
-                  className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
+                <button
+                  onClick={closeModal}
+                  className="mt-4 bg-blue-500 text-white px-4 py-2 rounded mx-auto block"
                 >
                   닫기
                 </button>
