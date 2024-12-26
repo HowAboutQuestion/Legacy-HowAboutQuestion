@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+import './Calendar.css';
 import { formatDate } from 'utils/formatDate';
 import { isSameDay } from 'date-fns';
+import Modal from './Modal';
 
 const HistorySection = ({
   historyView,
@@ -10,6 +13,22 @@ const HistorySection = ({
   today,
   tileContent,
 }) => {
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleDateClick = (date) => {
+    const entry = sortedHistory.find(entry => isSameDay(entry.date, date));
+    if (entry) {
+      setSelectedDate(entry);
+      setIsModalOpen(true);
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedDate(null);
+  };
+
   return (
     <section className="p-8 bg-white rounded">
       <div className="flex justify-between items-center mb-4">
@@ -18,14 +37,14 @@ const HistorySection = ({
           {historyView === 'list' ? (
             <button
               onClick={() => setHistoryView('calendar')}
-              className="text-sm font-bold px-4 py-2 rounded transition bg-gray-100 hover:bg-gray-300"
+              className="text-sm font-bold px-4 py-2 rounded transition bg-gray-100 hover:scale-105"
             >
               달력 보기
             </button>
           ) : (
             <button
               onClick={() => setHistoryView('list')}
-              className="text-sm font-bold px-4 py-2 rounded transition bg-gray-100 hover:bg-gray-300"
+              className="text-sm font-bold px-4 py-2 rounded transition bg-gray-100 hover:scale-105"
             >
               리스트 보기
             </button>
@@ -58,8 +77,27 @@ const HistorySection = ({
           </table>
         </div>
       ) : (
-        <div className="mt-4 flex justify-center items-center">
-          <Calendar tileContent={tileContent} />
+        <div className="mt-4 flex justify-center items-center relative">
+          <Calendar
+            tileContent={tileContent}
+            onClickDay={handleDateClick}
+          />
+          {isModalOpen && selectedDate && (
+            <Modal onClose={closeModal}>
+              <div className="p-4 text-center">
+                <h3 className="text-xl font-semibold mb-2">⭐️{formatDate(selectedDate.date)}⭐️</h3>
+                <p>푼 문제 수: {selectedDate.solvedCount}</p>
+                <p>맞춘 문제 수: {selectedDate.correctCount}</p>
+                <p>정답률: {selectedDate.correctRate}%</p>
+                <button
+                  onClick={closeModal}
+                  className="mt-4 bg-blue-500 text-white px-4 py-2 rounded mx-auto block"
+                >
+                  닫기
+                </button>
+              </div>
+            </Modal>
+          )}
         </div>
       )}
     </section>
