@@ -56,6 +56,39 @@ function updateRecommendDates() {
 }
 
 
+function updateQuestions(questions) {
+  try {
+    console.log(questions.length);
+  
+    // CSV 파일 저장 경로 설정
+    const csvPath = path.join(__dirname, '../public/question.csv'); // 'public' 폴더 경로
+
+    // questions를 CSV 형식으로 변환
+    const newCsv = Papa.unparse(questions, {
+      header: true, // 첫 번째 줄에 헤더 포함
+      columns: [
+        "title", "type", "select1", "select2", "select3", "select4", "answer", 
+        "img", "level", "date", "update", "recommenddate", "solveddate", "tag"
+      ], // 원하는 헤더 순서 설정
+    });
+
+
+    // CSV 파일로 저장
+    fs.writeFileSync(csvPath, newCsv, 'utf-8');
+
+
+    console.log('questions가 성공적으로 업데이트되었습니다.');
+    return { success: true, message: 'questions가 성공적으로 업데이트되었습니다.' };
+  } catch (error) {
+    console.error('Error updating questions:', error);
+    return { success: false, message: 'questions 업데이트에 실패했습니다.' };
+  }
+}
+
+
+
+
+
 function createWindow() {
  // 먼저 recommenddate 업데이트 실행
  const updateResult = updateRecommendDates();
@@ -69,14 +102,13 @@ function createWindow() {
     height: 800,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: true,
+      preload: path.join(__dirname, 'preload.js'),
     },
   });
 
-  // React 개발 서버가 실행 중이라면 localhost:3000에서 React 앱을 로드
-  //mainWindow.loadURL('http://localhost:3000'); // 개발 중이라면 이 라인 주석 처리
-
   // 빌드 후 index.html 파일 경로
-  mainWindow.setMenu(null);
+  //mainWindow.setMenu(null);
   
   mainWindow.loadURL('http://localhost:3000'); // 개발 서버에서 실행 중인 React 앱 로드
 
@@ -106,3 +138,31 @@ ipcMain.handle('update-recommend-dates', async () => {
   return updateRecommendDates();
 });
 
+
+ipcMain.handle('save-image', async (event, { fileName, content }) => {
+  try {
+    const imageDir = path.join(__dirname, '../public/images'); // 이미지 저장 디렉토리
+    if (!fs.existsSync(imageDir)) {
+      fs.mkdirSync(imageDir); // 디렉토리가 없으면 생성
+    }
+    const filePath = path.join(imageDir, fileName); // 파일 경로 생성
+    fs.writeFileSync(filePath, content); // 파일 저장
+
+    return { 
+      success: true, 
+      path: "/images/" + fileName, // 경로
+      filename: fileName // 파일 이름
+    };
+  } catch (error) {
+    console.error('이미지 저장 오류:', error);
+    return { 
+      success: false, 
+      error: error.message 
+    };
+  }
+});
+
+
+ipcMain.handle('update-questions', async (event, questions) => {
+  return updateQuestions(questions);
+});

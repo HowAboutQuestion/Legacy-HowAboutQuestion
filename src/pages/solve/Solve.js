@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import Single from 'pages/solve/Single';
 import Multiple from 'pages/solve/Multiple';
 import QuestionNav from 'pages/solve/QuestionNav';
-import { questionsAtom } from 'state/data';
-import { useRecoilValue } from "recoil";
 import { useLocation, useNavigate } from "react-router-dom";
 
 
