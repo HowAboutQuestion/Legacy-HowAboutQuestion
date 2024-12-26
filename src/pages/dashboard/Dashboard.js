@@ -1,5 +1,3 @@
-// src/components/Dashboard/Dashboard.js
-
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Papa from "papaparse";
@@ -259,7 +257,13 @@ const Dashboard = () => {
   /**
    * 풀어야 할 문제 수 계산
    */
-  const problemsToSolveToday = useMemo(() => toSolveCount, [toSolveCount]);
+  // const problemsToSolveToday = useMemo(() => toSolveCount, [toSolveCount]); // 기존 오류 발생 코드 제거
+
+  /**
+   * 풀어야 할 문제들 배열로 전달
+   */
+  // 새로 추가된 변수로 변경
+  const problemsToSolveTodayArray = useMemo(() => todayProblemsToSolve, [todayProblemsToSolve]);
 
   /**
    * 총 추천 문제 수
@@ -294,18 +298,16 @@ const Dashboard = () => {
   /**
    * 문제 생성 페이지로 이동
    */
-  const goToQuestions = () => {
+  const goToQuestionsPage = () => {
     navigate("/questions", { state: { openModal: true } });
   };
-  
 
   /**
    * 문제풀기 버튼 클릭 핸들러
    */
   const handleSolveProblems = () => {
     console.log(`풀 문제 수: ${selectedProblemCount}`);
-    // 예시: 라우팅 또는 문제풀이 페이지로 이동
-    // navigate(`/solve?count=${selectedProblemCount}`);
+    // 문제풀기 로직을 여기서 처리하거나, 필요한 경우 navigate 호출
   };
 
   // 로딩 상태 표시
@@ -322,9 +324,8 @@ const Dashboard = () => {
         solvedCount={solvedCount}
         selectedProblemCount={selectedProblemCount}
         setSelectedProblemCount={setSelectedProblemCount}
-        problemsToSolveToday={problemsToSolveToday}
-        handleSolveProblems={handleSolveProblems}
-        goToQuestions={goToQuestions}
+        problemsToSolveToday={problemsToSolveTodayArray} // 배열로 전달
+        goToQuestions={goToQuestionsPage}
       />
 
       {/* 대시보드 섹션 */}
