@@ -57,10 +57,7 @@ function updateRecommendDates() {
 
 
 function updateQuestions(questions) {
-  try {
-    console.log(questions.length);
-  
-    // CSV 파일 저장 경로 설정
+  try {  
     const csvPath = path.join(__dirname, '../public/question.csv'); // 'public' 폴더 경로
 
     // questions를 CSV 형식으로 변환
@@ -69,15 +66,12 @@ function updateQuestions(questions) {
       columns: [
         "title", "type", "select1", "select2", "select3", "select4", "answer", 
         "img", "level", "date", "update", "recommenddate", "solveddate", "tag"
-      ], // 원하는 헤더 순서 설정
+      ], // 헤더설정
     });
 
 
-    // CSV 파일로 저장
     fs.writeFileSync(csvPath, newCsv, 'utf-8');
 
-
-    console.log('questions가 성공적으로 업데이트되었습니다.');
     return { success: true, message: 'questions가 성공적으로 업데이트되었습니다.' };
   } catch (error) {
     console.error('Error updating questions:', error);
@@ -154,7 +148,6 @@ ipcMain.handle('save-image', async (event, { fileName, content }) => {
       filename: fileName // 파일 이름
     };
   } catch (error) {
-    console.error('이미지 저장 오류:', error);
     return { 
       success: false, 
       error: error.message 
