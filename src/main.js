@@ -1,7 +1,10 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require("electron");
+
 const path = require('path');
 const fs = require('fs');
 const Papa = require('papaparse');
+const archiver = require("archiver");
+
 const { parseISO, isValid, isBefore, isAfter, format, startOfDay } = require('date-fns');
 
 let mainWindow;
@@ -155,7 +158,66 @@ ipcMain.handle('save-image', async (event, { fileName, content }) => {
   }
 });
 
-
+//questions.csv 파일 업데이트
 ipcMain.handle('update-questions', async (event, questions) => {
   return updateQuestions(questions);
 });
+
+//.zip 내보내기
+ipcMain.handle("export-questions", async (event, questions) => {
+  const savePath = dialog.showSaveDialogSync(mainWindow, {
+    title: "Export Questions as ZIP",
+    defaultPath: "questions.zip",
+    filters: [{ name: "ZIP Files", extensions: ["zip"] }],
+  });
+
+  if (!savePath) return { success: false, message: "No file selected" };
+
+  try {
+    // Create temp CSV file
+    const tempDir = path.join(app.getPath("temp"), "questions_export");
+    const csvPath = path.join(tempDir, "questions.csv");
+
+    if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir);
+
+    const csvContent = convertToCSV(questions);
+    fs.writeFileSync(csvPath, csvContent, "utf-8");
+
+    // Create ZIP file
+    const output = fs.createWriteStream(savePath);
+    const archive = archiver("zip", { zlib: { level: 9 } });
+
+    output.on("close", () => console.log(`ZIP file created: ${savePath}`));
+    archive.on("error", (err) => { throw err; });
+
+    archive.pipe(output);
+    archive.file(csvPath, { name: "questions.csv" });
+
+    // Add images to ZIP
+    const imagesDir = path.join(__dirname, "public", "images", "image");
+    for (const question of questions) {
+      if (question.img) {
+        const imgPath = path.join(__dirname, question.img);
+        if (fs.existsSync(imgPath)) {
+          archive.file(imgPath, { name: `images/${path.basename(imgPath)}` });
+        }
+      }
+    }
+
+    await archive.finalize();
+    fs.rmSync(tempDir, { recursive: true, force: true }); // Clean up temp files
+
+    return { success: true, path: savePath };
+  } catch (error) {
+    console.error("Error exporting questions:", error);
+    return { success: false, message: error.message };
+  }
+});
+
+function convertToCSV(questions) {
+  const headers = Object.keys(questions[0]);
+  const rows = questions.map((q) => 
+    headers.map((header) => `"${q[header] || ""}"`).join(",")
+  );
+  return [headers.join(","), ...rows].join("\n");
+}
