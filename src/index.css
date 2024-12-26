@@ -22,3 +22,14 @@
     border-radius: 20px;
   }
 
+/* 기본 증감 버튼 숨기기 (Chrome, Safari, Edge, Opera) */
+.no-spin-button::-webkit-outer-spin-button,
+.no-spin-button::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* 기본 증감 버튼 숨기기 (Firefox) */
+.no-spin-button {
+  -moz-appearance: textfield;
+}
