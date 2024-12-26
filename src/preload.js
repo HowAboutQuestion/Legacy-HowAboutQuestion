@@ -18,5 +18,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   updateQuestions: (questions) => {
     return ipcRenderer.invoke('update-questions', questions)
-  }
+  },
+
+  //.zip 내보내기
+  exportQuestions: (questions) => ipcRenderer.invoke("export-questions", questions),
+
 });

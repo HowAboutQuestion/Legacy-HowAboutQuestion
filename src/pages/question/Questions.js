@@ -131,6 +131,7 @@ function Questions() {
       }
     };
 
+    //.csv 만 다운로드
     const handleDownload = () => {
       const downloadQuestions = filterQuestions.some(({index, question}) => question.checked)
         ? filterQuestions
@@ -171,6 +172,19 @@ function Questions() {
         document.body.removeChild(link); // 링크 제거
       }
     };
+
+    // .zip 다운로드
+    const handleDownloadToZip = async () => {
+      const result = await window.electronAPI.exportQuestions(questions);
+
+      if (result.success) {
+        alert(`Questions exported to: ${result.path}`);
+      } else {
+        alert(`Error exporting questions: ${result.message}`);
+      }
+    };
+
+
 
     // 문제 삭제
     const deleteQuestionsAll = () => {
@@ -440,7 +454,7 @@ function Questions() {
 
                 </div>
                 <div 
-                onClick={handleDownload}
+                onClick={handleDownloadToZip}
                 className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2 mb-2">
                 <svg xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
