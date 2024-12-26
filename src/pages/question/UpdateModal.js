@@ -15,6 +15,8 @@ function UpdateModal({ question, setUpdateQuestion, isCollapsed, index }) {
   const [thumbnail, setThumbnail] = useState(question.img || null);
   const [imageFile, setImageFile] = useState(null);
 
+  console.log(thumbnail);
+
   const setQuestions = useSetRecoilState(questionsAtom);
 
   const handleFileChange = (event) => {
@@ -98,7 +100,7 @@ function UpdateModal({ question, setUpdateQuestion, isCollapsed, index }) {
     setDate(question.date || "");
     setThumbnail(question.img || null);
   }, [question]);
-  
+
 
       return (
 
@@ -234,7 +236,7 @@ function UpdateModal({ question, setUpdateQuestion, isCollapsed, index }) {
               <div
                 className="bg-gray-50 flex rounded"
                 style={{
-                  backgroundImage: thumbnail ? `url(${thumbnail})` : "none",
+                  backgroundImage: thumbnail ? `url("${thumbnail}")` : "none",
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                 }}
@@ -258,7 +260,7 @@ function UpdateModal({ question, setUpdateQuestion, isCollapsed, index }) {
                                   <div
                                     className="bg-gray-50 flex rounded"
                                     style={{
-                                      backgroundImage: thumbnail ? `url(${thumbnail})` : "none",
+                                      backgroundImage: thumbnail ? `url("${thumbnail}")` : "none",
                                       backgroundSize: "cover",
                                       backgroundPosition: "center",
                                     }}

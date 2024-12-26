@@ -59,7 +59,6 @@ const App = () => {
           },
         });
       } catch (error) {
-        console.error("CSV 파일 읽기 실패:", error);
       }
     };
 
@@ -72,9 +71,7 @@ const App = () => {
       try {
         // 상태 업데이트 후 비동기적으로 questions를 처리
         const result = await window.electronAPI.updateQuestions(questions);
-        console.log(result);
       } catch (error) {
-        console.error("Error updating questions:", error);
       }
     };
 
