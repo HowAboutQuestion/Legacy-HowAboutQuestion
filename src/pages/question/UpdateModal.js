@@ -2,72 +2,103 @@ import React, {useState, useEffect} from 'react';
 import { questionsAtom, allTagAtom } from "state/data";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
-function UpdateModal({question, setUpdateQuestion, isCollapsed, index}) {
-    const [title, setTitle] = useState(question.title ? question.title : "");
-    const [type, setType] = useState(question.type ? question.type :"객관식");
-    const [select1, setSelect1] = useState(question.select1 ? question.select1 : "");
-    const [select2, setSelect2] = useState(question.select2 ? question.select2 : "");
-    const [select3, setSelect3] = useState(question.select3 ? question.select3 : "");
-    const [select4, setSelect4] = useState(question.select4 ? question.select4 : "");
-    const [answer, setAnswer] = useState(question.answer ? question.answer : "");
-    const [tag, setTag] = useState(question.tag.join(", "));
-    const [date, setDate] = useState(question.date ? question.date : "");    
-    const [thumbnail, setThumbnail] = useState(null);
-    const handleFileChange = (event) => {
-        const image = event.target.files[0];
-        if (image) {
-          const reader = new FileReader();
-          reader.onload = () => {
-            setThumbnail(reader.result);
-          };
-          reader.readAsDataURL(image);
+function UpdateModal({ question, setUpdateQuestion, isCollapsed, index }) {
+  const [title, setTitle] = useState(question.title || "");
+  const [type, setType] = useState(question.type || "객관식");
+  const [select1, setSelect1] = useState(question.select1 || "");
+  const [select2, setSelect2] = useState(question.select2 || "");
+  const [select3, setSelect3] = useState(question.select3 || "");
+  const [select4, setSelect4] = useState(question.select4 || "");
+  const [answer, setAnswer] = useState(question.answer || "");
+  const [tag, setTag] = useState(question.tag.join(", ") || "");
+  const [date, setDate] = useState(question.date || "");
+  const [thumbnail, setThumbnail] = useState(question.img || null);
+  const [imageFile, setImageFile] = useState(null);
+
+  const setQuestions = useSetRecoilState(questionsAtom);
+
+  const handleFileChange = (event) => {
+    const image = event.target.files[0];
+    if (image) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setThumbnail(reader.result);
+      };
+      reader.readAsDataURL(image);
+      setImageFile(image);
+    }
+  };
+
+  const handleSave = async (file) => {
+    try {
+      const result = await window.electronAPI.saveImage(file);
+      return result;
+    } catch (error) {
+      console.error("이미지 저장 중 오류 발생:", error);
+      return { success: false, error: error.message };
+    }
+  };
+
+  const updateEvent = async () => {
+    if (!title) {
+      alert("제목은 필수 입력 항목입니다");
+      return;
+    }
+
+    const tags = tag ? [...new Set(tag.split(",").map((item) => item.trim()))] : [];
+    const updatedQuestion = {
+      ...question,
+      title,
+      type,
+      select1,
+      select2,
+      select3,
+      select4,
+      answer,
+      img: question.img,
+      date,
+      tag: tags,
+    };
+
+    if (imageFile) {
+      try {
+        const result = await handleSave(imageFile);
+        if (result.success) {
+          updatedQuestion.img = result.path;
+        } else {
+          console.error("이미지 저장 실패:", result.error);
+          alert("이미지 저장에 실패했습니다.");
+          return;
         }
-      };
+      } catch (error) {
+        console.error("이미지 저장 중 오류 발생:", error);
+        alert("이미지 저장 중 오류가 발생했습니다.");
+        return;
+      }
+    }
 
-     // question이 변경될 때마다 상태 업데이트
-    useEffect(() => {
-      setTitle(question.title || "");
-      setType(question.type || "객관식"); // 기본값 설정
-      setSelect1(question.select1 || "");
-      setSelect2(question.select2 || "");
-      setSelect3(question.select3 || "");
-      setSelect4(question.select4 || "");
-      setAnswer(question.answer || "");
-      setTag(question.tag.join(", "));
-      setDate(question.date || "");
-    }, [question]); // 의존성 배열에 question 추가
+    setQuestions((prevQuestions) => {
+      const updatedQuestions = [...prevQuestions];
+      updatedQuestions[index] = updatedQuestion;
+      return updatedQuestions;
+    });
 
+    setUpdateQuestion(null);
+  };
 
-    const setQuestions = useSetRecoilState(questionsAtom);
-    const updateEvent = () => {
-        // 태그 배열 생성
-        const tags = tag ? [...new Set(tag.split(",").map((item) => item.trim()))] : [];
-    
-        // 수정된 질문 데이터
-        const updatedQuestion = {
-          ...question,
-          title,
-          type,
-          select1,
-          select2,
-          select3,
-          select4,
-          answer,
-          img: thumbnail,
-          date,
-          tag: tags,
-        };
-    
-        // Recoil 상태 업데이트
-        setQuestions((prevQuestions) => {
-          const updatedQuestions = [...prevQuestions];
-          updatedQuestions[index] = updatedQuestion; // index로 접근하여 수정
-          return updatedQuestions;
-        });
-    
-        // 모달 닫기
-        setUpdateQuestion(null);
-      };
+  useEffect(() => {
+    setTitle(question.title || "");
+    setType(question.type || "객관식");
+    setSelect1(question.select1 || "");
+    setSelect2(question.select2 || "");
+    setSelect3(question.select3 || "");
+    setSelect4(question.select4 || "");
+    setAnswer(question.answer || "");
+    setTag(question.tag.join(", ") || "");
+    setDate(question.date || "");
+    setThumbnail(question.img || null);
+  }, [question]);
+  
 
       return (
 

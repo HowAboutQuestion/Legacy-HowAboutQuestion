@@ -104,6 +104,10 @@ function Questions() {
                 img: item.img || "",
                 level: 0, // 기본값
                 date: today, // 오늘 날짜
+                recommenddate:today,
+                update:today,
+                solveddate:null,
+
                 tag: item.tag || [],
               };
             });
@@ -145,7 +149,12 @@ function Questions() {
 
       const csv = Papa.unparse(downloadQuestions, {
         header: true, // 첫 번째 줄에 헤더 포함
+        columns: [
+          "title", "type", "select1", "select2", "select3", "select4", "answer", 
+          "img", "level", "date", "update", "recommenddate", "solveddate", "tag"
+        ], // 원하는 헤더 순서 설정
       });
+
   
       // Blob을 사용하여 CSV 데이터를 파일로 변환
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
@@ -163,33 +172,14 @@ function Questions() {
       }
     };
 
-
-
-    
-
-
-    //이미지 업로드 이벤트
-    const [thumbnail, setThumbnail] = useState(null);
-    const handleFileChange = (event) => {
-      const image = event.target.files[0];
-      if (image) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          setThumbnail(reader.result);
-        };
-        reader.readAsDataURL(image);
-      }
-    };
-
-    //문제삭제
+    // 문제 삭제
     const deleteQuestionsAll = () => {
-      if(!window.confirm("진짜 삭제?")) return;   
-      console.log(questions.filter((question) => !question.checked))
-      setQuestions((prevQuestions) =>
-        prevQuestions.filter((question) => !question.checked) // checked가 true가 아닌 항목만 남기기
-      );
+      if (!window.confirm("진짜 삭제?")) return;
+
+      const updatedQuestions = questions.filter((question) => !question.checked);
+      setQuestions(updatedQuestions);
     };
-    
+
 
     //좌측 사이드바 토글
     const [isCollapsed, setIsCollapsed] = useState(true);
@@ -217,9 +207,42 @@ function Questions() {
     const setQuestions = useSetRecoilState(questionsAtom);
     const setAlltag = useSetRecoilState(allTagAtom);
 
-    const insertEvent = () => {
-      const tags = tag ? [...new Set(tag.split(",").map((item) => item.trim()))] : [];
+    //이미지 업로드
+    const [thumbnail, setThumbnail] = useState(null);
+    const [imageFile, setImageFile] = useState(null);
+    
+    const handleFileChange = (event) => {
+      const image = event.target.files[0];
+      if (image) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          setThumbnail(reader.result);
+        };
+        reader.readAsDataURL(image);
+        setImageFile(image);
+      }
+    };
 
+   
+    async function handleSave(file) {
+      try {
+        const result = await window.electronAPI.saveImage(file);
+        return result; // 저장 결과 반환
+      } catch (error) {
+        console.error("이미지 저장 중 오류 발생:", error);
+        return { success: false, error: error.message };
+      }
+    }
+    
+    
+    const insertEvent = async () => {
+      if (!(title)) {
+        alert("제목은 필수 입력 항목입니다"); 
+        return;
+      }
+      const tags = tag ? [...new Set(tag.split(",").map((item) => item.trim()))] : [];
+    
+      // 초기 question 데이터 생성
       const question = {
         title,
         type,
@@ -228,12 +251,32 @@ function Questions() {
         select3,
         select4,
         answer,
-        img: thumbnail,
-        level:0,
+        img: null, // 초기 이미지는 null
+        level: 0,
         date,
-        tag:tags,
+        tag: tags,
       };
-  
+    
+      // 이미지가 있는 경우 처리
+      if (imageFile) {
+        try {
+          const result = await handleSave(imageFile);
+          if (result.success) {
+            question.img = result.path; 
+          } else {
+            console.error("이미지 저장 실패:", result.error);
+            alert("이미지 저장에 실패했습니다.");
+          }
+        } catch (error) {
+          console.error("이미지 저장 중 오류 발생:", error);
+          alert("이미지 저장 중 오류가 발생했습니다.");
+        }
+      }
+      
+      
+      
+    
+      // 상태 초기화 (항상 빈 문자열 사용)
       setTitle("");
       setSelect1("");
       setSelect2("");
@@ -241,9 +284,16 @@ function Questions() {
       setSelect4("");
       setAnswer("");
       setThumbnail(null);
-
+      setTag(""); // 태그 초기화
+    
       setQuestions((prevQuestions) => [question, ...prevQuestions]);
+
+      //const result = await window.electronAPI.updateQuestions(questions);
+      //alert(result.message);
+
     };
+    
+    
 
     const [isAllChecked, setIsAllChecked] = useState(false); // 전체 체크박스 상태 관리
 
