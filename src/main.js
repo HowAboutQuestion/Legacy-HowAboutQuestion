@@ -1,17 +1,74 @@
+require("dotenv").config();
+
 const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 
 const path = require('path');
 const fs = require('fs');
 const Papa = require('papaparse');
 const archiver = require("archiver");
+const os = require('os');
+const extract = require('extract-zip'); // 압축 해제 모듈
+const questionsCsvPath = process.env.QUESTIONS_PATH; 
+
 
 const { parseISO, isValid, isBefore, isAfter, format, startOfDay } = require('date-fns');
 
 let mainWindow;
 
+console.log("hihi", questionsCsvPath);
+
+// CSV 파일을 읽어서 데이터 처리하는 함수
+function readQuestionsCSV() {
+  try {
+//    const csvPath = "./data/question.csv";
+    const csvPath = questionsCsvPath;
+
+    if (!fs.existsSync(csvPath)) {
+      console.error(`readQuestionsCSV CSV 파일을 찾을 수 없습니다: ${csvPath}`);
+      return { success: false, message: 'CSV 파일을 찾을 수 없습니다.' };
+    }
+
+    const csvFile = fs.readFileSync(csvPath, 'utf-8');
+    let questions = [];
+    const tagSet = new Set();
+
+    Papa.parse(csvFile, {
+      header: true, // 첫 줄을 헤더로 사용
+      skipEmptyLines: true, // 빈 줄 무시
+      complete: (result) => {
+        questions = result.data.map((item) => {
+          if (item.__parsed_extra) {
+            const extraTags = item.__parsed_extra.map((tag) => tag.trim());
+            item.tag = [
+              ...(item.tag ? item.tag.split(",").map((tag) => tag.trim()) : []),
+              ...extraTags,
+            ];
+          }
+          if (!item.tag) item.tag = [];
+          else {
+            item.tag = item.tag.split(",").map((tag) => tag.trim());
+          }
+          item.tag.forEach((tag) => tagSet.add(tag)); // 태그 집합에 추가
+          delete item.__parsed_extra; // __parsed_extra 필드 제거
+
+          return item;
+        });
+      },
+    });
+
+    return { success: true, allTag: [...tagSet], questions, message: 'questions 읽기 성공' };
+  } catch (error) {
+    console.error(error);
+    return { success: false, message: 'questions 읽기 실패' };
+  }
+}
+
+
 function updateRecommendDates() {
   try {
-    const csvPath = './public/question.csv'; 
+    const csvPath = questionsCsvPath;
+
+
     if (!fs.existsSync(csvPath)) {
       console.error(`CSV 파일을 찾을 수 없습니다: ${csvPath}`);
       return { success: false, message: 'CSV 파일을 찾을 수 없습니다.' };
@@ -61,8 +118,7 @@ function updateRecommendDates() {
 
 function updateQuestions(questions) {
   try {  
-    const csvPath = path.join(__dirname, '../public/question.csv'); // 'public' 폴더 경로
-
+    const csvPath = questionsCsvPath;
     // questions를 CSV 형식으로 변환
     const newCsv = Papa.unparse(questions, {
       header: true, // 첫 번째 줄에 헤더 포함
@@ -82,6 +138,14 @@ function updateQuestions(questions) {
   }
 }
 
+// 메인 프로세스에서 CSV 파일만 수정
+ipcMain.handle('update-questions-file', async (event, questions) => {
+  const csvPath = questionsCsvPath;
+  const csvString = Papa.unparse(questions); // questions를 CSV 형식으로 변환
+  fs.writeFileSync(csvPath, csvString, 'utf-8'); // CSV 파일 덮어쓰기
+
+  return { success: true };
+});
 
 
 
@@ -158,11 +222,6 @@ ipcMain.handle('save-image', async (event, { fileName, content }) => {
   }
 });
 
-//questions.csv 파일 업데이트
-ipcMain.handle('update-questions', async (event, questions) => {
-  return updateQuestions(questions);
-});
-
 //.zip 내보내기
 ipcMain.handle("export-questions", async (event, questions) => {
   const savePath = dialog.showSaveDialogSync(mainWindow, {
@@ -221,3 +280,105 @@ function convertToCSV(questions) {
   );
   return [headers.join(","), ...rows].join("\n");
 }
+
+//.zip 읽기
+ipcMain.handle('extract-zip', async (event, { fileName, content }) => {
+  try {
+    // 임시 디렉토리 생성
+    const tempDir = path.join(os.tmpdir(), 'uploadedZip');
+    if (!fs.existsSync(tempDir)) {
+      fs.mkdirSync(tempDir);
+    }
+
+    // zip 파일 생성
+    const zipFilePath = path.join(tempDir, fileName);
+    fs.writeFileSync(zipFilePath, content);
+
+    // 압축 해제
+    await extract(zipFilePath, { dir: tempDir });
+
+    // 이미지 저장 디렉토리 생성
+    const imageDir = path.join(__dirname, '../public/images');
+    if (!fs.existsSync(imageDir)) {
+      fs.mkdirSync(imageDir, { recursive: true });
+    }
+
+    let csvFilePath = null;
+    const questions = [];
+
+    // 재귀적으로 디렉토리 탐색
+    const traverseDirectory = (dir) => {
+      const files = fs.readdirSync(dir);
+
+      files.forEach((file) => {
+        const filePath = path.join(dir, file);
+
+        if (fs.statSync(filePath).isDirectory()) {
+          // 서브 디렉토리 탐색
+          traverseDirectory(filePath);
+        } else if (file.endsWith('.csv')) {
+          // CSV 파일 발견
+          csvFilePath = filePath;
+        } else if (/\.(png|jpg|jpeg|gif)$/i.test(file)) {
+          // 이미지 파일 발견
+          const destPath = path.join(imageDir, file);
+          fs.copyFileSync(filePath, destPath);
+        }
+      });
+    };
+
+    // 디렉토리 탐색
+    traverseDirectory(tempDir);
+
+    // CSV 파일 파싱
+    if (csvFilePath) {
+      const csvData = fs.readFileSync(csvFilePath, 'utf-8');
+      const tagSet = new Set();
+      const today = new Date().toISOString().split('T')[0];
+
+      // PapaParse로 CSV 파싱
+      const { data } = Papa.parse(csvData, {
+        header: true, // 첫 줄을 헤더로 사용
+        skipEmptyLines: true, // 빈 줄 무시
+      });
+
+      // CSV 데이터를 questions 배열에 매핑
+      data.forEach((item) => {
+        const tags = item.tag
+          ? item.tag.split(',').map((tag) => tag.trim())
+          : [];
+        tags.forEach((tag) => tagSet.add(tag));
+
+        questions.push({
+          title: item.title || '',
+          type: item.type || '',
+          select1: item.select1 || '',
+          select2: item.select2 || '',
+          select3: item.select3 || '',
+          select4: item.select4 || '',
+          answer: item.answer || '',
+          img: item.img || '',
+          level: 0,
+          date: today,
+          recommenddate: today,
+          update: today,
+          solveddate: null,
+          tag: tags,
+        });
+      });
+    } else {
+      throw new Error('CSV 파일을 찾을 수 없습니다.');
+    }
+
+    // 결과 반환
+    return { success: true, questions, csvFile: csvFilePath };
+
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+
+// `readQuestionsCSV` 함수 호출 시 결과를 React로 보내는 IPC 핸들러 설정
+ipcMain.handle('read-questions-csv', () => readQuestionsCSV());
+

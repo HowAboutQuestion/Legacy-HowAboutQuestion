@@ -131,6 +131,29 @@ function Questions() {
       }
     };
 
+   //.zip 업로드 핸들러 
+   const handleZipUpload = async (event) => {
+    const file = event.target.files[0]; // 사용자가 업로드한 파일
+    if (file) {
+      try {
+        // Electron API를 통해 파일 전달 및 처리
+        const result = await window.electronAPI.extractZip(file);
+        if (result.success) {
+          setQuestions([...result.questions, ...questions]); // questions 배열 업데이트
+        } else {
+        }
+      } catch (error) {
+        console.error("Zip 파일 처리 중 오류:", error);
+      }
+    }
+  };
+
+
+    
+    
+    
+
+
     //.csv 만 다운로드
     const handleDownload = () => {
       const downloadQuestions = filterQuestions.some(({index, question}) => question.checked)
@@ -449,8 +472,8 @@ function Questions() {
                   </svg>
 
                   <input 
-                  onChange={handleFileUpload}
-                  type='file' accept='.csv' className='opacity-0 h-full w-full'></input>
+                  onChange={handleZipUpload}
+                  type='file' accept='.zip' className='opacity-0 h-full w-full'></input>
 
                 </div>
                 <div 
