@@ -43,6 +43,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
 
   readQuestionsCSV: () => ipcRenderer.invoke('read-questions-csv'),
+  readHistoryCSV: () => ipcRenderer.invoke('read-history-csv'), 
 
 
 });

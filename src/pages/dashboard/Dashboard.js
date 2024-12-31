@@ -62,54 +62,38 @@ const Dashboard = () => {
    */
   const loadRecommendedQuestions = useCallback(async () => {
     try {
-      // 캐시 방지를 위해 타임스탬프 추가
-      const response = await fetch(`/question.csv?timestamp=${Date.now()}`);
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      const csvText = await response.text();
-      const parsedData = Papa.parse(csvText, { header: true, skipEmptyLines: true }).data;
+      const questionsResult = await window.electronAPI.readQuestionsCSV();
+      if (questionsResult.success) {
+        const questions = questionsResult.questions;
+        const tagSet = new Set(questionsResult.allTag);
+        setRecommendedQuestions(questions);
 
-      let toSolve = 0;   // 풀어야 할 문제 수
-      let solved = 0;    // 푼 문제 수
+        let toSolve = 0;
+        let solved = 0;
 
-      const recommendations = parsedData
-        .map((item) => {
-          const updateDate = isValid(parseISO(item.update)) ? parseISO(item.update) : null;
-          const recommendDate = isValid(parseISO(item.recommenddate)) ? parseISO(item.recommenddate) : null;
-          const solvedDate = isValid(parseISO(item.solveddate)) ? parseISO(item.solveddate) : null;
-
-          if (!recommendDate || !updateDate) {
-            // 필수 날짜가 유효하지 않은 경우 건너뜀
-            return null;
-          }
+        questions.forEach((item) => {
+          const recommendDate = parseISO(item.recommenddate);
+          const solvedDate = item.solveddate ? parseISO(item.solveddate) : null;
 
           if (isSameDay(recommendDate, today)) {
             if (!solvedDate || !isSameDay(solvedDate, today)) {
-              // recommenddate가 오늘이고, solveddate가 오늘이 아니면 풀어야 할 문제 수 카운트
               toSolve += 1;
             }
-
             if (solvedDate && isSameDay(solvedDate, today)) {
-              // recommenddate가 오늘이고, solveddate도 오늘인 경우 푼 문제 수 카운트
               solved += 1;
             }
-
-            return { ...item, recommendDate: format(recommendDate, 'yyyy-MM-dd') };
-          } else if (isBefore(updateDate, today)) {
-            // recommenddate가 오늘이 아니고, updateDate가 오늘보다 이전인 경우 풀어야 할 문제 수 카운트
+          } else if (isBefore(recommendDate, today)) {
             toSolve += 1;
-            return { ...item, recommendDate: format(recommendDate, 'yyyy-MM-dd') };
           }
+        });
 
-          // 위 조건에 해당하지 않는 경우 건너뜀
-          return null;
-        })
-        .filter((q) => q !== null);
-
-      setRecommendedQuestions(recommendations);
-      setToSolveCount(toSolve);
-      setSolvedCount(solved);
+        setToSolveCount(toSolve);
+        setSolvedCount(solved);
+      } else {
+        console.error('문제 데이터를 불러오는 중 오류 발생:', questionsResult.message);
+      }
     } catch (error) {
-      console.error('문제 추천 데이터를 불러오거나 처리하는 중 오류 발생:', error);
+      console.error('문제 데이터를 불러오는 중 오류 발생:', error);
     } finally {
       setLoadingRecommendations(false);
     }
@@ -119,38 +103,26 @@ const Dashboard = () => {
    * 히스토리 데이터 및 추천 문제 데이터 로드
    */
   useEffect(() => {
-    // 히스토리 데이터 로드
-    const loadHistoryData = () => {
-      Papa.parse('/history.csv', {
-        download: true,
-        header: true,
-        dynamicTyping: true,
-        skipEmptyLines: true,
-        complete: (results) => {
-          const parsedData = results.data
-            .map((row) => {
-              const date = isValid(parseISO(row.date.trim())) ? parseISO(row.date.trim()) : null;
-              if (!date) return null;
-              const solvedCount = row.solvedCount;
-              const correctCount = row.correctCount;
-              const correctRate = solvedCount > 0 ? Math.round((correctCount / solvedCount) * 100) : 0;
-              return { date, solvedCount, correctCount, correctRate };
-            })
-            .filter((row) => row !== null);
+    const loadData = async () => {
+      try {
+        // Read history data via IPC
+        const historyResult = await window.electronAPI.readHistoryCSV();
+        if (historyResult.success) {
+          setHistoryData(historyResult.historyData);
+        } else {
+          console.error('히스토리 데이터를 불러오는 중 오류 발생:', historyResult.message);
+        }
+      } catch (error) {
+        console.error('히스토리 데이터를 불러오는 중 오류 발생:', error);
+      } finally {
+        setLoadingHistory(false);
+      }
 
-          console.log('Parsed History Data:', parsedData);
-          setHistoryData(parsedData);
-          setLoadingHistory(false);
-        },
-        error: (error) => {
-          console.error('CSV 파싱 오류:', error);
-          setLoadingHistory(false);
-        },
-      });
+      // Load recommended questions
+      loadRecommendedQuestions();
     };
 
-    loadHistoryData();
-    loadRecommendedQuestions();
+    loadData();
   }, [loadRecommendedQuestions, setHistoryData]);
 
   /**
@@ -187,13 +159,6 @@ const Dashboard = () => {
       return isRecommendToday && isNotSolvedToday;
     });
   }, [recommendedQuestions, today]);
-
-  /**
-   * 오늘 풀어야 할 문제들 상태 업데이트
-   */
-  useEffect(() => {
-    console.log("오늘 풀어야 할 문제들:", todayProblemsToSolve);
-  }, [todayProblemsToSolve]);
 
   /**
    * 차트 데이터 상태 관리
@@ -255,14 +220,8 @@ const Dashboard = () => {
   const totalRecommendToday = useMemo(() => toSolveCount + solvedCount, [toSolveCount, solvedCount]);
 
   /**
-   * 풀어야 할 문제 수 계산
-   */
-  // const problemsToSolveToday = useMemo(() => toSolveCount, [toSolveCount]); // 기존 오류 발생 코드 제거
-
-  /**
    * 풀어야 할 문제들 배열로 전달
    */
-  // 새로 추가된 변수로 변경
   const problemsToSolveTodayArray = useMemo(() => todayProblemsToSolve, [todayProblemsToSolve]);
 
   /**
