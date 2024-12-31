@@ -10,14 +10,14 @@ const allTagAtom = atom({
   default: [], // 초기 상태
 })
 
-export const historyDataAtom = atom({
+const historyDataAtom = atom({
   key: "historyDataAtom",
   default: [],
 });
 
-export const recommendedQuestionsAtom = atom({
+const recommendedQuestionsAtom = atom({
   key: "recommendedQuestionsAtom",
   default: [],
 });
 
-export {questionsAtom, allTagAtom};
+export {questionsAtom, allTagAtom, historyDataAtom, recommendedQuestionsAtom};
