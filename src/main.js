@@ -9,6 +9,7 @@ const archiver = require("archiver");
 const os = require('os');
 const extract = require('extract-zip'); // 압축 해제 모듈
 const questionsCsvPath = process.env.QUESTIONS_PATH; 
+const historyCsvPath = process.env.HISTORY_PATH; 
 
 
 const { parseISO, isValid, isBefore, isAfter, format, startOfDay } = require('date-fns');
@@ -199,6 +200,33 @@ ipcMain.handle('update-recommend-dates', async () => {
   return updateRecommendDates();
 });
 
+function readHistoryCSV() {
+  try {
+    const csvPath = historyCsvPath;
+
+    if (!fs.existsSync(csvPath)) {
+      console.error(`readHistoryCSV CSV 파일을 찾을 수 없습니다: ${csvPath}`);
+      return { success: false, message: 'CSV 파일을 찾을 수 없습니다.' };
+    }
+
+    const csvFile = fs.readFileSync(csvPath, 'utf-8');
+    const parsed = Papa.parse(csvFile, { header: true, skipEmptyLines: true });
+    const historyData = parsed.data.map((row) => {
+      const date = parseISO(row.date);
+      if (!isValid(date)) return null;
+      const solvedCount = Number(row.solvedCount);
+      const correctCount = Number(row.correctCount);
+      const correctRate = solvedCount > 0 ? Math.round((correctCount / solvedCount) * 100) : 0;
+      return { date, solvedCount, correctCount, correctRate };
+    }).filter(row => row !== null);
+
+    return { success: true, historyData, message: 'history 읽기 성공' };
+  } catch (error) {
+    console.error(error);
+    return { success: false, message: 'history 읽기 실패' };
+  }
+}
+
 
 ipcMain.handle('save-image', async (event, { fileName, content }) => {
   try {
@@ -381,4 +409,5 @@ ipcMain.handle('extract-zip', async (event, { fileName, content }) => {
 
 // `readQuestionsCSV` 함수 호출 시 결과를 React로 보내는 IPC 핸들러 설정
 ipcMain.handle('read-questions-csv', () => readQuestionsCSV());
+ipcMain.handle('read-history-csv', () => readHistoryCSV());
 
