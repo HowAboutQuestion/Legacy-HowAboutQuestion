@@ -16,6 +16,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
     });
   },
 
+ updateQuestion: async ({ title, type, isCorrect }) => {
+    return ipcRenderer.invoke('update-question', { title, type, isCorrect });
+  },
+
   updateQuestions: (questions) => {
     return ipcRenderer.invoke('update-questions-file', questions)
   },
