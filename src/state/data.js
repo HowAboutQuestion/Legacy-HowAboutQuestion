@@ -20,4 +20,15 @@ const recommendedQuestionsAtom = atom({
   default: [],
 });
 
-export {questionsAtom, allTagAtom, historyDataAtom, recommendedQuestionsAtom};
+const selectedTagsAtom = atom({
+  key: "selectedTagsAtom",
+  default: [],
+});
+
+const selectedQuestionsAtom = atom({
+  key: "selectedQuestionsAtom",
+  default: [],
+});
+
+
+export {questionsAtom, allTagAtom, historyDataAtom, recommendedQuestionsAtom, selectedTagsAtom, selectedQuestionsAtom};

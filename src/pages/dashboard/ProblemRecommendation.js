@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-// SVG 아이콘을 직접 사용할 수도 있고, Heroicons와 같은 라이브러리를 사용할 수도 있습니다.
-// 여기서는 SVG 경로를 직접 삽입하였습니다.
+import React, { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
+import { selectedTagsAtom, selectedQuestionsAtom } from "state/data"; // 새로운 아톰 가져오기
+
 
 const ProblemRecommendation = ({
   totalRecommendToday,
@@ -13,6 +14,8 @@ const ProblemRecommendation = ({
   goToQuestions,
 }) => {
   const navigate = useNavigate();
+  const setSelectedTags = useSetRecoilState(selectedTagsAtom); // Recoil 아톰 설정 함수
+  const setSelectedQuestions = useSetRecoilState(selectedQuestionsAtom); // 선택된 문제 아톰 설정 함수
 
   /**
    * 배열을 랜덤으로 섞는 헬퍼 함수
@@ -29,14 +32,14 @@ const ProblemRecommendation = ({
 
   /**
    * "문제풀기" 버튼 클릭 핸들러
-   * 원하는 수만큼의 문제를 랜덤으로 선택하고 Solve로 이동
+   * 원하는 수만큼의 문제를 랜덤으로 선택하고 SelectSolve로 이동
    */
   const handleSolveClick = () => {
     let count = Number(selectedProblemCount);
 
     // 입력 값이 비어 있거나 유효하지 않은 경우 최소값으로 설정
     if (isNaN(count) || count < 1) {
-      alert('문제 수는 최소 1 이상이어야 합니다.');
+      alert("문제 수는 최소 1 이상이어야 합니다.");
       setSelectedProblemCount(1);
       count = 1;
     }
@@ -51,13 +54,17 @@ const ProblemRecommendation = ({
     const shuffledProblems = shuffleArray(problemsToSolveToday);
     const selectedProblems = shuffledProblems.slice(0, count);
 
-    // Solve 컴포넌트로 선택된 문제 전달
-    navigate('/solve', {
-      state: {
-        questions: selectedProblems,
-        tags: Array.from(new Set(selectedProblems.map((q) => q.tag).flat())), // 선택된 문제들의 태그 수집 및 중복 제거
-      },
-    });
+    // 선택된 문제들의 태그 추출 및 중복 제거
+    const selectedTags = Array.from(
+      new Set(selectedProblems.flatMap((q) => q.tag))
+    );
+
+    // Recoil 상태에 선택된 태그와 문제 저장
+    setSelectedTags(selectedTags);
+    setSelectedQuestions(selectedProblems);
+
+    // Navigate to SelectSolve 페이지로 이동
+    navigate("/select"); 
   };
 
   /**
@@ -83,8 +90,8 @@ const ProblemRecommendation = ({
     const value = e.target.value;
 
     // 빈 입력을 허용
-    if (value === '') {
-      setSelectedProblemCount('');
+    if (value === "") {
+      setSelectedProblemCount("");
       return;
     }
 
@@ -228,8 +235,19 @@ const ProblemRecommendation = ({
                     className="rounded-full p-2 text-white bg-blue-500 hover:scale-105 shadow cursor-pointer focus:outline-none transition"
                     aria-label="문제 수 감소"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor" className="w-6 h-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="2.5"
+                      stroke="currentColor"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M15 19l-7-7 7-7"
+                      />
                     </svg>
                   </button>
 
@@ -254,14 +272,27 @@ const ProblemRecommendation = ({
                     className="rounded-full p-2 text-white bg-blue-500 hover:scale-105 shadow cursor-pointer focus:outline-none transition"
                     aria-label="문제 수 증가"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor" className="w-6 h-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="2.5"
+                      stroke="currentColor"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M9 5l7 7-7 7"
+                      />
                     </svg>
                   </button>
                 </div>
 
                 <p className="mr-2 text-lg font-bold">문제 </p>
-                <p className="text-2xl font-bold">/ 총 {toSolveCount + solvedCount}문제</p>
+                <p className="text-2xl font-bold">
+                  / 총 {toSolveCount + solvedCount}문제
+                </p>
               </div>
             </>
           )}
