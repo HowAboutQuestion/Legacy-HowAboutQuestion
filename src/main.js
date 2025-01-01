@@ -9,9 +9,9 @@ const archiver = require("archiver");
 const os = require('os');
 const extract = require('extract-zip'); // 압축 해제 모듈
 const questionsCsvPath = process.env.QUESTIONS_PATH; 
+const historyCsvPath = process.env.HISTORY_PATH; 
 
-
-const { parseISO, isValid, isBefore, isAfter, format, startOfDay } = require('date-fns');
+const { parseISO, isValid, isBefore, isAfter, format, startOfDay, addDays } = require('date-fns');
 
 let mainWindow;
 
@@ -114,6 +114,145 @@ function updateRecommendDates() {
   }
 }
 
+// history.csv를 업데이트하는 함수
+function updateHistory(isCorrect) {
+  try {
+    if (!fs.existsSync(historyCsvPath)) {
+      // history.csv 파일이 없으면 새로 생성
+      const today = format(new Date(), 'yyyy-MM-dd');
+      const initialData = [
+        {
+          date: today,
+          solvedCount: 1,
+          correctCount: isCorrect ? 1 : 0,
+          correctRate: isCorrect ? 100.0 : 0.0,
+        }
+      ];
+      const csv = Papa.unparse(initialData);
+      fs.writeFileSync(historyCsvPath, csv, 'utf-8');
+      console.log(`history.csv에 새로운 날짜(${today}) 기록이 추가되었습니다.`);
+      return;
+    }
+
+    // history.csv 파일 읽기
+    const csvFile = fs.readFileSync(historyCsvPath, 'utf-8');
+    const parsed = Papa.parse(csvFile, { header: true, skipEmptyLines: true });
+
+    const today = format(new Date(), 'yyyy-MM-dd');
+
+    let rowFound = false;
+    const updatedData = parsed.data.map((row) => {
+      if (row.date === today) {
+        row.solvedCount = parseInt(row.solvedCount, 10) + 1;
+        if (isCorrect) {
+          row.correctCount = parseInt(row.correctCount, 10) + 1;
+        }
+        row.correctRate = row.solvedCount > 0 ? ((row.correctCount / row.solvedCount) * 100).toFixed(2) : '0.00';
+        rowFound = true;
+      }
+      return row;
+    });
+
+    if (!rowFound) {
+      // 오늘 날짜에 해당하는 행이 없으면 새로 추가
+      updatedData.push({
+        date: today,
+        solvedCount: 1,
+        correctCount: isCorrect ? 1 : 0,
+        correctRate: isCorrect ? '100.00' : '0.00',
+      });
+      console.log(`history.csv에 새로운 날짜(${today}) 기록이 추가되었습니다.`);
+    }
+
+    // CSV 파일 업데이트
+    const newCsv = Papa.unparse(updatedData);
+    fs.writeFileSync(historyCsvPath, newCsv, 'utf-8');
+
+    if (rowFound) {
+      console.log(`history.csv의 ${today} 날짜 기록이 업데이트되었습니다.`);
+    }
+
+  } catch (error) {
+    console.error('history.csv 업데이트 중 오류 발생:', error);
+  }
+}
+
+
+function updateQuestion(title, type, isCorrect) {
+  try {
+    const csvPath = questionsCsvPath;
+
+    if (!fs.existsSync(csvPath)) {
+      console.error(`CSV 파일을 찾을 수 없습니다: ${csvPath}`);
+      return { success: false, message: 'CSV 파일을 찾을 수 없습니다.' };
+    }
+
+    const csvFile = fs.readFileSync(csvPath, 'utf-8');
+    const parsed = Papa.parse(csvFile, { header: true, skipEmptyLines: true });
+    const today = format(new Date(), 'yyyy-MM-dd');
+
+    let updated = false;
+
+    const updatedData = parsed.data.map((row) => {
+      if (row.title === title && row.type === type) { // 제목과 유형으로 질문 식별
+        let level = parseInt(row.level, 10);
+        
+        if (isCorrect) {
+          level = Math.min(level + 1, 3); // 레벨 증가 (최대 3)
+        } else {
+          level = Math.max(level - 1, 0); // 레벨 감소 (최소 0)
+        }
+
+        // 레벨에 따른 날짜 계산
+        let daysToAdd;
+        switch (level) {
+          case 0:
+            daysToAdd = 1;
+            break;
+          case 1:
+            daysToAdd = 2;
+            break;
+          case 2:
+            daysToAdd = 3;
+            break;
+          case 3:
+          default:
+            daysToAdd = 4;
+            break;
+        }
+
+        const newUpdateDate = format(addDays(new Date(), daysToAdd), 'yyyy-MM-dd');
+
+        return {
+          ...row,
+          level: level.toString(),
+          update: newUpdateDate,
+          solveddate: today,
+        };
+      }
+      return row;
+    });
+
+    // 변경 사항이 있는지 확인
+    updated = parsed.data.some((row) => row.title === title && row.type === type);
+
+    if (!updated) {
+      return { success: false, message: '해당 질문을 찾을 수 없습니다.' };
+    }
+
+    // CSV 파일 업데이트
+    const newCsv = Papa.unparse(updatedData);
+    fs.writeFileSync(csvPath, newCsv, 'utf-8');
+
+    updateHistory(isCorrect);
+
+    console.log(`질문 '${title}'이(가) 성공적으로 업데이트되었습니다.`);
+    return { success: true, message: '질문이 성공적으로 업데이트되었습니다.' };
+  } catch (error) {
+    console.error('질문 업데이트 중 오류 발생:', error);
+    return { success: false, message: '질문 업데이트에 실패했습니다.' };
+  }
+}
 
 function updateQuestions(questions) {
   try {  
@@ -197,6 +336,37 @@ app.on('activate', () => {
 ipcMain.handle('update-recommend-dates', async () => {
   return updateRecommendDates();
 });
+
+ipcMain.handle('update-question', async (event, { title, type, isCorrect }) => {
+  return updateQuestion(title, type, isCorrect);
+});
+
+function readHistoryCSV() {
+  try {
+    const csvPath = historyCsvPath;
+
+    if (!fs.existsSync(csvPath)) {
+      console.error(`readHistoryCSV CSV 파일을 찾을 수 없습니다: ${csvPath}`);
+      return { success: false, message: 'CSV 파일을 찾을 수 없습니다.' };
+    }
+
+    const csvFile = fs.readFileSync(csvPath, 'utf-8');
+    const parsed = Papa.parse(csvFile, { header: true, skipEmptyLines: true });
+    const historyData = parsed.data.map((row) => {
+      const date = parseISO(row.date);
+      if (!isValid(date)) return null;
+      const solvedCount = Number(row.solvedCount);
+      const correctCount = Number(row.correctCount);
+      const correctRate = solvedCount > 0 ? Math.round((correctCount / solvedCount) * 100) : 0;
+      return { date, solvedCount, correctCount, correctRate };
+    }).filter(row => row !== null);
+
+    return { success: true, historyData, message: 'history 읽기 성공' };
+  } catch (error) {
+    console.error(error);
+    return { success: false, message: 'history 읽기 실패' };
+  }
+}
 
 
 ipcMain.handle('save-image', async (event, { fileName, content }) => {
@@ -380,4 +550,5 @@ ipcMain.handle('extract-zip', async (event, { fileName, content }) => {
 
 // `readQuestionsCSV` 함수 호출 시 결과를 React로 보내는 IPC 핸들러 설정
 ipcMain.handle('read-questions-csv', () => readQuestionsCSV());
+ipcMain.handle('read-history-csv', () => readHistoryCSV());
 
