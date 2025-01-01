@@ -15,8 +15,6 @@ const { parseISO, isValid, isBefore, isAfter, format, startOfDay } = require('da
 
 let mainWindow;
 
-console.log("hihi", questionsCsvPath);
-
 // CSV 파일을 읽어서 데이터 처리하는 함수
 function readQuestionsCSV() {
   try {
@@ -44,11 +42,12 @@ function readQuestionsCSV() {
               ...extraTags,
             ];
           }
-          if (!item.tag) item.tag = [];
-          else {
-            item.tag = item.tag.split(",").map((tag) => tag.trim());
-          }
+
+          item.tag = item.tag ? item.tag : "";
+
+          item.tag = item.tag.split(",").map((tag) => tag.trim());
           item.tag.forEach((tag) => tagSet.add(tag)); // 태그 집합에 추가
+
           delete item.__parsed_extra; // __parsed_extra 필드 제거
 
           return item;
