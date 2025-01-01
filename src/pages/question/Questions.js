@@ -198,7 +198,20 @@ function Questions() {
 
     // .zip 다운로드
     const handleDownloadToZip = async () => {
-      const result = await window.electronAPI.exportQuestions(questions);
+      const downloadQuestions = filterQuestions.some(({index, question}) => question.checked)
+        ? filterQuestions
+            .filter(({index, question}) => question.checked)  // question.checked가 true인 것만 필터링
+            .map(({index, question}) => {
+                const { checked, ...rest } = question; 
+                return rest;
+              })
+        : filterQuestions
+            .map(({index, question}) => {
+              const { checked, ...rest } = question;  // checked 제외한 데이터만 추출
+              return rest;
+            });
+
+      const result = await window.electronAPI.exportQuestions(downloadQuestions);
 
       if (result.success) {
         alert(`Questions exported to: ${result.path}`);
@@ -212,8 +225,13 @@ function Questions() {
     // 문제 삭제
     const deleteQuestionsAll = () => {
       if (!window.confirm("진짜 삭제?")) return;
+      const updatedQuestions = filterQuestions
+      .filter(({ question }) => question.checked !== true) // checked가 true가 아닌 데이터만 필터링
+      .map(({ question }) => {
+        const { checked, ...rest } = question; // checked 제외한 나머지 데이터 추출
+        return rest;
+      });
 
-      const updatedQuestions = questions.filter((question) => !question.checked);
       setQuestions(updatedQuestions);
     };
 

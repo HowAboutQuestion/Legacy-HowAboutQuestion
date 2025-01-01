@@ -1,0 +1,107 @@
+title,type,select1,select2,select3,select4,answer,img,level,date,update,recommenddate,solveddate,tag
+그만좀깜빡거려..,주관식,,,,,제발,,0,2024-12-27,,,,
+필자의 심정은?,객관식,음..,너~~무 상냥하셔요^^,네^^,감사합니다.,음..,/images/image (5).png,0,2024-12-27,2024-12-27,2024-12-27,,"권해림,엔젤리너스,목요일"
+Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,객관식,git add,git stash,git push,git commit,git stash,,0,2024-12-27,2024-12-27,2024-12-27,,Software Spring Git
+Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,주관식,,,,,정답_Git_2,,0,2024-12-27,2024-12-27,2024-12-27,,Git Spring Database
+데이터베이스의 트랜잭션 ACID 속성 중 'C'는 무엇을 의미하나요?,객관식,일관성,결합성,연결성,확장성,확장성,,0,2024-12-27,2024-12-27,2024-12-27,,Database
+Spring MVC에서 View Resolver의 역할은 무엇인가요?,객관식,View 경로 처리,데이터베이스 연결,Model 생성,JSON 변환,데이터베이스 연결,,0,2024-12-27,2024-12-27,2024-12-27,,Spring Programming Database
+Controller에서 요청을 처리한 결과를 반환하는 방식은 무엇인가요?,객관식,ModelAndView,String,ResponseEntity,JSON,ModelAndView,,0,2024-12-27,2024-12-27,2024-12-27,,Software
+Controller에서 요청을 처리한 결과를 반환하는 방식은 무엇인가요?,객관식,ModelAndView,String,ResponseEntity,JSON,String,,0,2024-12-27,2024-12-27,2024-12-27,,Programming
+Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,객관식,git add,git stash,git push,git commit,git add,,0,2024-12-27,2024-12-27,2024-12-27,,Database Spring Programming
+Controller에서 요청을 처리한 결과를 반환하는 방식은 무엇인가요?,주관식,,,,,정답_Spring MVC_8,,0,2024-12-27,2024-12-27,2024-12-27,,Git
+Spring MVC의 주요 구성 요소는 무엇인가요?,객관식,Controller,View,Model,Database,Controller,,0,2024-12-27,2024-12-27,2024-12-27,,Spring Software
+Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,객관식,git add,git stash,git push,git commit,git add,,0,2024-12-27,2024-12-27,2024-12-27,,Software
+Spring MVC의 주요 구성 요소는 무엇인가요?,객관식,Controller,View,Model,Database,Controller,,0,2024-12-27,2024-12-27,2024-12-27,,Software
+데이터베이스 정규화의 목적은 무엇인가요?,주관식,,,,,정답_Database_12,,0,2024-12-27,2024-12-27,2024-12-27,,Programming
+Spring MVC에서 View Resolver의 역할은 무엇인가요?,객관식,View 경로 처리,데이터베이스 연결,Model 생성,JSON 변환,데이터베이스 연결,,0,2024-12-27,2024-12-27,2024-12-27,,Git Spring Database
+Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,객관식,git add,git stash,git push,git commit,git stash,,0,2024-12-27,2024-12-27,2024-12-27,,Software Database Spring
+Spring MVC에서 View Resolver의 역할은 무엇인가요?,주관식,"git ",,,,정답_Spring MVC_15,,0,2024-12-27,2024-12-27,2024-12-27,,Spring
+Spring MVC에서 View Resolver의 역할은 무엇인가요?,주관식,,,,,정답_Spring MVC_16,,0,2024-12-27,2024-12-27,2024-12-27,,Software
+데이터베이스 정규화의 목적은 무엇인가요?,주관식,,,,,정답_Database_17,,0,2024-12-27,2024-12-27,2024-12-27,,Database Spring
+Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,객관식,git add,git stash,git push,git commit,git add,,0,2024-12-27,2024-12-27,2024-12-27,,Database
+Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,주관식,,,,,정답_Git_19,,0,2024-12-27,2024-12-27,2024-12-27,,Spring
+Git에서 병합 충돌을 해결하는 방법은 무엇인가요?,주관식,,,,,정답_Git_20,,0,2024-12-27,2024-12-27,2024-12-27,,Programming Spring
+Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,객관식,git add,git stash,git push,git commit,git push,,0,2024-12-27,2024-12-27,2024-12-27,,Spring
+Git에서 병합 충돌을 해결하는 방법은 무엇인가요?,객관식,수동 해결,git reset,git checkout,git pull,git reset,,0,2024-12-27,2024-12-27,2024-12-27,,Spring Programming
+Git에서 새로운 브랜치를 생성하는 명령어는 무엇인가요?,객관식,git branch,git checkout,git merge,git commit,git commit,,0,2024-12-27,2024-12-27,2024-12-27,,Programming Software
+데이터베이스의 트랜잭션 ACID 속성 중 'C'는 무엇을 의미하나요?,객관식,일관성,결합성,연결성,확장성,일관성,,0,2024-12-27,2024-12-27,2024-12-27,,Git Database
+Git에서 병합 충돌을 해결하는 방법은 무엇인가요?,주관식,,,,,정답_Git_25,,0,2024-12-27,2024-12-27,2024-12-27,,Git
+Git에서 새로운 브랜치를 생성하는 명령어는 무엇인가요?,객관식,git branch,git checkout,git merge,git commit,git checkout,,0,2024-12-27,2024-12-27,2024-12-27,,Software Programming
+Spring MVC에서 View Resolver의 역할은 무엇인가요?,객관식,View 경로 처리,데이터베이스 연결,Model 생성,JSON 변환,View 경로 처리,,0,2024-12-27,2024-12-27,2024-12-27,,Database Git
+Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,주관식,,,,,정답_Git_28,,0,2024-12-27,2024-12-27,2024-12-27,,Software
+Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,객관식,git add,git stash,git push,git commit,git push,,0,2024-12-27,2024-12-27,2024-12-27,,Programming
+Controller에서 요청을 처리한 결과를 반환하는 방식은 무엇인가요?,객관식,ModelAndView,String,ResponseEntity,JSON,String,,0,2024-12-27,2024-12-27,2024-12-27,,Spring Database Git
+Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,주관식,,,,,정답_Git_31,,0,2024-12-27,2024-12-27,2024-12-27,,Software Spring
+Spring MVC의 주요 구성 요소는 무엇인가요?,주관식,,,,,정답_Spring MVC_32,,0,2024-12-27,2024-12-27,2024-12-27,,Git Database
+Spring MVC의 주요 구성 요소는 무엇인가요?,객관식,Controller,View,Model,Database,Controller,,0,2024-12-27,2024-12-27,2024-12-27,,Spring Git Software
+Spring MVC에서 View Resolver의 역할은 무엇인가요?,객관식,View 경로 처리,데이터베이스 연결,Model 생성,JSON 변환,데이터베이스 연결,,0,2024-12-27,2024-12-27,2024-12-27,,Software Database
+데이터베이스의 트랜잭션 ACID 속성 중 'C'는 무엇을 의미하나요?,주관식,,,,,정답_Database_35,,0,2024-12-27,2024-12-27,2024-12-27,,Software Programming Spring
+데이터베이스 정규화의 목적은 무엇인가요?,주관식,,,,,정답_Database_36,,0,2024-12-27,2024-12-27,2024-12-27,,Programming
+Git에서 새로운 브랜치를 생성하는 명령어는 무엇인가요?,객관식,git branch,git checkout,git merge,git commit,git branch,,0,2024-12-27,2024-12-27,2024-12-27,,Database Spring Software
+데이터베이스 정규화의 목적은 무엇인가요?,객관식,중복 최소화,속도 최적화,데이터 삭제,보안 강화,중복 최소화,,0,2024-12-27,2024-12-27,2024-12-27,,Programming
+Controller에서 요청을 처리한 결과를 반환하는 방식은 무엇인가요?,주관식,,,,,정답_Spring MVC_39,,0,2024-12-27,2024-12-27,2024-12-27,,Git Spring Software
+Controller에서 요청을 처리한 결과를 반환하는 방식은 무엇인가요?,객관식,ModelAndView,String,ResponseEntity,JSON,String,,0,2024-12-27,2024-12-27,2024-12-27,,Programming Software Spring
+Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,주관식,,,,,정답_Git_41,,0,2024-12-27,2024-12-27,2024-12-27,,Software Git Spring
+Spring MVC의 주요 구성 요소는 무엇인가요?,주관식,,,,,정답_Spring MVC_42,,0,2024-12-27,2024-12-27,2024-12-27,,Git Programming
+SQL에서 데이터를 삽입하는 명령어는 무엇인가요?,주관식,,,,,정답_Database_43,,0,2024-12-27,2024-12-27,2024-12-27,,Spring
+Git에서 병합 충돌을 해결하는 방법은 무엇인가요?,객관식,수동 해결,git reset,git checkout,git pull,git pull,,0,2024-12-27,2024-12-27,2024-12-27,,Database
+SQL에서 데이터를 삽입하는 명령어는 무엇인가요?,주관식,,,,,정답_Database_45,,0,2024-12-27,2024-12-27,2024-12-27,,Programming Database
+Git에서 병합 충돌을 해결하는 방법은 무엇인가요?,객관식,수동 해결,git reset,git checkout,git pull,git checkout,,0,2024-12-27,2024-12-27,2024-12-27,,Software
+Git에서 병합 충돌을 해결하는 방법은 무엇인가요?,주관식,,,,,정답_Git_47,,0,2024-12-27,2024-12-27,2024-12-27,,Programming Database
+Spring MVC에서 View Resolver의 역할은 무엇인가요?,객관식,View 경로 처리,데이터베이스 연결,Model 생성,JSON 변환,Model 생성,,0,2024-12-27,2024-12-27,2024-12-27,,Git Programming Database
+Git에서 새로운 브랜치를 생성하는 명령어는 무엇인가요?,주관식,,,,,정답_Git_49,,0,2024-12-27,2024-12-27,2024-12-27,,Spring Git
+데이터베이스의 트랜잭션 ACID 속성 중 'C'는 무엇을 의미하나요?,객관식,일관성,결합성,연결성,확장성,결합성,,0,2024-12-27,2024-12-27,2024-12-27,,Git Spring Programming
+>>>>>>> baf816a5e3ca4f21a03bd67b394e79cd572ae5a1,,,,,,,,0,2024-12-27,2024-12-27,2024-12-27,,
+Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,객관식,git add,git stash,git push,git commit,git stash,,0,2024-12-27,2024-12-27,2024-12-27,,Software Spring Git
+Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,주관식,,,,,정답_Git_2,,0,2024-12-27,2024-12-27,2024-12-27,,Git Spring Database
+데이터베이스의 트랜잭션 ACID 속성 중 'C'는 무엇을 의미하나요?,객관식,일관성,결합성,연결성,확장성,확장성,,0,2024-12-27,2024-12-27,2024-12-27,,Database
+Spring MVC에서 View Resolver의 역할은 무엇인가요?,객관식,View 경로 처리,데이터베이스 연결,Model 생성,JSON 변환,데이터베이스 연결,,0,2024-12-27,2024-12-27,2024-12-27,,Spring Programming Database
+Controller에서 요청을 처리한 결과를 반환하는 방식은 무엇인가요?,객관식,ModelAndView,String,ResponseEntity,JSON,ModelAndView,,0,2024-12-27,2024-12-27,2024-12-27,,Software
+Controller에서 요청을 처리한 결과를 반환하는 방식은 무엇인가요?,객관식,ModelAndView,String,ResponseEntity,JSON,String,,0,2024-12-27,2024-12-27,2024-12-27,,Programming
+Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,객관식,git add,git stash,git push,git commit,git add,,0,2024-12-27,2024-12-27,2024-12-27,,Database Spring Programming
+Controller에서 요청을 처리한 결과를 반환하는 방식은 무엇인가요?,주관식,,,,,정답_Spring MVC_8,,0,2024-12-27,2024-12-27,2024-12-27,,Git
+Spring MVC의 주요 구성 요소는 무엇인가요?,객관식,Controller,View,Model,Database,Controller,,0,2024-12-27,2024-12-27,2024-12-27,,Spring Software
+Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,객관식,git add,git stash,git push,git commit,git add,,0,2024-12-27,2024-12-27,2024-12-27,,Software
+Spring MVC의 주요 구성 요소는 무엇인가요?,객관식,Controller,View,Model,Database,Controller,,0,2024-12-27,2024-12-27,2024-12-27,,Software
+데이터베이스 정규화의 목적은 무엇인가요?,주관식,,,,,정답_Database_12,,0,2024-12-27,2024-12-27,2024-12-27,,Programming
+Spring MVC에서 View Resolver의 역할은 무엇인가요?,객관식,View 경로 처리,데이터베이스 연결,Model 생성,JSON 변환,데이터베이스 연결,,0,2024-12-27,2024-12-27,2024-12-27,,Git Spring Database
+Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,객관식,git add,git stash,git push,git commit,git stash,,0,2024-12-27,2024-12-27,2024-12-27,,Software Database Spring
+Spring MVC에서 View Resolver의 역할은 무엇인가요?,주관식,"git ",,,,정답_Spring MVC_15,,0,2024-12-27,2024-12-27,2024-12-27,,Spring
+Spring MVC에서 View Resolver의 역할은 무엇인가요?,주관식,,,,,정답_Spring MVC_16,,0,2024-12-27,2024-12-27,2024-12-27,,Software
+데이터베이스 정규화의 목적은 무엇인가요?,주관식,,,,,정답_Database_17,,0,2024-12-27,2024-12-27,2024-12-27,,Database Spring
+Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,객관식,git add,git stash,git push,git commit,git add,,0,2024-12-27,2024-12-27,2024-12-27,,Database
+Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,주관식,,,,,정답_Git_19,,0,2024-12-27,2024-12-27,2024-12-27,,Spring
+Git에서 병합 충돌을 해결하는 방법은 무엇인가요?,주관식,,,,,정답_Git_20,,0,2024-12-27,2024-12-27,2024-12-27,,Programming Spring
+Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,객관식,git add,git stash,git push,git commit,git push,,0,2024-12-27,2024-12-27,2024-12-27,,Spring
+Git에서 병합 충돌을 해결하는 방법은 무엇인가요?,객관식,수동 해결,git reset,git checkout,git pull,git reset,,0,2024-12-27,2024-12-27,2024-12-27,,Spring Programming
+Git에서 새로운 브랜치를 생성하는 명령어는 무엇인가요?,객관식,git branch,git checkout,git merge,git commit,git commit,,0,2024-12-27,2024-12-27,2024-12-27,,Programming Software
+데이터베이스의 트랜잭션 ACID 속성 중 'C'는 무엇을 의미하나요?,객관식,일관성,결합성,연결성,확장성,일관성,,0,2024-12-27,2024-12-27,2024-12-27,,Git Database
+Git에서 병합 충돌을 해결하는 방법은 무엇인가요?,주관식,,,,,정답_Git_25,,0,2024-12-27,2024-12-27,2024-12-27,,Git
+Git에서 새로운 브랜치를 생성하는 명령어는 무엇인가요?,객관식,git branch,git checkout,git merge,git commit,git checkout,,0,2024-12-27,2024-12-27,2024-12-27,,Software Programming
+Spring MVC에서 View Resolver의 역할은 무엇인가요?,객관식,View 경로 처리,데이터베이스 연결,Model 생성,JSON 변환,View 경로 처리,,0,2024-12-27,2024-12-27,2024-12-27,,Database Git
+Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,주관식,,,,,정답_Git_28,,0,2024-12-27,2024-12-27,2024-12-27,,Software
+Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,객관식,git add,git stash,git push,git commit,git push,,0,2024-12-27,2024-12-27,2024-12-27,,Programming
+Controller에서 요청을 처리한 결과를 반환하는 방식은 무엇인가요?,객관식,ModelAndView,String,ResponseEntity,JSON,String,,0,2024-12-27,2024-12-27,2024-12-27,,Spring Database Git
+Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,주관식,,,,,정답_Git_31,,0,2024-12-27,2024-12-27,2024-12-27,,Software Spring
+Spring MVC의 주요 구성 요소는 무엇인가요?,주관식,,,,,정답_Spring MVC_32,,0,2024-12-27,2024-12-27,2024-12-27,,Git Database
+Spring MVC의 주요 구성 요소는 무엇인가요?,객관식,Controller,View,Model,Database,Controller,,0,2024-12-27,2024-12-27,2024-12-27,,Spring Git Software
+Spring MVC에서 View Resolver의 역할은 무엇인가요?,객관식,View 경로 처리,데이터베이스 연결,Model 생성,JSON 변환,데이터베이스 연결,,0,2024-12-27,2024-12-27,2024-12-27,,Software Database
+데이터베이스의 트랜잭션 ACID 속성 중 'C'는 무엇을 의미하나요?,주관식,,,,,정답_Database_35,,0,2024-12-27,2024-12-27,2024-12-27,,Software Programming Spring
+데이터베이스 정규화의 목적은 무엇인가요?,주관식,,,,,정답_Database_36,,0,2024-12-27,2024-12-27,2024-12-27,,Programming
+Git에서 새로운 브랜치를 생성하는 명령어는 무엇인가요?,객관식,git branch,git checkout,git merge,git commit,git branch,,0,2024-12-27,2024-12-27,2024-12-27,,Database Spring Software
+데이터베이스 정규화의 목적은 무엇인가요?,객관식,중복 최소화,속도 최적화,데이터 삭제,보안 강화,중복 최소화,,0,2024-12-27,2024-12-27,2024-12-27,,Programming
+Controller에서 요청을 처리한 결과를 반환하는 방식은 무엇인가요?,주관식,,,,,정답_Spring MVC_39,,0,2024-12-27,2024-12-27,2024-12-27,,Git Spring Software
+Controller에서 요청을 처리한 결과를 반환하는 방식은 무엇인가요?,객관식,ModelAndView,String,ResponseEntity,JSON,String,,0,2024-12-27,2024-12-27,2024-12-27,,Programming Software Spring
+Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,주관식,,,,,정답_Git_41,,0,2024-12-27,2024-12-27,2024-12-27,,Software Git Spring
+Spring MVC의 주요 구성 요소는 무엇인가요?,주관식,,,,,정답_Spring MVC_42,,0,2024-12-27,2024-12-27,2024-12-27,,Git Programming
+SQL에서 데이터를 삽입하는 명령어는 무엇인가요?,주관식,,,,,정답_Database_43,,0,2024-12-27,2024-12-27,2024-12-27,,Spring
+Git에서 병합 충돌을 해결하는 방법은 무엇인가요?,객관식,수동 해결,git reset,git checkout,git pull,git pull,,0,2024-12-27,2024-12-27,2024-12-27,,Database
+SQL에서 데이터를 삽입하는 명령어는 무엇인가요?,주관식,,,,,정답_Database_45,,0,2024-12-27,2024-12-27,2024-12-27,,Programming Database
+Git에서 병합 충돌을 해결하는 방법은 무엇인가요?,객관식,수동 해결,git reset,git checkout,git pull,git checkout,,0,2024-12-27,2024-12-27,2024-12-27,,Software
+Git에서 병합 충돌을 해결하는 방법은 무엇인가요?,주관식,,,,,정답_Git_47,,0,2024-12-27,2024-12-27,2024-12-27,,Programming Database
+Spring MVC에서 View Resolver의 역할은 무엇인가요?,객관식,View 경로 처리,데이터베이스 연결,Model 생성,JSON 변환,Model 생성,,0,2024-12-27,2024-12-27,2024-12-27,,Git Programming Database
+Git에서 새로운 브랜치를 생성하는 명령어는 무엇인가요?,주관식,,,,,정답_Git_49,,0,2024-12-27,2024-12-27,2024-12-27,,Spring Git
+데이터베이스의 트랜잭션 ACID 속성 중 'C'는 무엇을 의미하나요?,객관식,일관성,결합성,연결성,확장성,결합성,,0,2024-12-27,2024-12-27,2024-12-27,,Git Spring Programming
+aaaaa,주관식,,,,,bb,,0,2024-12-27,,,,
+gkdl,주관식,,,,,,,0,2024-12-27,,,,
+gkdl,주관식,,,,,,,0,2024-12-27,,,,
