@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState } from "react";
 import Single from './Single';
 import Multiple from './Multiple';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -26,13 +25,14 @@ function Solve() {
   );
 
   const [questionIndex, setQuestionIndex] = useState(0); // 현재 문제 인덱스
+  const [updatedQuestions, setUpdatedQuestions] = useState([]); // 업데이트된 질문 데이터
 
   const nextQuestion = () => {
     setQuestionIndex((prevIndex) =>
       prevIndex === answers.length - 1 ? prevIndex : prevIndex + 1
     );
   };
-
+  
   const beforeQuestion = () => {
     setQuestionIndex((prevIndex) =>
       prevIndex === 0 ? prevIndex : prevIndex - 1
@@ -47,9 +47,31 @@ function Solve() {
     });
   };
 
-  const submit = () => {
+  const submit = async () => {
+    // 모든 질문에 대해 업데이트 호출
+    const updatedData = [];
+    for (let i = 0; i < answers.length; i++) {
+      const question = answers[i];
+      const isCorrect = question.answer === question.selected;
+      const response = await window.electronAPI.updateQuestion({
+        title: question.title,
+        type: question.type,
+        isCorrect: isCorrect,
+      });
+      
+      if (response.success && response.updatedQuestion) {
+        updatedData.push(response.updatedQuestion);
+      } else {
+        console.error(`질문 "${question.title}" 업데이트 실패: ${response.message}`);
+        // 업데이트 실패한 경우 원래의 질문을 유지
+        updatedData.push(question);
+      }
+    }
+
+    setUpdatedQuestions(updatedData);
+
     navigate('/solve/result', {
-      state: { answers, tags: passedTags },
+      state: { answers: updatedData, tags: passedTags }, // 업데이트된 질문 데이터를 전달
     });
   };
 
@@ -71,11 +93,11 @@ function Solve() {
             <div
               onClick={() => setNavCollapse(!navCollapse)}
               className="border-2 border-gray-200 hover:bg-blue-300 hover:border-blue-300 rounded-xl p-2.5 text-center me-2 mb-2">
-              {navCollapse && (<div className='absolute right-5 top-20 bg-white shadow p-4 rounded-lg w-40 h-50' >
-                <QuestionNav questions={passedQuestions} setQuestionIndex={setQuestionIndex}></QuestionNav>
-              </div>)}
-
-
+              {navCollapse && (
+                <div className='absolute right-5 top-20 bg-white shadow p-4 rounded-lg w-40 h-50'>
+                  <QuestionNav questions={passedQuestions} setQuestionIndex={setQuestionIndex}></QuestionNav>
+                </div>
+              )}
             </div>
             <div
               onClick={submit}

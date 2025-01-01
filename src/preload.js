@@ -16,6 +16,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
     });
   },
 
+ updateQuestion: async ({ title, type, isCorrect }) => {
+    return ipcRenderer.invoke('update-question', { title, type, isCorrect });
+  },
+
   updateQuestions: (questions) => {
     return ipcRenderer.invoke('update-questions-file', questions)
   },
@@ -43,6 +47,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
 
   readQuestionsCSV: () => ipcRenderer.invoke('read-questions-csv'),
+  readHistoryCSV: () => ipcRenderer.invoke('read-history-csv'), 
 
 
 });
