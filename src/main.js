@@ -28,7 +28,8 @@ function readQuestionsCSV() {
     }
 
     const csvFile = fs.readFileSync(csvPath, 'utf-8');
-    let questions = [];
+    console.log(csvFile);
+    var questions = [];
     const tagSet = new Set();
 
     Papa.parse(csvFile, {
@@ -36,19 +37,20 @@ function readQuestionsCSV() {
       skipEmptyLines: true, // 빈 줄 무시
       complete: (result) => {
         questions = result.data.map((item, index) => {
-          if (item.__parsed_extra) {
-            const extraTags = item.__parsed_extra.map((tag) => tag.trim());
-            item.tag = [
-              ...(item.tag ? item.tag.split(",").map((tag) => tag.trim()) : []),
-              ...extraTags,
-            ];
-          }
-
           if(item.tag){
             item.tag = (item.tag).split(",").map((t) => t.trim());
           }else{
             item.tag = [];
           }
+
+          if (item.__parsed_extra) {
+            const extraTags = item.__parsed_extra.map((tag) => tag.trim());
+            item.tag = [
+              ...item.tag,
+              ...extraTags,
+            ];
+          }
+
 
           item.tag.forEach((t) => tagSet.add(t)); // 태그 집합에 추가
 
