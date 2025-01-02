@@ -15,6 +15,7 @@ const { parseISO, isValid, isBefore, isAfter, format, startOfDay, addDays } = re
 
 let mainWindow;
 
+
 // CSV 파일을 읽어서 데이터 처리하는 함수
 function readQuestionsCSV() {
   try {
@@ -34,7 +35,7 @@ function readQuestionsCSV() {
       header: true, // 첫 줄을 헤더로 사용
       skipEmptyLines: true, // 빈 줄 무시
       complete: (result) => {
-        questions = result.data.map((item) => {
+        questions = result.data.map((item, index) => {
           if (item.__parsed_extra) {
             const extraTags = item.__parsed_extra.map((tag) => tag.trim());
             item.tag = [
@@ -43,19 +44,23 @@ function readQuestionsCSV() {
             ];
           }
 
-          item.tag = item.tag ? item.tag : "";
+          if(item.tag){
+            item.tag = (item.tag).split(",").map((t) => t.trim());
+          }else{
+            item.tag = [];
+          }
 
-          item.tag = item.tag.split(",").map((tag) => tag.trim());
-          item.tag.forEach((tag) => tagSet.add(tag)); // 태그 집합에 추가
+          item.tag.forEach((t) => tagSet.add(t)); // 태그 집합에 추가
 
           delete item.__parsed_extra; // __parsed_extra 필드 제거
 
+          item.id = index;
           return item;
         });
       },
     });
 
-    return { success: true, allTag: [...tagSet], questions, message: 'questions 읽기 성공' };
+    return { success: true, allTag: [...tagSet], questions : questions, message: 'questions 읽기 성공' };
   } catch (error) {
     console.error(error);
     return { success: false, message: 'questions 읽기 실패' };
