@@ -8,6 +8,8 @@ const Papa = require('papaparse');
 const archiver = require("archiver");
 const os = require('os');
 const extract = require('extract-zip'); // 압축 해제 모듈
+
+
 const questionsCsvPath = process.env.QUESTIONS_PATH; 
 const historyCsvPath = process.env.HISTORY_PATH; 
 
@@ -15,11 +17,22 @@ const { parseISO, isValid, isBefore, isAfter, format, startOfDay, addDays } = re
 
 let mainWindow;
 
+function generateUniqueId(questions) {
+    const generateRandomId = () => {
+        return `id-${Math.random().toString(36).slice(2, 11)}`;
+    };
+
+    let newId;
+    do {
+        newId = generateRandomId();
+    } while (Array.isArray(questions) && questions.some(question => question?.id === newId));
+
+    return newId;
+}
 
 // CSV 파일을 읽어서 데이터 처리하는 함수
 function readQuestionsCSV() {
   try {
-//    const csvPath = "./data/question.csv";
     const csvPath = questionsCsvPath;
 
     if (!fs.existsSync(csvPath)) {
@@ -28,7 +41,7 @@ function readQuestionsCSV() {
     }
 
     const csvFile = fs.readFileSync(csvPath, 'utf-8');
-    console.log(csvFile);
+//    console.log(csvFile);
     var questions = [];
     const tagSet = new Set();
 
@@ -37,26 +50,13 @@ function readQuestionsCSV() {
       skipEmptyLines: true, // 빈 줄 무시
       complete: (result) => {
         questions = result.data.map((item, index) => {
-          if(item.tag){
-            item.tag = (item.tag).split(",").map((t) => t.trim());
-          }else{
-            item.tag = [];
-          }
 
-          if (item.__parsed_extra) {
-            const extraTags = item.__parsed_extra.map((tag) => tag.trim());
-            item.tag = [
-              ...item.tag,
-              ...extraTags,
-            ];
-          }
-
+          if(item.tag) item.tag = (item.tag).split(",").map((t) => t.trim());
+          else item.tag = [];
 
           item.tag.forEach((t) => tagSet.add(t)); // 태그 집합에 추가
 
-          delete item.__parsed_extra; // __parsed_extra 필드 제거
-
-          item.id = index;
+          item.id = generateUniqueId();
           return item;
         });
       },
@@ -286,7 +286,10 @@ function updateQuestions(questions) {
 // 메인 프로세스에서 CSV 파일만 수정
 ipcMain.handle('update-questions-file', async (event, questions) => {
   const csvPath = questionsCsvPath;
-  const csvString = Papa.unparse(questions); // questions를 CSV 형식으로 변환
+  const csvString = Papa.unparse(questions.map(question => {
+    const {id, ...rest} = question;
+    return rest;
+  })); // questions를 CSV 형식으로 변환
   fs.writeFileSync(csvPath, csvString, 'utf-8'); // CSV 파일 덮어쓰기
 
   return { success: true };
