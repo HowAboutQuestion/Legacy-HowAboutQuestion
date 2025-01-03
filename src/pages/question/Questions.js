@@ -5,6 +5,7 @@ import QuestionItem from 'pages/question/QuestionItem';
 import Papa from "papaparse";
 import UpdateModal from 'pages/question/UpdateModal';
 import { useLocation } from "react-router-dom";
+import {generateUniqueId} from "utils/util"
 
 function Questions() {
     const location = useLocation(); 
@@ -78,19 +79,16 @@ function Questions() {
             const tagSet = new Set(); // 태그 중복 제거용
             const today = new Date().toISOString().split("T")[0]; // 오늘 날짜
   
-            const parsedData = result.data.map((item) => {
-              // __parsed_extra 필드가 있으면 tag에 추가
-              if (item.__parsed_extra) {
-                const extraTags = item.__parsed_extra.map((tag) => tag.trim());
-                item.tag = [
-                  ...(item.tag ? item.tag.split(",").map((tag) => tag.trim()) : []),
-                  ...extraTags,
-                ];
-              } else if (item.tag) {
-                // tag가 문자열 형태로 존재하면 리스트로 변환
-                item.tag = item.tag.split(",").map((tag) => tag.trim());
+            const parsedData = result.data.map((item, index) => {
+              
+              // tag가 문자열 형태로 존재하면 리스트로 변환
+              if(item.tag){
+                item.tag = (item.tag).split(",").map((t) => t.trim());
+              }else{
+                item.tag = [];
               }
-              item.tag?.forEach((tag) => tagSet.add(tag)); // 태그 중복 제거
+              
+              item.tag.forEach((tag) => tagSet.add(tag)); // 태그 중복 제거
   
               // 필요한 필드만 유지, 기본값 설정
               return {
@@ -109,6 +107,7 @@ function Questions() {
                 solveddate:null,
 
                 tag: item.tag || [],
+                id: generateUniqueId(questions)+index
               };
             });
   
@@ -202,12 +201,12 @@ function Questions() {
         ? filterQuestions
             .filter(({index, question}) => question.checked)  // question.checked가 true인 것만 필터링
             .map(({index, question}) => {
-                const { checked, ...rest } = question; 
+                const { checked, id, ...rest } = question; 
                 return rest;
               })
         : filterQuestions
             .map(({index, question}) => {
-              const { checked, ...rest } = question;  // checked 제외한 데이터만 추출
+              const { checked, id, ...rest } = question;  // checked 제외한 데이터만 추출
               return rest;
             });
 
@@ -309,6 +308,10 @@ function Questions() {
         img: null, // 초기 이미지는 null
         level: 0,
         date,
+        update:date,
+        recommenddate:date,
+        solveddate:date,
+        id: generateUniqueId(questions),
         tag: tags,
       };
     
@@ -342,10 +345,6 @@ function Questions() {
       setTag(""); // 태그 초기화
     
       setQuestions((prevQuestions) => [question, ...prevQuestions]);
-
-      //const result = await window.electronAPI.updateQuestions(questions);
-      //alert(result.message);
-
     };
     
     
