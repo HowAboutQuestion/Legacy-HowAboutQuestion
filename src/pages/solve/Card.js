@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
+import { questionsAtom } from "state/data";
+
+
 
 function Card() {  
   const [questionIndex, setQuestionIndex] = useState(0); // 현재 문제의 인덱스
@@ -7,6 +11,11 @@ function Card() {
   const questions = location.state.questions;
   const tags = location.state.tags;
   const navigate = useNavigate();
+  const today = new Date().toISOString().split("T")[0]; // 오늘 날짜
+
+
+  //recoil 수정
+  const setRecoilQuestions = useSetRecoilState(questionsAtom);
 
   const [showAnswer, setShowAnswer] = useState(false);
   const [correctCount, setCorrectCount] = useState(0); 
@@ -32,23 +41,19 @@ function Card() {
       }
       return updatedCount;
     });
-    setShowAnswer(false);
+    setShowAnswer(false);   
 
-    // CSV 업데이트: 정답 처리
-    const currentQuestion = questions[questionIndex];
-    try {
-      const response = await window.electronAPI.updateQuestion({
-        title: currentQuestion.title,
-        type: currentQuestion.type,
-        isCorrect: true,
-      });
+    setRecoilQuestions((prevQuestions) => {
+      const updatedQuestions = prevQuestions.map((item) =>
+        item.id === questions[questionIndex].id
+          ? { ...item, 
+            solveddate : today
+           } 
+          : item
+      );
+      return updatedQuestions;
 
-      if (!response.success) {
-        console.error(response.message);
-      }
-    } catch (error) {
-      console.error('CSV 업데이트 중 오류:', error);
-    }
+    })
   };
 
   const wrong = async () => {
