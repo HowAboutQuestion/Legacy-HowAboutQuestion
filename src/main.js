@@ -313,7 +313,9 @@ function createWindow() {
       nodeIntegration: true,
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),
+
     },
+    icon: path.join(__dirname, '../assets/icons/icon.png')
   });
 
   // 빌드 후 index.html 파일 경로
