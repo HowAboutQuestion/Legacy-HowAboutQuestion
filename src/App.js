@@ -32,6 +32,11 @@ const App = () => {
   }, []);
 
   useEffect(() => {
+    const tagSet = new Set();
+    questions.map((question) => question.tag.map((item) => {tagSet.add(item)} ));
+    setAlltag([...tagSet]);
+
+
     const updateQuestionsAsync = async () => {
       try {
         // 상태 업데이트 후 비동기적으로 questions를 처리
@@ -44,6 +49,8 @@ const App = () => {
       updateQuestionsAsync(); // 비동기로 호출
     }
   }, [questions]); 
+
+  
 
   return (
     <div>

@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import { questionsAtom, allTagAtom } from "state/data";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 
-function UpdateModal({ question, setUpdateQuestion, isCollapsed, index }) {
+function UpdateModal({setUpdateModal, question, setUpdateQuestion, isCollapsed, index }) {
   const [title, setTitle] = useState(question.title || "");
   const [type, setType] = useState(question.type || "객관식");
   const [select1, setSelect1] = useState(question.select1 || "");
@@ -15,7 +15,6 @@ function UpdateModal({ question, setUpdateQuestion, isCollapsed, index }) {
   const [thumbnail, setThumbnail] = useState(question.img || null);
   const [imageFile, setImageFile] = useState(null);
 
-  console.log(thumbnail);
 
   const setQuestions = useSetRecoilState(questionsAtom);
 
@@ -86,7 +85,13 @@ function UpdateModal({ question, setUpdateQuestion, isCollapsed, index }) {
     });
 
     setUpdateQuestion(null);
+    setUpdateModal(false);
   };
+
+  const updateCancleEvent = () => {
+    setUpdateQuestion(null);
+    setUpdateModal(false);
+  }
 
   useEffect(() => {
     setTitle(question.title || "");
@@ -104,13 +109,7 @@ function UpdateModal({ question, setUpdateQuestion, isCollapsed, index }) {
 
       return (
 
-        <div className={`
-          ${question ? "h-[300px]" : "h-0" }
-            transition-all width-fill-available shadow-[10px_0px_10px_10px_rgba(0,0,0,0.1)] rounded-t-2xl duration-500 fixed bottom-0 bg-white  ${
-              isCollapsed ? "ml-10" : "ml-80"
-            }`}
-          >
-            <div className="h-full w-full p-7 flex flex-col gap-2">
+        <div className="h-full w-full p-7 flex flex-col gap-2">
             <div className="flex justify-between">
               <div className="font-bold text-xl pl-1">문제 수정하기</div>
               <div className="items-center flex">
@@ -121,7 +120,7 @@ function UpdateModal({ question, setUpdateQuestion, isCollapsed, index }) {
                   저장하기
                 </div>
                 <div
-                  onClick={() => setUpdateQuestion(null)}
+                  onClick={() => updateCancleEvent()}
                   className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2"
                 >
                   <svg
@@ -276,9 +275,6 @@ function UpdateModal({ question, setUpdateQuestion, isCollapsed, index }) {
             
           
           </div>
-       
-        
-        </div>
       
   
       );

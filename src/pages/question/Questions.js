@@ -6,11 +6,15 @@ import Papa from "papaparse";
 import UpdateModal from 'pages/question/UpdateModal';
 import { useLocation } from "react-router-dom";
 import {generateUniqueId} from "utils/util"
+import InsertModal from './InsertModal';
 
 function Questions() {
     const location = useLocation(); 
     //모든 문제 전역에서 불러오기
     const questions = useRecoilValue(questionsAtom);
+    const setQuestions = useSetRecoilState(questionsAtom);
+    const setAlltag = useSetRecoilState(allTagAtom);
+        
     const [filterQuestions, setFilterQuestions] = useState([]);
 
     
@@ -35,6 +39,7 @@ function Questions() {
 
     const allTagItems = allTag.map((tagName, index) => {
     const isSelected = selectedTag.includes(tagName); // 선택 여부 확인
+    
     return (
       <div 
         onClick={() => handleTagClick(tagName)}
@@ -48,7 +53,7 @@ function Questions() {
     );
   });
 
-
+  //태그 필터링 이벤트트
   useEffect(() => {
     if (selectedTag.length === 0) {
       setFilterQuestions(questions.map((question, index) => ({ question, index })));
@@ -113,7 +118,7 @@ function Questions() {
   
             // 기존 questions 배열에 새 데이터를 추가
             setQuestions([...parsedData, ...questions]);
-            setAlltag([...tagSet, ...allTag]);
+            //setAlltag([...tagSet, ...allTag]);
 
           },
         });
@@ -146,11 +151,6 @@ function Questions() {
       }
     }
   };
-
-
-    
-    
-    
 
 
     //.csv 만 다운로드
@@ -219,8 +219,6 @@ function Questions() {
       }
     };
 
-
-
     // 문제 삭제
     const deleteQuestionsAll = () => {
       if (!window.confirm("진짜 삭제?")) return;
@@ -237,118 +235,25 @@ function Questions() {
 
     //좌측 사이드바 토글
     const [isCollapsed, setIsCollapsed] = useState(true);
-    //문제추가모달 토글
+    //문제 추가 모달 토글
     const [insertModal, setInsertModal] = useState(false);
+    const insertButtonClick = () => {
+      setUpdateModal(false);
+      setInsertModal(true);
+    }
+
+    //문제 업데이트 모달 토글
+    const [updateModal, setUpdateModal] = useState(false);
     const [updateQuestion, setUpdateQuestion] = useState(null); // 수정할 질문 객체 (모달 제어 포함)
     const [updateIndex, setUpdateIndex] = useState(null);
 
     const handleUpdateClick = (question, index) => {
+      setInsertModal(false);
+      setUpdateModal(true);
       setUpdateIndex(index);
       setUpdateQuestion({ ...question });
     };
     
-    //문제추가폼
-    const [title, setTitle] = useState("");
-    const [type, setType] = useState("객관식");
-    const [select1, setSelect1] = useState("");
-    const [select2, setSelect2] = useState("");
-    const [select3, setSelect3] = useState("");
-    const [select4, setSelect4] = useState("");
-    const [answer, setAnswer] = useState("");
-    const [tag, setTag] = useState("");
-    const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
-
-    const setQuestions = useSetRecoilState(questionsAtom);
-    const setAlltag = useSetRecoilState(allTagAtom);
-
-    //이미지 업로드
-    const [thumbnail, setThumbnail] = useState(null);
-    const [imageFile, setImageFile] = useState(null);
-    
-    const handleFileChange = (event) => {
-      const image = event.target.files[0];
-      if (image) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          setThumbnail(reader.result);
-        };
-        reader.readAsDataURL(image);
-        setImageFile(image);
-      }
-    };
-
-   
-    async function handleSave(file) {
-      try {
-        const result = await window.electronAPI.saveImage(file);
-        return result; // 저장 결과 반환
-      } catch (error) {
-        console.error("이미지 저장 중 오류 발생:", error);
-        return { success: false, error: error.message };
-      }
-    }
-    
-    
-    const insertEvent = async () => {
-      if (!(title)) {
-        alert("제목은 필수 입력 항목입니다"); 
-        return;
-      }
-      const tags = tag ? [...new Set(tag.split(",").map((item) => item.trim()))] : [];
-    
-      // 초기 question 데이터 생성
-      const question = {
-        title,
-        type,
-        select1,
-        select2,
-        select3,
-        select4,
-        answer,
-        img: null, // 초기 이미지는 null
-        level: 0,
-        date,
-        update:date,
-        recommenddate:date,
-        solveddate:date,
-        id: generateUniqueId(questions),
-        tag: tags,
-      };
-    
-      // 이미지가 있는 경우 처리
-      if (imageFile) {
-        try {
-          const result = await handleSave(imageFile);
-          if (result.success) {
-            question.img = result.path; 
-          } else {
-            console.error("이미지 저장 실패:", result.error);
-            alert("이미지 저장에 실패했습니다.");
-          }
-        } catch (error) {
-          console.error("이미지 저장 중 오류 발생:", error);
-          alert("이미지 저장 중 오류가 발생했습니다.");
-        }
-      }
-      
-      
-      
-    
-      // 상태 초기화 (항상 빈 문자열 사용)
-      setTitle("");
-      setSelect1("");
-      setSelect2("");
-      setSelect3("");
-      setSelect4("");
-      setAnswer("");
-      setThumbnail(null);
-      setTag(""); // 태그 초기화
-    
-      setQuestions((prevQuestions) => [question, ...prevQuestions]);
-    };
-    
-    
-
     const [isAllChecked, setIsAllChecked] = useState(false); // 전체 체크박스 상태 관리
 
     // 전체 체크박스 상태 변경
@@ -386,8 +291,6 @@ function Questions() {
         return updatedQuestions;
       });
     };
-
-
 
 
     // 테이블 데이터 랜더링
@@ -469,7 +372,7 @@ function Questions() {
               </div>
               <div className="bg-white items-center flex">
                 <div 
-                onClick={() => setInsertModal(true)}
+                onClick={() => insertButtonClick()}
                 className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2">
                     문제추가
                 </div>
@@ -566,182 +469,30 @@ function Questions() {
 
             
           <div className={`
-              ${insertModal ? "h-[300px]" : "h-0" }
+              ${( insertModal || updateModal ) ? "h-[300px]" : "h-0" }
                 transition-all width-fill-available shadow-[10px_0px_10px_10px_rgba(0,0,0,0.1)] rounded-t-2xl duration-500 fixed bottom-0 bg-white  ${
                   isCollapsed ? "ml-10" : "ml-80"
                 }`}
               >
-                <div className="h-full w-full p-7 flex flex-col gap-2">
-                    <div className="flex justify-between">
-                      <div className="font-bold text-xl pl-1">문제 추가하기</div>
-                      <div className="items-center flex">
-                        <div
-                          onClick={insertEvent}
-                          className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2"
-                        >
-                          저장하기
-                        </div>
-                        <div
-                          onClick={() => setInsertModal(false)}
-                          className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth="2"
-                            stroke="currentColor"
-                            className="size-4"
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex gap-3">
-                      <input
-                        type="text"
-                        className="block min-w-[50%] outline-none border-b-2 border-gray-200 focus:border-blue-500 text-sm px-2 py-1 h-10"
-                        placeholder="문제를 입력해주세요"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        required
-                      />
-                      <select
-                        className="block border-b-2 text-sm px-2 py-1 h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500"
-                        value={type}
-                        onChange={(e) => setType(e.target.value)}
-                      >
-                        <option value="객관식">객관식</option>
-                        <option value="주관식">주관식</option>
-                      </select>
-                    </div>
-                    <input
-                      type="text"
-                      className="block outline-none border-b-2 border-gray-200 focus:border-blue-500 text-sm px-2 py-1 h-10 w-1/2 flex-none"
-                      placeholder="태그를 입력해주세요"
-                      value={tag}
-                      onChange={(e) => setTag(e.target.value)}
-                    />
+                {insertModal && <InsertModal 
+                  setInsertModal={setInsertModal}>
+                </InsertModal>}
 
-                    {type === "객관식" ? (<div className="flex gap-5">
-                      <div className="flex flex-1 flex-col gap-2">
-                        <div className="flex gap-3">
-                          <input
-                            type="radio"
-                            name="answer"
-                            onChange={() => setAnswer(select1)}
-                          />
-                          <input
-                            type="text"
-                            className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
-                            placeholder="선택지1"
-                            value={select1}
-                            onChange={(e) => setSelect1(e.target.value)}
-                          />
-                        </div>
-                        <div className="flex gap-3">
-                          <input
-                            type="radio"
-                            name="answer"
-                            onChange={() => setAnswer(select2)}
-                          />
-                          <input
-                            type="text"
-                            className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
-                            placeholder="선택지2"
-                            value={select2}
-                            onChange={(e) => setSelect2(e.target.value)}
-                          />
-                        </div>
-                      </div>
-                      <div className="flex flex-1 flex-col gap-2">
-                        <div className="flex gap-3">
-                          <input
-                            type="radio"
-                            name="answer"
-                            onChange={() => setAnswer(select3)}
-                          />
-                          <input
-                            type="text"
-                            className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
-                            placeholder="선택지3"
-                            value={select3}
-                            onChange={(e) => setSelect3(e.target.value)}
-                          />
-                        </div>
-                        <div className="flex gap-3">
-                          <input
-                            type="radio"
-                            name="answer"
-                            onChange={() => setAnswer(select4)}
-                          />
-                          <input
-                            type="text"
-                            className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
-                            placeholder="선택지4"
-                            value={select4}
-                            onChange={(e) => setSelect4(e.target.value)}
-                          />
-                        </div>
-                      </div>
-                      <div
-                        className="bg-gray-50 flex rounded"
-                        style={{
-                          backgroundImage: thumbnail ? `url(${thumbnail})` : "none",
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
-                        }}
-                      >
-                        <input
-                          type="file"
-                          accept=".jpg, .jpeg, .png"
-                          className="w-full h-full text-xs opacity-0"
-                          onChange={handleFileChange}
-                        />
-                      </div>
-                    </div>) : (
-                      
-                      <div className="flex gap-3 flex-1">
-                                  <input
-                                    type="text"
-                                    className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
-                                    placeholder="정답"
-                                    value={answer}
-                                    onChange={(e) => setAnswer(e.target.value)}
-                                  />
-                                  <div
-                                    className="bg-gray-50 flex rounded"
-                                    style={{
-                                      backgroundImage: thumbnail ? `url(${thumbnail})` : "none",
-                                      backgroundSize: "cover",
-                                      backgroundPosition: "center",
-                                    }}
-                                  >
-                                    <input
-                                      type="file"
-                                      accept=".jpg, .jpeg, .png"
-                                      className="w-full h-full text-xs opacity-0"
-                                      onChange={handleFileChange}
-                                    />
-                                  </div>
-                        </div>
-                    )}                  
-                  </div>
-                  
-           
+                {updateModal && 
+                  <UpdateModal
+                  setUpdateModal={setUpdateModal}
+                  question={updateQuestion} // 수정할 질문 객체 전달
+                  setUpdateQuestion={setUpdateQuestion}
+                  isCollapsed={isCollapsed}
+                  index={updateIndex}
+                />
+                }
+                
+
+                
             
           </div>
 
-          
-          {updateQuestion && (
-            <UpdateModal
-              question={updateQuestion} // 수정할 질문 객체 전달
-              setUpdateQuestion={setUpdateQuestion}
-              isCollapsed={isCollapsed}
-              index={updateIndex}
-            />
-          )}
 
            
 
