@@ -57,6 +57,7 @@ function readQuestionsCSV() {
           item.tag.forEach((t) => tagSet.add(t)); // 태그 집합에 추가
 
           item.id = generateUniqueId();
+          item.checked = false;
           return item;
         });
       },
@@ -287,7 +288,7 @@ function updateQuestions(questions) {
 ipcMain.handle('update-questions-file', async (event, questions) => {
   const csvPath = questionsCsvPath;
   const csvString = Papa.unparse(questions.map(question => {
-    const {id, ...rest} = question;
+    const {id, checked, ...rest} = question;
     return rest;
   })); // questions를 CSV 형식으로 변환
   fs.writeFileSync(csvPath, csvString, 'utf-8'); // CSV 파일 덮어쓰기
