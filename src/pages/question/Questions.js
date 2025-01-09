@@ -298,6 +298,7 @@ function Questions() {
       <QuestionItem
         key={index}
         question={question}
+        defaultChecked={false}
         onUpdateClick={() => handleUpdateClick(question, index)} // index 전달
         handleCheckboxChange={() => handleCheckboxChange(index)}
       />
@@ -421,7 +422,7 @@ function Questions() {
                     <div className="flex items-center">
                       <input
                         type="checkbox"
-                        onClick={handleAllCheckboxChange} // 클릭 시 전체 선택/해제
+                        onChange={handleAllCheckboxChange} // 클릭 시 전체 선택/해제
                         checked={isAllChecked} // 모든 항목이 체크된 상태에 따라 체크박스 상태 변경
                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                       />
