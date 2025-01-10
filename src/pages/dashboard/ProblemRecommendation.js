@@ -55,16 +55,20 @@ const ProblemRecommendation = ({
       new Set(selectedProblems.flatMap((q) => q.tag))
     );
 
+    const updatedTags = tags;
+    const updatedQuestions = selectedProblems;
+    
+
     //선택된 문제/태그 저장
-    setSelectedTags(tags);
-    setSelectedQuestions(selectedProblems);
+    setSelectedTags(updatedTags);
+    setSelectedQuestions(updatedQuestions);
 
     // 이후에 문제 풀이 페이지로 이동
     navigate("/select", {
       state: {
-        selectedTags,
-        selectedQuestions
-      }
+        selectedTags: updatedTags, 
+        selectedQuestions: updatedQuestions, 
+      },
     });
   };
 
