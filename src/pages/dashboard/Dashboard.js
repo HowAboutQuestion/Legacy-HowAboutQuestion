@@ -105,52 +105,6 @@ const Dashboard = () => {
   const [toSolveCount, setToSolveCount] = useState(0); // 풀어야 할 문제 수
   const [solvedCount, setSolvedCount] = useState(0); // 푼 문제 수
 
-  // 문제 추천 데이터 로드 함수
-  // const loadRecommendedQuestions = useCallback(async () => {
-  //   try {
-
-  //     const questionsResult = [...questions];
-
-  //     if (questionsResult.success) {
-  //       const questions = questionsResult.questions;
-  //       const tagSet = new Set(questionsResult.allTag);
-  //       setRecommendedQuestions(questions);
-
-  //       let toSolve = 0;
-  //       let solved = 0;
-
-
-  //       //set 사용
-
-
-  //       questions.forEach((item) => {
-        //   const recommendDate = parseISO(item.recommenddate);
-        //   const solvedDate = item.solveddate ? parseISO(item.solveddate) : null;
-
-        //   if (isSameDay(recommendDate, today)) {
-        //     if (!solvedDate || !isSameDay(solvedDate, today)) {
-        //       toSolve += 1;
-        //     }
-        //     if (solvedDate && isSameDay(solvedDate, today)) {
-        //       solved += 1;
-        //     }
-        //   } else if (isBefore(recommendDate, today)) {
-        //     toSolve += 1;
-        //   }
-        // });
-
-        // setToSolveCount(toSolve);
-        // setSolvedCount(solved);
-  //     } else {
-  //       console.error('문제 데이터를 불러오는 중 오류 발생:', questionsResult.message);
-  //     }
-  //   } catch (error) {
-  //     console.error('문제 데이터를 불러오는 중 오류 발생:', error);
-  //   } finally {
-  //     setLoadingRecommendations(false);
-  //   }
-  // }, [today, setRecommendedQuestions]);
-
   // 히스토리 데이터 및 추천 문제 데이터 로드 
   useEffect(() => {
     const loadData = async () => {
@@ -224,18 +178,6 @@ const Dashboard = () => {
 
     console.log("recommendedQuestions : ", recommendedQuestions,"todayProblemsToSolve : ", todayProblemsToSolve,);
   }, [recommendedQuestions, today])
-
-  // return recommendedQuestions.filter((question) => {
-  //   const recommendDate = parseISO(question.recommenddate);
-  //   const solvedDate = question.solveddate ? parseISO(question.solveddate) : null;
-
-  //   const isRecommendToday = isSameDay(recommendDate, today);
-  //   const isNotSolvedToday = !solvedDate || !isSameDay(solvedDate, today);
-
-  //   return isRecommendToday && isNotSolvedToday;
-  // });
-  // }, [recommendedQuestions, today]);
-
   
   //  차트 데이터 상태 관리
   const chartData = useMemo(() => {
