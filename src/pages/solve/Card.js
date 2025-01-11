@@ -43,6 +43,9 @@ function Card() {
     });
     setShowAnswer(false);   
 
+
+    // **************************************************************************
+
     setRecoilQuestions((prevQuestions) => {
       const updatedQuestions = prevQuestions.map((item) =>
         item.id === questions[questionIndex].id
@@ -53,10 +56,23 @@ function Card() {
       );
       return updatedQuestions;
 
-    })
+    });
+
+    try {
+      const historyResponse = await window.electronAPI.updateHistory({ isCorrect: true });
+      if (!historyResponse.success) {
+        console.error(historyResponse.message);
+      }
+    } catch (error) {
+      console.error('history.csv 업데이트 중 오류:', error);
+    }
   };
 
-  const wrong = async () => {
+
+  // 로직 넣기
+  // **************************************************************************
+
+  const wrong = async () => { 
     setWrongCount((prevCount) => {
       const updatedCount = prevCount + 1;
       if (questionIndex === questions.length - 1) {
@@ -69,19 +85,26 @@ function Card() {
     setShowAnswer(false);
 
     // CSV 업데이트: 오답 처리
-    const currentQuestion = questions[questionIndex];
-    try {
-      const response = await window.electronAPI.updateQuestion({
-        title: currentQuestion.title,
-        type: currentQuestion.type,
-        isCorrect: false,
-      });
+    setRecoilQuestions((prevQuestions) => {
+      const updatedQuestions = prevQuestions.map((item) =>
+        item.id === questions[questionIndex].id
+          ? { ...item, 
+            solveddate : today
+           } 
+          : item
+      );
+      return updatedQuestions;
 
-      if (!response.success) {
-        console.error(response.message);
+    });
+
+    
+    try {
+      const historyResponse = await window.electronAPI.updateHistory({ isCorrect: false });
+      if (!historyResponse.success) {
+        console.error(historyResponse.message);
       }
     } catch (error) {
-      console.error('CSV 업데이트 중 오류:', error);
+      console.error('history.csv 업데이트 중 오류:', error);
     }
   };
 
