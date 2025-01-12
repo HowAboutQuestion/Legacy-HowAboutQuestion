@@ -72,7 +72,7 @@ function InsertModal({setInsertModal}) {
         date,
         update:date,
         recommenddate:date,
-        solveddate:date,
+        solveddate:null,
         id: generateUniqueId(questions),
         tag: tags,
       };
