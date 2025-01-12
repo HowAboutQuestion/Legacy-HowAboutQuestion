@@ -1,6 +1,8 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
+
+  updateHistory: (data) => ipcRenderer.invoke('update-history', data),
   saveImage: async (file) => {
     const reader = new FileReader();
     return new Promise((resolve, reject) => {
