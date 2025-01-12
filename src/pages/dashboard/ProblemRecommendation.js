@@ -1,7 +1,9 @@
+import Questions from "pages/question/Questions";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const ProblemRecommendation = ({
+  hasQuestions,
   totalRecommendToday,
   toSolveCount,
   solvedCount,
@@ -193,13 +195,14 @@ const ProblemRecommendation = ({
     };
   }, []);
 
+
   return (
     <section className="p-8 bg-white rounded">
       <h2 className="text-2xl font-bold mb-6">문제 추천</h2>
       <div className="flex flex-col items-center bg-neutral-50 p-6 rounded-lg">
         {/* 오늘의 추천 문제 */}
         <div className="w-full text-center mb-4">
-          {totalRecommendToday === 0 ? (
+          {!hasQuestions ? (
             <>
               {/* 문제 없음 이미지 표시 */}
               <div className="w-full h-40 mx-auto mb-4 relative">
@@ -215,88 +218,106 @@ const ProblemRecommendation = ({
             </>
           ) : (
             <>
-              <p className="text-2xl font-bold">오늘의 추천 문제</p>
-              <div className="mt-4 flex items-center justify-center space-x-2">
-                <label htmlFor="problemCount" className="mr-2 text-lg font-bold">
-                  풀어야 할 문제 수:
-                </label>
+              {totalRecommendToday === 0 ? (
+                <>
+                  {/* 문제 없음 이미지 또는 다른 메시지 표시 */}
+                  <div className="w-full h-40 mx-auto mb-4 relative">
+                    <img
+                      src="/images/all-solve.png"
+                      alt="No recommended problems"
+                      className="object-contain w-full h-full"
+                    />
+                  </div>
+                  <p className="text-2xl font-bold mt-2">
+                    오늘 추천 문제를 다 풀었습니다!
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="text-2xl font-bold">오늘의 추천 문제</p>
+                  <div className="mt-4 flex items-center justify-center space-x-2">
+                    <label htmlFor="problemCount" className="mr-2 text-lg font-bold">
+                      풀어야 할 문제 수:
+                    </label>
 
-                <div className="flex items-center bg-neutral-50">
-                  {/* 감소 버튼 */}
-                  <button
-                    onMouseDown={handleDecrementMouseDown}
-                    onMouseUp={handleMouseUp}
-                    onMouseLeave={handleMouseUp}
-                    onTouchStart={handleDecrementMouseDown}
-                    onTouchEnd={handleMouseUp}
-                    className="rounded-full p-2 text-white bg-blue-500 hover:scale-105 shadow cursor-pointer focus:outline-none transition"
-                    aria-label="문제 수 감소"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="2.5"
-                      stroke="currentColor"
-                      className="w-6 h-6"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M15 19l-7-7 7-7"
+                    <div className="flex items-center bg-neutral-50">
+                      {/* 감소 버튼 */}
+                      <button
+                        onMouseDown={handleDecrementMouseDown}
+                        onMouseUp={handleMouseUp}
+                        onMouseLeave={handleMouseUp}
+                        onTouchStart={handleDecrementMouseDown}
+                        onTouchEnd={handleMouseUp}
+                        className="rounded-full p-2 text-white bg-blue-500 hover:scale-105 shadow cursor-pointer focus:outline-none transition"
+                        aria-label="문제 수 감소"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth="2.5"
+                          stroke="currentColor"
+                          className="w-6 h-6"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M15 19l-7-7 7-7"
+                          />
+                        </svg>
+                      </button>
+
+                      {/* 숫자 입력 필드 */}
+                      <input
+                        type="number"
+                        id="problemCount"
+                        value={selectedProblemCount}
+                        onChange={handleInputChange}
+                        min="1"
+                        max={problemsToSolveToday.length}
+                        className="w-16 text-center border-none focus:outline-none bg-neutral-50 no-spin-button"
                       />
-                    </svg>
-                  </button>
 
-                  {/* 숫자 입력 필드 */}
-                  <input
-                    type="number"
-                    id="problemCount"
-                    value={selectedProblemCount}
-                    onChange={handleInputChange}
-                    min="1"
-                    max={problemsToSolveToday.length}
-                    className="w-16 text-center border-none focus:outline-none bg-neutral-50 no-spin-button"
-                  />
+                      {/* 증가 버튼 */}
+                      <button
+                        onMouseDown={handleIncrementMouseDown}
+                        onMouseUp={handleMouseUp}
+                        onMouseLeave={handleMouseUp}
+                        onTouchStart={handleIncrementMouseDown}
+                        onTouchEnd={handleMouseUp}
+                        className="rounded-full p-2 text-white bg-blue-500 hover:scale-105 shadow cursor-pointer focus:outline-none transition"
+                        aria-label="문제 수 증가"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth="2.5"
+                          stroke="currentColor"
+                          className="w-6 h-6"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </button>
+                    </div>
 
-                  {/* 증가 버튼 */}
-                  <button
-                    onMouseDown={handleIncrementMouseDown}
-                    onMouseUp={handleMouseUp}
-                    onMouseLeave={handleMouseUp}
-                    onTouchStart={handleIncrementMouseDown}
-                    onTouchEnd={handleMouseUp}
-                    className="rounded-full p-2 text-white bg-blue-500 hover:scale-105 shadow cursor-pointer focus:outline-none transition"
-                    aria-label="문제 수 증가"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="2.5"
-                      stroke="currentColor"
-                      className="w-6 h-6"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </button>
-                </div>
-
-                <p className="mr-2 text-lg font-bold">문제 </p>
-                <p className="text-2xl font-bold">
-                  / 총 {toSolveCount + solvedCount}문제
-                </p>
-              </div>
+                    <p className="mr-2 text-lg font-bold">문제 </p>
+                    <p className="text-2xl font-bold">
+                      / 총 {toSolveCount + solvedCount}문제
+                    </p>
+                  </div>
+                </>
+              )}
             </>
           )}
         </div>
 
         <div>
-          {totalRecommendToday === 0 ? (
+          {!hasQuestions ? (
             /* 추천 문제가 없는 경우: 문제 생성 버튼 표시 */
             <button
               onClick={goToQuestions}
@@ -306,7 +327,7 @@ const ProblemRecommendation = ({
             </button>
           ) : (
             /* 추천 문제가 있고, 아직 풀어야 할 문제가 있는 경우에만 문제풀기 버튼 표시 */
-            problemsToSolveToday.length !== 0 && (
+            totalRecommendToday !== 0 && (
               <button
                 className="w-[300px] h-10 bg-blue-500 rounded-lg text-white font-bold hover:scale-105 transition"
                 onClick={handleSolveClick}

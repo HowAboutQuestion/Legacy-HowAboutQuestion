@@ -277,11 +277,13 @@ const Dashboard = () => {
     return <Loading />;
   }
 
+  const hasQuestions = questions.length>0;
+
   return (
     <main className="ml-20 p-5 flex flex-col gap-4 flex-1">
       {/* 문제 추천 섹션 */}
       <ProblemRecommendation
-
+        hasQuestions={hasQuestions}
         totalRecommendToday={todayProblemsToSolve.length}
         toSolveCount={todayProblemsToSolve.length}
         solvedCount={solvedCount}
