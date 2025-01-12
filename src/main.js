@@ -1,14 +1,12 @@
 require("dotenv").config();
 
 const { app, BrowserWindow, ipcMain, dialog } = require("electron");
-
 const path = require('path');
 const fs = require('fs');
 const Papa = require('papaparse');
 const archiver = require("archiver");
 const os = require('os');
 const extract = require('extract-zip'); // 압축 해제 모듈
-
 
 const questionsCsvPath = process.env.QUESTIONS_PATH; 
 const historyCsvPath = process.env.HISTORY_PATH; 
@@ -41,7 +39,6 @@ function readQuestionsCSV() {
     }
 
     const csvFile = fs.readFileSync(csvPath, 'utf-8');
-//    console.log(csvFile);
     var questions = [];
     const tagSet = new Set();
 
@@ -50,7 +47,6 @@ function readQuestionsCSV() {
       skipEmptyLines: true, // 빈 줄 무시
       complete: (result) => {
         questions = result.data.map((item, index) => {
-
           if(item.tag) item.tag = (item.tag).split(",").map((t) => t.trim());
           else item.tag = [];
 
@@ -252,7 +248,7 @@ function updateQuestion(title, type, isCorrect) {
     const newCsv = Papa.unparse(updatedData);
     fs.writeFileSync(csvPath, newCsv, 'utf-8');
 
-    updateHistory(isCorrect);
+    // updateHistory(isCorrect);
 
     console.log(`질문 '${title}'이(가) 성공적으로 업데이트되었습니다.`);
     return { success: true, message: '질문이 성공적으로 업데이트되었습니다.' };
@@ -353,6 +349,16 @@ ipcMain.handle('update-recommend-dates', async () => {
 ipcMain.handle('update-question', async (event, { title, type, isCorrect }) => {
   return updateQuestion(title, type, isCorrect);
 });
+
+ipcMain.handle('update-history', async (event, { isCorrect }) => {
+  try {
+    updateHistory(isCorrect);
+    return { success: true, message: 'history.csv가 성공적으로 업데이트되었습니다.' };
+  } catch (error) {
+    return { success: false, message: error.message };
+  }
+});
+
 
 function readHistoryCSV() {
   try {
