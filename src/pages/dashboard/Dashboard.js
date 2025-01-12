@@ -46,26 +46,44 @@ const Dashboard = () => {
   const [recommendedQuestions, setRecommendedQuestions] = useState([]);
   
   useEffect(() => {
-      // 내부에서 카운트 하기
+    let solved = 0; // 오늘 푼 문제 카운트
+  
     const filtered = questions.map((question) => {
       console.log("recoil question :", question);
-      console.log("question :",question.recommenddate);
-        
-        const recommendDate = question.recommenddate;
-        const solvedDate = question.solveddate ? question.solveddate : null;
-
-        // recommenddate가 오늘이고, solveddate가 없거나 오늘이 아닌 경우
-        const isRecommendToday = isSameDay(recommendDate, today);
-        const isNotSolvedToday = !solvedDate || !isSameDay(solvedDate, today);
-
-        // updateDate가 오늘보다 이전인 경우
-        const updateDate = question.update;
-        const isUpdateBeforeToday = isBefore(updateDate, today);
-        if((isRecommendToday && isNotSolvedToday) || isUpdateBeforeToday) return question;
-      
-    }).filter(item => item)
-    setRecommendedQuestions(filtered)
-  }, [questions]);
+      console.log("question :", question.recommenddate);
+  
+      const recommendDate = question.recommenddate;
+      const solvedDate = question.solveddate ? question.solveddate : null;
+  
+      // recommenddate가 오늘이고, solveddate가 없거나 오늘이 아닌 경우
+      const isRecommendToday = isSameDay(recommendDate, today);
+      const isNotSolvedToday = !solvedDate || !isSameDay(solvedDate, today);
+  
+      // updateDate가 오늘보다 이전인 경우
+      const updateDate = question.update;
+      const isUpdateBeforeToday = isBefore(updateDate, today);
+  
+      // solveddate가 오늘인 경우 solved 카운트 증가
+      if (solvedDate && isSameDay(solvedDate, today)) {
+        solved += 1;
+      }
+  
+      // 필터링 조건에 맞는 질문 반환
+      if ((isRecommendToday && isNotSolvedToday) || isUpdateBeforeToday) {
+        return question;
+      }
+    }).filter((item) => item);
+  
+    // 추천 질문 상태 업데이트
+    setRecommendedQuestions(filtered);
+  
+    // 오늘 푼 문제 수 업데이트
+    setSolvedCount(solved);
+  
+    console.log("Filtered Questions:", filtered);
+    console.log("Solved Count:", solved);
+  }, [questions, today]);
+  
 
   // console.log("Dashboard Questions : ", questions);
 
@@ -104,9 +122,9 @@ const Dashboard = () => {
     loadData();
   }, setHistoryData);
 
-  /**
-   * 풀어야 할 문제들 필터링
-   */
+
+  //  풀어야 할 문제들 필터링
+   
   // const problemsToSolve = useMemo(() => {
   //   return recommendedQuestions.filter((question) => {
 
@@ -125,7 +143,6 @@ const Dashboard = () => {
       const solvedDate = question.solveddate ? question.solveddate : null;
 
       let toSolve = 0;
-      let solved = 0;
 
       const isRecommendToday = isSameDay(recommendDate, today);
 
@@ -134,23 +151,24 @@ const Dashboard = () => {
           toSolve += 1;
         }
         if (solvedDate && isSameDay(solvedDate, today)) {
-          solved += 1;
+          // solved += 1;
         }
       } else if (isBefore(recommendDate, today)) {
         toSolve += 1;
       }
       
       const isNotSolvedToday = !solvedDate || !isSameDay(solvedDate, today);
-      setToSolveCount(toSolve);
-      setSolvedCount(solved);    
-      console.log("toSolve : ", toSolve, "solved", solved );
+
+      // setSolvedCount(solved);    
+      // console.log("toSolve : ", toSolve, "solved", solved );
 
       if(isRecommendToday && isNotSolvedToday) return question;
     }).filter(item => item);
 
     setTodayProblemsToSolve(filtered);
+    setToSolveCount(filtered.length);
 
-    console.log("recommendedQuestions : ", recommendedQuestions,"todayProblemsToSolve : ", todayProblemsToSolve,);
+    console.log("filtered : ", filtered);
     
   }, [recommendedQuestions, today])
   
@@ -207,7 +225,7 @@ const Dashboard = () => {
   
   //  총 추천 문제 수를 풀어야 할 문제 수와 푼 문제 수의 합으로 설정 
   const totalRecommendToday = useMemo(() => toSolveCount + solvedCount, [toSolveCount, solvedCount]);
-
+  console.log("toSolveCount : ", toSolveCount, "solvedCount :",solvedCount);
   
   //  풀어야 할 문제들 배열로 전달
   const problemsToSolveTodayArray = useMemo(() => todayProblemsToSolve, [todayProblemsToSolve]);
@@ -215,6 +233,7 @@ const Dashboard = () => {
 
   // 총 추천 문제 수
   const totalProblems = useMemo(() => totalRecommendToday, [totalRecommendToday]);
+  
 
   
   // 이미 푼 문제 수 (완료된 문제 수)
