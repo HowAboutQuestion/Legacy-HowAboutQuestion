@@ -2,15 +2,18 @@ import React, { useState } from "react";
 import Single from './Single';
 import Multiple from './Multiple';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { questionsAtom } from 'state/data';
 import QuestionNav from 'pages/solve/QuestionNav';
+import { addDays, format } from 'date-fns'; // date-fns 함수 추가
 
 function Solve() {
   const location = useLocation();
   const navigate = useNavigate();
   const allQuestions = useRecoilValue(questionsAtom); // Recoil에서 모든 문제 가져오기
+  const setRecoilQuestions = useSetRecoilState(questionsAtom); // Recoil 상태 업데이트 함수
   const [navCollapse, setNavCollapse] = useState(false);
+  const today = new Date(); // 오늘 날짜 객체
 
   // 네비게이션을 통해 전달된 문제 집합 확인
   const passedQuestions = location.state?.questions || allQuestions; // 전달된 문제가 없으면 모든 문제 사용
@@ -48,27 +51,78 @@ function Solve() {
   };
 
   const submit = async () => {
-    // 모든 질문에 대해 업데이트 호출
+    // 오늘 날짜를 'YYYY-MM-DD' 형식으로 포맷
+    const formattedToday = format(today, 'yyyy-MM-dd');
+
+    // 모든 질문에 대해 level, updateDate, solveddate 업데이트 및 history 업데이트
     const updatedData = [];
+
     for (let i = 0; i < answers.length; i++) {
       const question = answers[i];
       const isCorrect = question.answer === question.selected;
-      const response = await window.electronAPI.updateQuestion({
-        title: question.title,
-        type: question.type,
-        isCorrect: isCorrect,
-      });
-      
-      if (response.success && response.updatedQuestion) {
-        updatedData.push(response.updatedQuestion);
+      let newLevel = question.level ? parseInt(question.level, 10) : 0;
+
+      if (isCorrect) {
+        newLevel = Math.min(newLevel + 1, 3); // 레벨 증가 (최대 3)
       } else {
-        console.error(`질문 "${question.title}" 업데이트 실패: ${response.message}`);
-        // 업데이트 실패한 경우 원래의 질문을 유지
-        updatedData.push(question);
+        newLevel = Math.max(newLevel - 1, 0); // 레벨 감소 (최소 0)
+      }
+
+      // 레벨에 따른 추가 일수 계산
+      let daysToAdd;
+      switch (newLevel) {
+        case 0:
+          daysToAdd = 1;
+          break;
+        case 1:
+          daysToAdd = 2;
+          break;
+        case 2:
+          daysToAdd = 3;
+          break;
+        case 3:
+        default:
+          daysToAdd = 4;
+          break;
+      }
+
+      // 새로운 updateDate 계산
+      const newUpdateDate = format(addDays(today, daysToAdd), 'yyyy-MM-dd');
+
+      // solveddate 포맷
+      const solvedDateFormatted = formattedToday;
+
+      // 업데이트된 질문 객체 생성
+      const updatedQuestion = {
+        ...question,
+        level: newLevel.toString(),
+        update: newUpdateDate,
+        solveddate: solvedDateFormatted,
+      };
+
+      updatedData.push(updatedQuestion);
+
+      // history 업데이트 호출
+      try {
+        const historyResponse = await window.electronAPI.updateHistory({ isCorrect: isCorrect });
+        if (!historyResponse.success) {
+          console.error(`history.csv 업데이트 실패: ${historyResponse.message}`);
+        }
+      } catch (error) {
+        console.error('history.csv 업데이트 중 오류:', error);
       }
     }
 
     setUpdatedQuestions(updatedData);
+
+    // Recoil 상태 업데이트: 기존 상태와 병합하여 업데이트된 질문 반영
+    setRecoilQuestions((prevQuestions) => {
+      const updatedQuestionsMap = updatedData.reduce((acc, q) => {
+        acc[q.id] = q;
+        return acc;
+      }, {});
+      return prevQuestions.map((q) => updatedQuestionsMap[q.id] || q);
+    });
 
     navigate('/solve/result', {
       state: { answers: updatedData, tags: passedTags }, // 업데이트된 질문 데이터를 전달

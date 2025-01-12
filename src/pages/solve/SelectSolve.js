@@ -1,16 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { questionsAtom, allTagAtom, selectedTagsAtom, selectedQuestionsAtom } from "state/data";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+
 
 function SelectSolve() {
   // Recoil에서 모든 문제와 태그 가져오기
   const allQuestions = useRecoilValue(questionsAtom);
   const allTag = useRecoilValue(allTagAtom);
-  const selectedTags = useRecoilValue(selectedTagsAtom); // Recoil 아톰에서 선택된 태그 가져오기
-  const selectedQuestions = useRecoilValue(selectedQuestionsAtom); // Recoil 아톰에서 선택된 문제들 가져오기
-  const setSelectedTags = useSetRecoilState(selectedTagsAtom); // 선택된 태그 설정 함수
-  const setSelectedQuestions = useSetRecoilState(selectedQuestionsAtom); // 선택된 문제들 설정 함수
+  const location = useLocation();
+  const {
+    selectedTags: initialSelectedTags = [],
+    selectedQuestions: initialSelectedQuestions = [],
+  } = location.state || {};
+  
+  const [selectedTags, setSelectedTags] = useState(initialSelectedTags);
+  const [selectedQuestions, setSelectedQuestions] = useState(initialSelectedQuestions);
+
+  
   const navigate = useNavigate();
 
   const [filterQuestions, setFilterQuestions] = useState([]);
@@ -109,8 +116,8 @@ function SelectSolve() {
     });
 
     // 선택된 태그와 문제 초기화
-    setSelectedTags([]);
-    setSelectedQuestions([]);
+    // setSelectedTags([]);
+    // setSelectedQuestions([]);
   };
 
   /**
@@ -129,8 +136,8 @@ function SelectSolve() {
     });
 
     // 선택된 태그와 문제 초기화
-    setSelectedTags([]);
-    setSelectedQuestions([]);
+    // setSelectedTags([]);
+    // setSelectedQuestions([]);
   };
 
   return (
