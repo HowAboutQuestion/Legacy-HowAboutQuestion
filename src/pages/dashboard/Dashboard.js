@@ -3,28 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { isSameDay, isBefore, addDays } from "date-fns";
 import { useRecoilState, useRecoilValue } from "recoil";
 
-
-/*
-추천 총 문제는 가지고 있어야됨 -> 학습진도 계산용
-
-문제 풀때마다 추천 총 문제 변하게 하기 (바뀜)
-
-값 넘길때 어쩌구 하기
-
-
----------------------------------------------------------------------------
-
-히스토리 반영 -> 문제 풀때 잘 반영될 수 있도록 수정
-
-뭐요
-
-"방청소"
-
-
-
-*/
-
-//문제 1000
 import { historyDataAtom, questionsAtom } from "state/data";
 
 import {
@@ -105,52 +83,6 @@ const Dashboard = () => {
   const [toSolveCount, setToSolveCount] = useState(0); // 풀어야 할 문제 수
   const [solvedCount, setSolvedCount] = useState(0); // 푼 문제 수
 
-  // 문제 추천 데이터 로드 함수
-  // const loadRecommendedQuestions = useCallback(async () => {
-  //   try {
-
-  //     const questionsResult = [...questions];
-
-  //     if (questionsResult.success) {
-  //       const questions = questionsResult.questions;
-  //       const tagSet = new Set(questionsResult.allTag);
-  //       setRecommendedQuestions(questions);
-
-  //       let toSolve = 0;
-  //       let solved = 0;
-
-
-  //       //set 사용
-
-
-  //       questions.forEach((item) => {
-        //   const recommendDate = parseISO(item.recommenddate);
-        //   const solvedDate = item.solveddate ? parseISO(item.solveddate) : null;
-
-        //   if (isSameDay(recommendDate, today)) {
-        //     if (!solvedDate || !isSameDay(solvedDate, today)) {
-        //       toSolve += 1;
-        //     }
-        //     if (solvedDate && isSameDay(solvedDate, today)) {
-        //       solved += 1;
-        //     }
-        //   } else if (isBefore(recommendDate, today)) {
-        //     toSolve += 1;
-        //   }
-        // });
-
-        // setToSolveCount(toSolve);
-        // setSolvedCount(solved);
-  //     } else {
-  //       console.error('문제 데이터를 불러오는 중 오류 발생:', questionsResult.message);
-  //     }
-  //   } catch (error) {
-  //     console.error('문제 데이터를 불러오는 중 오류 발생:', error);
-  //   } finally {
-  //     setLoadingRecommendations(false);
-  //   }
-  // }, [today, setRecommendedQuestions]);
-
   // 히스토리 데이터 및 추천 문제 데이터 로드 
   useEffect(() => {
     const loadData = async () => {
@@ -167,9 +99,6 @@ const Dashboard = () => {
       } finally {
         setLoadingHistory(false);
       }
-
-      // Load recommended questions
-      // loadRecommendedQuestions();
     };
 
     loadData();
@@ -191,9 +120,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const filtered = recommendedQuestions.map((question) => {
-      console.log("recommendedQuestions item : ", question);
-   
-
+      
       const recommendDate = question.recommenddate;
       const solvedDate = question.solveddate ? question.solveddate : null;
 
@@ -216,6 +143,7 @@ const Dashboard = () => {
       const isNotSolvedToday = !solvedDate || !isSameDay(solvedDate, today);
       setToSolveCount(toSolve);
       setSolvedCount(solved);    
+      console.log("toSolve : ", toSolve, "solved", solved );
 
       if(isRecommendToday && isNotSolvedToday) return question;
     }).filter(item => item);
@@ -223,19 +151,8 @@ const Dashboard = () => {
     setTodayProblemsToSolve(filtered);
 
     console.log("recommendedQuestions : ", recommendedQuestions,"todayProblemsToSolve : ", todayProblemsToSolve,);
+    
   }, [recommendedQuestions, today])
-
-  // return recommendedQuestions.filter((question) => {
-  //   const recommendDate = parseISO(question.recommenddate);
-  //   const solvedDate = question.solveddate ? parseISO(question.solveddate) : null;
-
-  //   const isRecommendToday = isSameDay(recommendDate, today);
-  //   const isNotSolvedToday = !solvedDate || !isSameDay(solvedDate, today);
-
-  //   return isRecommendToday && isNotSolvedToday;
-  // });
-  // }, [recommendedQuestions, today]);
-
   
   //  차트 데이터 상태 관리
   const chartData = useMemo(() => {
