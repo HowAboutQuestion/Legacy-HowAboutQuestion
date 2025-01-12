@@ -3,28 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { isSameDay, isBefore, addDays } from "date-fns";
 import { useRecoilState, useRecoilValue } from "recoil";
 
-
-/*
-추천 총 문제는 가지고 있어야됨 -> 학습진도 계산용
-
-문제 풀때마다 추천 총 문제 변하게 하기 (바뀜)
-
-값 넘길때 어쩌구 하기
-
-
----------------------------------------------------------------------------
-
-히스토리 반영 -> 문제 풀때 잘 반영될 수 있도록 수정
-
-뭐요
-
-"방청소"
-
-
-
-*/
-
-//문제 1000
 import { historyDataAtom, questionsAtom } from "state/data";
 
 import {
@@ -121,9 +99,6 @@ const Dashboard = () => {
       } finally {
         setLoadingHistory(false);
       }
-
-      // Load recommended questions
-      // loadRecommendedQuestions();
     };
 
     loadData();
@@ -145,9 +120,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const filtered = recommendedQuestions.map((question) => {
-      console.log("recommendedQuestions item : ", question);
-   
-
+      
       const recommendDate = question.recommenddate;
       const solvedDate = question.solveddate ? question.solveddate : null;
 
@@ -170,6 +143,7 @@ const Dashboard = () => {
       const isNotSolvedToday = !solvedDate || !isSameDay(solvedDate, today);
       setToSolveCount(toSolve);
       setSolvedCount(solved);    
+      console.log("toSolve : ", toSolve, "solved", solved );
 
       if(isRecommendToday && isNotSolvedToday) return question;
     }).filter(item => item);
@@ -177,6 +151,7 @@ const Dashboard = () => {
     setTodayProblemsToSolve(filtered);
 
     console.log("recommendedQuestions : ", recommendedQuestions,"todayProblemsToSolve : ", todayProblemsToSolve,);
+    
   }, [recommendedQuestions, today])
   
   //  차트 데이터 상태 관리
