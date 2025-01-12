@@ -1,8 +1,5 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
-import { selectedTagsAtom, selectedQuestionsAtom } from "state/data"; // 새로운 아톰 가져오기
-
 
 const ProblemRecommendation = ({
   totalRecommendToday,
@@ -14,13 +11,13 @@ const ProblemRecommendation = ({
   goToQuestions,
 }) => {
   const navigate = useNavigate();
-  const setSelectedTags = useSetRecoilState(selectedTagsAtom); // Recoil 아톰 설정 함수
-  const setSelectedQuestions = useSetRecoilState(selectedQuestionsAtom); // 선택된 문제 아톰 설정 함수
 
-  /**
-   * 배열을 랜덤으로 섞는 헬퍼 함수
-   * Fisher-Yates (Knuth) 셔플 알고리즘 사용
-   */
+  // 문제 테그 관리
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedQuestions, setSelectedQuestions] = useState([]);
+
+  
+   //배열을 랜덤으로 섞는 헬퍼 함수 
   const shuffleArray = (array) => {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -30,10 +27,9 @@ const ProblemRecommendation = ({
     return shuffled;
   };
 
-  /**
-   * "문제풀기" 버튼 클릭 핸들러
-   * 원하는 수만큼의 문제를 랜덤으로 선택하고 SelectSolve로 이동
-   */
+  
+   // "문제풀기" 버튼 클릭 핸들러
+   
   const handleSolveClick = () => {
     let count = Number(selectedProblemCount);
 
@@ -55,37 +51,43 @@ const ProblemRecommendation = ({
     const selectedProblems = shuffledProblems.slice(0, count);
 
     // 선택된 문제들의 태그 추출 및 중복 제거
-    const selectedTags = Array.from(
+    const tags = Array.from(
       new Set(selectedProblems.flatMap((q) => q.tag))
     );
 
-    // Recoil 상태에 선택된 태그와 문제 저장
-    setSelectedTags(selectedTags);
-    setSelectedQuestions(selectedProblems);
+    const updatedTags = tags;
+    const updatedQuestions = selectedProblems;
+    
 
-    // Navigate to SelectSolve 페이지로 이동
-    navigate("/select"); 
+    //선택된 문제/태그 저장
+    setSelectedTags(updatedTags);
+    setSelectedQuestions(updatedQuestions);
+
+    // 이후에 문제 풀이 페이지로 이동
+    navigate("/select", {
+      state: {
+        selectedTags: updatedTags, 
+        selectedQuestions: updatedQuestions, 
+      },
+    });
   };
 
-  /**
-   * 문제 수를 증가시키는 함수
-   */
+  
+  // 문제 수를 증가시키는 함수
   const incrementProblemCount = () => {
     setSelectedProblemCount((prev) =>
       prev < problemsToSolveToday.length ? prev + 1 : prev
     );
   };
 
-  /**
-   * 문제 수를 감소시키는 함수
-   */
+  
+  // 문제 수를 감소시키는 함수
   const decrementProblemCount = () => {
     setSelectedProblemCount((prev) => (prev > 1 ? prev - 1 : prev));
   };
 
-  /**
-   * 문제 수를 직접 입력할 때의 핸들러
-   */
+
+  //  문제 수를 직접 입력할 때의 핸들러
   const handleInputChange = (e) => {
     const value = e.target.value;
 
@@ -118,7 +120,7 @@ const ProblemRecommendation = ({
 
   // 지속적인 증가를 처리하는 함수
   const handleIncrementMouseDown = () => {
-    incrementProblemCount(); // 즉시 증가
+    incrementProblemCount(); // 즉시 1회 증가
 
     // 이미 타이머가 실행 중인 경우 중단
     if (incrementTimeoutRef.current || incrementIntervalRef.current) return;
@@ -134,7 +136,7 @@ const ProblemRecommendation = ({
 
   // 지속적인 감소를 처리하는 함수
   const handleDecrementMouseDown = () => {
-    decrementProblemCount(); // 즉시 감소
+    decrementProblemCount(); // 즉시 1회 감소
 
     // 이미 타이머가 실행 중인 경우 중단
     if (decrementTimeoutRef.current || decrementIntervalRef.current) return;
@@ -148,7 +150,7 @@ const ProblemRecommendation = ({
     }, 200); // 초기 지연 시간 200ms
   };
 
-  // 타이머를 정리하는 함수
+  // 마우스/터치 해제 시 타이머 정리
   const handleMouseUp = () => {
     // 증가 관련 타이머 정리
     if (incrementTimeoutRef.current) {
@@ -181,7 +183,6 @@ const ProblemRecommendation = ({
       if (incrementIntervalRef.current) {
         clearInterval(incrementIntervalRef.current);
       }
-
       // 감소 관련 타이머 정리
       if (decrementTimeoutRef.current) {
         clearTimeout(decrementTimeoutRef.current);
@@ -198,7 +199,6 @@ const ProblemRecommendation = ({
       <div className="flex flex-col items-center bg-neutral-50 p-6 rounded-lg">
         {/* 오늘의 추천 문제 */}
         <div className="w-full text-center mb-4">
-          {/* 추천 문제가 없는 경우 */}
           {totalRecommendToday === 0 ? (
             <>
               {/* 문제 없음 이미지 표시 */}
@@ -215,10 +215,7 @@ const ProblemRecommendation = ({
             </>
           ) : (
             <>
-              {/* 추천 문제가 있는 경우 */}
               <p className="text-2xl font-bold">오늘의 추천 문제</p>
-
-              {/* 문제 수 선택 UI 추가 */}
               <div className="mt-4 flex items-center justify-center space-x-2">
                 <label htmlFor="problemCount" className="mr-2 text-lg font-bold">
                   풀어야 할 문제 수:
@@ -299,8 +296,8 @@ const ProblemRecommendation = ({
         </div>
 
         <div>
-          {/* 추천 문제가 없는 경우: 문제 생성 버튼 표시 */}
           {totalRecommendToday === 0 ? (
+            /* 추천 문제가 없는 경우: 문제 생성 버튼 표시 */
             <button
               onClick={goToQuestions}
               className="w-[300px] h-10 bg-blue-500 rounded-lg text-white font-bold hover:scale-105 transition"
@@ -312,7 +309,7 @@ const ProblemRecommendation = ({
             problemsToSolveToday.length !== 0 && (
               <button
                 className="w-[300px] h-10 bg-blue-500 rounded-lg text-white font-bold hover:scale-105 transition"
-                onClick={handleSolveClick} // 새로운 핸들러 사용
+                onClick={handleSolveClick}
               >
                 문제풀기
               </button>

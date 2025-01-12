@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import { questionsAtom } from "state/data";
-
-
+import { addDays, format } from 'date-fns'; // date-fns 함수 추가
 
 function Card() {  
   const [questionIndex, setQuestionIndex] = useState(0); // 현재 문제의 인덱스
@@ -11,10 +10,10 @@ function Card() {
   const questions = location.state.questions;
   const tags = location.state.tags;
   const navigate = useNavigate();
-  const today = new Date().toISOString().split("T")[0]; // 오늘 날짜
+  const today = new Date(); // 오늘 날짜 객체
+  const formattedToday = format(today, 'yyyy-MM-dd'); // 'YYYY-MM-DD' 형식으로 포맷
 
-
-  //recoil 수정
+  // Recoil 수정
   const setRecoilQuestions = useSetRecoilState(questionsAtom);
 
   const [showAnswer, setShowAnswer] = useState(false);
@@ -31,7 +30,34 @@ function Card() {
     });
   };
 
+  // 레벨에 따른 updateDate 계산 함수
+  const calculateUpdateDate = (currentDate, level) => {
+    let daysToAdd;
+    switch (level) {
+      case 0:
+        daysToAdd = 1;
+        break;
+      case 1:
+        daysToAdd = 2;
+        break;
+      case 2:
+        daysToAdd = 3;
+        break;
+      case 3:
+      default:
+        daysToAdd = 4;
+        break;
+    }
+    return format(addDays(currentDate, daysToAdd), 'yyyy-MM-dd');
+  };
+
   const correct = async () => {
+    // 현재 질문 정보 가져오기
+    const currentQuestion = questions[questionIndex];
+    const currentLevel = currentQuestion.level ? parseInt(currentQuestion.level, 10) : 0;
+    const newLevel = Math.min(currentLevel + 1, 3); // 레벨 증가 (최대 3)
+    const newUpdateDate = calculateUpdateDate(today, newLevel);
+    
     setCorrectCount((prevCount) => {
       const updatedCount = prevCount + 1;
       if (questionIndex === questions.length - 1) {
@@ -43,20 +69,39 @@ function Card() {
     });
     setShowAnswer(false);   
 
+    // Recoil 상태 업데이트: level, updateDate, solveddate 반영
     setRecoilQuestions((prevQuestions) => {
       const updatedQuestions = prevQuestions.map((item) =>
-        item.id === questions[questionIndex].id
-          ? { ...item, 
-            solveddate : today
-           } 
+        item.id === currentQuestion.id
+          ? { 
+              ...item, 
+              level: newLevel.toString(),
+              update: newUpdateDate,
+              solveddate: formattedToday
+            } 
           : item
       );
       return updatedQuestions;
+    });
 
-    })
+    // history.csv 업데이트 호출
+    try {
+      const historyResponse = await window.electronAPI.updateHistory({ isCorrect: true });
+      if (!historyResponse.success) {
+        console.error(historyResponse.message);
+      }
+    } catch (error) {
+      console.error('history.csv 업데이트 중 오류:', error);
+    }
   };
 
-  const wrong = async () => {
+  const wrong = async () => { 
+    // 현재 질문 정보 가져오기
+    const currentQuestion = questions[questionIndex];
+    const currentLevel = currentQuestion.level ? parseInt(currentQuestion.level, 10) : 0;
+    const newLevel = Math.max(currentLevel - 1, 0); // 레벨 감소 (최소 0)
+    const newUpdateDate = calculateUpdateDate(today, newLevel);
+    
     setWrongCount((prevCount) => {
       const updatedCount = prevCount + 1;
       if (questionIndex === questions.length - 1) {
@@ -68,20 +113,29 @@ function Card() {
     });
     setShowAnswer(false);
 
-    // CSV 업데이트: 오답 처리
-    const currentQuestion = questions[questionIndex];
-    try {
-      const response = await window.electronAPI.updateQuestion({
-        title: currentQuestion.title,
-        type: currentQuestion.type,
-        isCorrect: false,
-      });
+    // Recoil 상태 업데이트: level, updateDate, solveddate 반영
+    setRecoilQuestions((prevQuestions) => {
+      const updatedQuestions = prevQuestions.map((item) =>
+        item.id === currentQuestion.id
+          ? { 
+              ...item, 
+              level: newLevel.toString(),
+              update: newUpdateDate,
+              solveddate: formattedToday
+            } 
+          : item
+      );
+      return updatedQuestions;
+    });
 
-      if (!response.success) {
-        console.error(response.message);
+    // history.csv 업데이트 호출
+    try {
+      const historyResponse = await window.electronAPI.updateHistory({ isCorrect: false });
+      if (!historyResponse.success) {
+        console.error(`history.csv 업데이트 실패: ${historyResponse.message}`);
       }
     } catch (error) {
-      console.error('CSV 업데이트 중 오류:', error);
+      console.error('history.csv 업데이트 중 오류:', error);
     }
   };
 
