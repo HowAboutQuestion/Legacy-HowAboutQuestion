@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { questionsAtom, allTagAtom } from "state/data";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import {generateUniqueId} from "utils/util"
+import { getTodayDate } from "utils/formatDate";
 
 
 function InsertModal({setInsertModal}) {
@@ -15,7 +16,8 @@ function InsertModal({setInsertModal}) {
     const [select4, setSelect4] = useState("");
     const [answer, setAnswer] = useState("");
     const [tag, setTag] = useState("");
-    const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+    const [date, setDate] = useState(getTodayDate());
+    console.log("InsertModal date : ", date);
 
     const questions = useRecoilValue(questionsAtom);
     const setQuestions = useSetRecoilState(questionsAtom);
