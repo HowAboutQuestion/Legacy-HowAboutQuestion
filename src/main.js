@@ -15,6 +15,12 @@ const { parseISO, isValid, isBefore, isAfter, format, startOfDay, addDays } = re
 
 let mainWindow;
 
+
+const getTodayDate = () => {
+  const offset = 1000 * 60 * 60 * 9;
+  return new Date((new Date()).getTime() + offset).toISOString().split("T")[0];
+};
+
 function generateUniqueId(questions) {
     const generateRandomId = () => {
         return `id-${Math.random().toString(36).slice(2, 11)}`;
@@ -53,7 +59,6 @@ function readQuestionsCSV() {
           item.tag.forEach((t) => tagSet.add(t)); // 태그 집합에 추가
 
           item.id = generateUniqueId();
-          item.checked = false;
           return item;
         });
       },
@@ -71,7 +76,6 @@ function updateRecommendDates() {
   try {
     const csvPath = questionsCsvPath;
 
-
     if (!fs.existsSync(csvPath)) {
       console.error(`CSV 파일을 찾을 수 없습니다: ${csvPath}`);
       return { success: false, message: 'CSV 파일을 찾을 수 없습니다.' };
@@ -80,30 +84,25 @@ function updateRecommendDates() {
     const csvFile = fs.readFileSync(csvPath, 'utf-8');
     const parsed = Papa.parse(csvFile, { header: true, skipEmptyLines: true });
 
-    const today = startOfDay(new Date()); // 오늘 날짜의 시작 (00:00:00)
-    const formattedToday = format(today, 'yyyy-MM-dd'); // 오늘 날짜를 'yyyy-MM-dd' 형식으로 포맷
+    const today = getTodayDate(); // 수정된 부분
+    const todayDate = parseISO(today); // 오늘 날짜를 Date 객체로 변환
 
     const updatedData = parsed.data.map((row) => {
       const recommendDate = parseISO(row.recommenddate);
       const updateDate = parseISO(row.update);
 
       if (!isValid(recommendDate) || !isValid(updateDate)) {
-        // 유효하지 않은 날짜는 건너뜁니다.
         return row;
       }
 
-      const recommendDateStart = startOfDay(recommendDate);
-      const updateDateStart = startOfDay(updateDate);
-
-      if (isBefore(recommendDateStart, today)) { // recommenddate가 오늘보다 이전인 경우
-        if (isAfter(updateDateStart, today)) { // updateDate가 오늘보다 이후인 경우
-          return { ...row, recommenddate: format(updateDateStart, 'yyyy-MM-dd') };
-        } else { // updateDate가 오늘보다 이전이거나 같은 경우
-          return { ...row, recommenddate: formattedToday };
+      if (isBefore(startOfDay(recommendDate), todayDate)) {
+        if (isAfter(startOfDay(updateDate), todayDate)) {
+          return { ...row, recommenddate: format(updateDate, 'yyyy-MM-dd') };
+        } else {
+          return { ...row, recommenddate: today };
         }
       }
 
-      // recommenddate가 오늘이거나 이후인 경우 변경하지 않음
       return row;
     });
 
@@ -118,19 +117,20 @@ function updateRecommendDates() {
   }
 }
 
+
 // history.csv를 업데이트하는 함수
 function updateHistory(isCorrect) {
   try {
+    const today = getTodayDate(); // 수정된 부분
+
     if (!fs.existsSync(historyCsvPath)) {
-      // history.csv 파일이 없으면 새로 생성
-      const today = format(new Date(), 'yyyy-MM-dd');
       const initialData = [
         {
           date: today,
           solvedCount: 1,
           correctCount: isCorrect ? 1 : 0,
           correctRate: isCorrect ? 100.0 : 0.0,
-        }
+        },
       ];
       const csv = Papa.unparse(initialData);
       fs.writeFileSync(historyCsvPath, csv, 'utf-8');
@@ -138,11 +138,8 @@ function updateHistory(isCorrect) {
       return;
     }
 
-    // history.csv 파일 읽기
     const csvFile = fs.readFileSync(historyCsvPath, 'utf-8');
     const parsed = Papa.parse(csvFile, { header: true, skipEmptyLines: true });
-
-    const today = format(new Date(), 'yyyy-MM-dd');
 
     let rowFound = false;
     const updatedData = parsed.data.map((row) => {
@@ -151,35 +148,30 @@ function updateHistory(isCorrect) {
         if (isCorrect) {
           row.correctCount = parseInt(row.correctCount, 10) + 1;
         }
-        row.correctRate = row.solvedCount > 0 ? ((row.correctCount / row.solvedCount) * 100).toFixed(2) : '0.00';
+        row.correctRate = ((row.correctCount / row.solvedCount) * 100).toFixed(2);
         rowFound = true;
       }
       return row;
     });
 
     if (!rowFound) {
-      // 오늘 날짜에 해당하는 행이 없으면 새로 추가
       updatedData.push({
         date: today,
         solvedCount: 1,
         correctCount: isCorrect ? 1 : 0,
         correctRate: isCorrect ? '100.00' : '0.00',
       });
-      console.log(`history.csv에 새로운 날짜(${today}) 기록이 추가되었습니다.`);
     }
 
-    // CSV 파일 업데이트
     const newCsv = Papa.unparse(updatedData);
     fs.writeFileSync(historyCsvPath, newCsv, 'utf-8');
 
-    if (rowFound) {
-      console.log(`history.csv의 ${today} 날짜 기록이 업데이트되었습니다.`);
-    }
-
+    console.log(`history.csv의 ${today} 날짜 기록이 업데이트되었습니다.`);
   } catch (error) {
     console.error('history.csv 업데이트 중 오류 발생:', error);
   }
 }
+
 
 
 function updateQuestion(title, type, isCorrect) {
@@ -284,7 +276,7 @@ function updateQuestions(questions) {
 ipcMain.handle('update-questions-file', async (event, questions) => {
   const csvPath = questionsCsvPath;
   const csvString = Papa.unparse(questions.map(question => {
-    const {id, checked, ...rest} = question;
+    const {id, ...rest} = question;
     return rest;
   })); // questions를 CSV 형식으로 변환
   fs.writeFileSync(csvPath, csvString, 'utf-8'); // CSV 파일 덮어쓰기
@@ -310,9 +302,7 @@ function createWindow() {
       nodeIntegration: true,
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),
-
     },
-    icon: path.join(__dirname, '../assets/icons/icon.png')
   });
 
   // 빌드 후 index.html 파일 경로

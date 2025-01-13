@@ -21,6 +21,7 @@ import ProblemRecommendation from "./ProblemRecommendation";
 import DashboardStats from "./DashboardStats";
 import HistorySection from "./HistorySection";
 import { formatDate } from "utils/formatDate";
+import { getTodayDate } from "utils/formatDate"; // getTodayDate 함수 가져오기
 
 // Chart.js 등록
 ChartJS.register(
@@ -37,7 +38,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   // 오늘 날짜 상수
-  const today = useMemo(() => new Date(), []);
+  const today = useMemo(() => new Date(getTodayDate()), []);
 
 
   // Recoil 상태 사용
@@ -170,7 +171,7 @@ const Dashboard = () => {
 
     console.log("filtered : ", filtered);
     
-  }, [recommendedQuestions, today])
+  }, [recommendedQuestions, today, questions])
   
   //  차트 데이터 상태 관리
   const chartData = useMemo(() => {
