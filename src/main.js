@@ -59,6 +59,7 @@ function readQuestionsCSV() {
           item.tag.forEach((t) => tagSet.add(t)); // 태그 집합에 추가
 
           item.id = generateUniqueId();
+          item.checked = false;
           return item;
         });
       },
@@ -250,33 +251,33 @@ function updateQuestion(title, type, isCorrect) {
   }
 }
 
-function updateQuestions(questions) {
-  try {  
-    const csvPath = questionsCsvPath;
-    // questions를 CSV 형식으로 변환
-    const newCsv = Papa.unparse(questions, {
-      header: true, // 첫 번째 줄에 헤더 포함
-      columns: [
-        "title", "type", "select1", "select2", "select3", "select4", "answer", 
-        "img", "level", "date", "update", "recommenddate", "solveddate", "tag"
-      ], // 헤더설정
-    });
+// function updateQuestions(questions) {
+//   try {  
+//     const csvPath = questionsCsvPath;
+//     // questions를 CSV 형식으로 변환
+//     const newCsv = Papa.unparse(questions, {
+//       header: true, // 첫 번째 줄에 헤더 포함
+//       columns: [
+//         "title", "type", "select1", "select2", "select3", "select4", "answer", 
+//         "img", "level", "date", "update", "recommenddate", "solveddate", "tag"
+//       ], // 헤더설정
+//     });
 
 
-    fs.writeFileSync(csvPath, newCsv, 'utf-8');
+//     fs.writeFileSync(csvPath, newCsv, 'utf-8');
 
-    return { success: true, message: 'questions가 성공적으로 업데이트되었습니다.' };
-  } catch (error) {
-    console.error('Error updating questions:', error);
-    return { success: false, message: 'questions 업데이트에 실패했습니다.' };
-  }
-}
+//     return { success: true, message: 'questions가 성공적으로 업데이트되었습니다.' };
+//   } catch (error) {
+//     console.error('Error updating questions:', error);
+//     return { success: false, message: 'questions 업데이트에 실패했습니다.' };
+//   }
+// }
 
 // 메인 프로세스에서 CSV 파일만 수정
 ipcMain.handle('update-questions-file', async (event, questions) => {
   const csvPath = questionsCsvPath;
   const csvString = Papa.unparse(questions.map(question => {
-    const {id, ...rest} = question;
+    const {id, checked, ...rest} = question;
     return rest;
   })); // questions를 CSV 형식으로 변환
   fs.writeFileSync(csvPath, csvString, 'utf-8'); // CSV 파일 덮어쓰기
