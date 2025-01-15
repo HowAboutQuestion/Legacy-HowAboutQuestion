@@ -17,12 +17,12 @@ function InsertModal({setInsertModal}) {
     const [answer, setAnswer] = useState("");
     const [tag, setTag] = useState("");
     const [date, setDate] = useState(getTodayDate());
-    console.log("InsertModal date : ", date);
 
     const questions = useRecoilValue(questionsAtom);
     const setQuestions = useSetRecoilState(questionsAtom);
     const setAlltag = useSetRecoilState(allTagAtom);
-    
+    console.log(questions)
+
 
     //이미지 업로드
     const [thumbnail, setThumbnail] = useState(null);
@@ -78,7 +78,24 @@ function InsertModal({setInsertModal}) {
         id: generateUniqueId(questions),
         tag: tags,
       };
-    
+
+      let selectedAnswer;
+      if(type === "객관식"){
+        selectedAnswer = document.querySelector('input[name="answer"]:checked');
+
+        if(!selectedAnswer){
+          alert("객관식 답안을 설정해주세요");
+          return;
+        }
+
+        question.answer = selectedAnswer.value;
+
+      }
+      
+      
+
+     
+
       // 이미지가 있는 경우 처리
       if (imageFile) {
         try {
@@ -173,7 +190,7 @@ function InsertModal({setInsertModal}) {
                           <input
                             type="radio"
                             name="answer"
-                            onChange={() => setAnswer(select1)}
+                            value={select1}
                           />
                           <input
                             type="text"
@@ -187,7 +204,7 @@ function InsertModal({setInsertModal}) {
                           <input
                             type="radio"
                             name="answer"
-                            onChange={() => setAnswer(select2)}
+                            value={select2}
                           />
                           <input
                             type="text"
@@ -203,7 +220,8 @@ function InsertModal({setInsertModal}) {
                           <input
                             type="radio"
                             name="answer"
-                            onChange={() => setAnswer(select3)}
+                            value={select3}
+                            
                           />
                           <input
                             type="text"
@@ -217,7 +235,7 @@ function InsertModal({setInsertModal}) {
                           <input
                             type="radio"
                             name="answer"
-                            onChange={() => setAnswer(select4)}
+                            value={select4}
                           />
                           <input
                             type="text"
