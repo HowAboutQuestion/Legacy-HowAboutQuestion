@@ -2,18 +2,17 @@ import React, {useState, useEffect} from 'react';
 import { questionsAtom, allTagAtom } from "state/data";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import QuestionItem from 'pages/question/QuestionItem';
-import Papa from "papaparse";
 import UpdateModal from 'pages/question/UpdateModal';
 import { useLocation } from "react-router-dom";
-import {generateUniqueId} from "utils/util"
 import InsertModal from './InsertModal';
+
 
 function Questions() {
     const location = useLocation(); 
     //모든 문제 전역에서 불러오기
     const questions = useRecoilValue(questionsAtom);
     const setQuestions = useSetRecoilState(questionsAtom);
-    const setAlltag = useSetRecoilState(allTagAtom);
+    //const setAlltag = useSetRecoilState(allTagAtom);
         
     const [filterQuestions, setFilterQuestions] = useState([]);
 
@@ -53,106 +52,87 @@ function Questions() {
     );
   });
 
-  //태그 필터링 이벤트트
-  useEffect(() => {
-    if (selectedTag.length === 0) {
-      setFilterQuestions(questions.map((question, index) => ({ question, index })));
-      return;
-    }
-  
-    const filtered = questions
-      .map((question, index) => ({ question, index })) // 각 질문과 인덱스를 묶음
-      .filter(({ question }) =>
-        question.tag.some((tag) => selectedTag.includes(tag))
-      );
-    setFilterQuestions(filtered);
-  }, [questions, selectedTag]); // 의존성 배열에 `selectedTag`와 `questions` 추가
-  
+    //태그 필터링 이벤트트
+    useEffect(() => {
+      if (selectedTag.length === 0) {
+        setFilterQuestions(questions.map((question, index) => ({ question, index })));
+        return;
+      }
+    
+      const filtered = questions
+        .map((question, index) => ({ question, index })) // 각 질문과 인덱스를 묶음
+        .filter(({ question }) =>
+          question.tag.some((tag) => selectedTag.includes(tag))
+        );
+      setFilterQuestions(filtered);
+    }, [questions, selectedTag]); // 의존성 배열에 `selectedTag`와 `questions` 추가
+    
 
     //csv 파일 업로드 이벤트
-    const insertCSV = async (file) => {
-      try {
-        const response = await fetch(file);
-        if (!response.ok) throw new Error("CSV 파일을 찾을 수 없습니다.");
+    // const insertCSV = async (file) => {
+    //   try {
+    //     const response = await fetch(file);
+    //     if (!response.ok) throw new Error("CSV 파일을 찾을 수 없습니다.");
   
-        const csvText = await response.text();
+    //     const csvText = await response.text();
   
-        Papa.parse(csvText, {
-          header: true, // 첫 줄을 헤더로 사용
-          skipEmptyLines: true, // 빈 줄 무시
-          complete: (result) => {
-            const tagSet = new Set(); // 태그 중복 제거용
-            const today = new Date().toISOString().split("T")[0]; // 오늘 날짜
+    //     Papa.parse(csvText, {
+    //       header: true, // 첫 줄을 헤더로 사용
+    //       skipEmptyLines: true, // 빈 줄 무시
+    //       complete: (result) => {
+    //         const tagSet = new Set(); // 태그 중복 제거용
+    //         const today = new Date().toISOString().split("T")[0]; // 오늘 날짜
   
-            const parsedData = result.data.map((item, index) => {
+    //         const parsedData = result.data.map((item, index) => {
               
-              // tag가 문자열 형태로 존재하면 리스트로 변환
-              if(item.tag){
-                item.tag = (item.tag).split(",").map((t) => t.trim());
-              }else{
-                item.tag = [];
-              }
+    //           // tag가 문자열 형태로 존재하면 리스트로 변환
+    //           if(item.tag){
+    //             item.tag = (item.tag).split(",").map((t) => t.trim());
+    //           }else{
+    //             item.tag = [];
+    //           }
               
-              item.tag.forEach((tag) => tagSet.add(tag)); // 태그 중복 제거
+    //           item.tag.forEach((tag) => tagSet.add(tag)); // 태그 중복 제거
   
-              // 필요한 필드만 유지, 기본값 설정
-              return {
-                title: item.title || "",
-                type: item.type || "",
-                select1: item.select1 || "",
-                select2: item.select2 || "",
-                select3: item.select3 || "",
-                select4: item.select4 || "",
-                answer: item.answer || "",
-                img: item.img || "",
-                level: 0, // 기본값
-                date: today, // 오늘 날짜
-                recommenddate:today,
-                update:today,
-                solveddate:null,
-
-                tag: item.tag || [],
-                id: generateUniqueId(questions)+index
-              };
-            });
+    //           // 필요한 필드만 유지, 기본값 설정
+    //           return {
+    //             title: item.title || "",
+    //             type: item.type || "",
+    //             select1: item.select1 || "",
+    //             select2: item.select2 || "",
+    //             select3: item.select3 || "",
+    //             select4: item.select4 || "",
+    //             answer: item.answer || "",
+    //             img: item.img || "",
+    //             level: 0, // 기본값
+    //             date: today, // 오늘 날짜
+    //             recommenddate:today,
+    //             update:today,
+    //             solveddate:null,
+    //             checked:false,
+    //             tag: item.tag || [],
+    //             id: generateUniqueId(questions)+index
+    //           };
+    //         });
   
-            // 기존 questions 배열에 새 데이터를 추가
-            setQuestions([...parsedData, ...questions]);
-            //setAlltag([...tagSet, ...allTag]);
+    //         // 기존 questions 배열에 새 데이터를 추가
+    //         setQuestions([...parsedData, ...questions]);
+    //         //setAlltag([...tagSet, ...allTag]);
 
-          },
-        });
-      } catch (error) {
-        console.error("CSV 파일 읽기 실패:", error);
-      }
-    };
+    //       },
+    //     });
+    //   } catch (error) {
+    //     console.error("CSV 파일 읽기 실패:", error);
+    //   }
+    // };
 
-    async function handleDelete(imagePath) {
-      console.log("handleDelete function imagePath : ", imagePath);
-      try {
-        const result = await window.electronAPI.deleteImage(imagePath);
-        if (result.success) {
-          console.log(result.message);
-          alert('이미지가 성공적으로 삭제되었습니다.');
-        } else {
-          console.error(result.message);
-          alert(result.message);
-        }
-      } catch (error) {
-        console.error('삭제 중 오류 발생:', error);
-        alert('이미지 삭제 중 오류가 발생했습니다.');
-      }
-    }
-
-    
-    
-    const handleFileUpload = (event) => {
-    const file = event.target.files[0]; // 사용자가 업로드한 파일
-    if (file) {
-      const fileUrl = URL.createObjectURL(file); // 파일 URL 생성
-      insertCSV(fileUrl); // insertQuestion 함수 호출
-      }
-    };
+    // const handleFileUpload = (event) => {
+    // const file = event.target.files[0]; // 사용자가 업로드한 파일
+    // if (file) {
+    //   const fileUrl = URL.createObjectURL(file); // 파일 URL 생성
+    //   insertCSV(fileUrl); // insertQuestion 함수 호출
+    //   }
+    // };
 
    //.zip 업로드 핸들러 
    const handleZipUpload = async (event) => {
@@ -173,46 +153,46 @@ function Questions() {
 
 
     //.csv 만 다운로드
-    const handleDownload = () => {
-      const downloadQuestions = filterQuestions.some(({index, question}) => question.checked)
-        ? filterQuestions
-            .filter(({index, question}) => question.checked)  // question.checked가 true인 것만 필터링
-            .map(({index, question}) => {
-                const { checked, ...rest } = question; 
-                return rest;
-              })
-        : filterQuestions
-            .map(({index, question}) => {
-              const { checked, ...rest } = question;  // checked 제외한 데이터만 추출
-              return rest;
-            });
+    // const handleDownload = () => {
+    //   const downloadQuestions = filterQuestions.some(({index, question}) => question.checked)
+    //     ? filterQuestions
+    //         .filter(({index, question}) => question.checked)  // question.checked가 true인 것만 필터링
+    //         .map(({index, question}) => {
+    //             const { checked, ...rest } = question; 
+    //             return rest;
+    //           })
+    //     : filterQuestions
+    //         .map(({index, question}) => {
+    //           const { checked, ...rest } = question;  // checked 제외한 데이터만 추출
+    //           return rest;
+    //         });
 
 
 
-      const csv = Papa.unparse(downloadQuestions, {
-        header: true, // 첫 번째 줄에 헤더 포함
-        columns: [
-          "title", "type", "select1", "select2", "select3", "select4", "answer", 
-          "img", "level", "date", "update", "recommenddate", "solveddate", "tag"
-        ], // 원하는 헤더 순서 설정
-      });
+    //   const csv = Papa.unparse(downloadQuestions, {
+    //     header: true, // 첫 번째 줄에 헤더 포함
+    //     columns: [
+    //       "title", "type", "select1", "select2", "select3", "select4", "answer", 
+    //       "img", "level", "date", "update", "recommenddate", "solveddate", "tag"
+    //     ], // 원하는 헤더 순서 설정
+    //   });
 
   
-      // Blob을 사용하여 CSV 데이터를 파일로 변환
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    //   // Blob을 사용하여 CSV 데이터를 파일로 변환
+    //   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
   
-      // 다운로드 링크 생성
-      const link = document.createElement("a");
-      if (link.download !== undefined) {
-        const url = URL.createObjectURL(blob);
-        link.setAttribute("href", url);
-        link.setAttribute("download", "questions.csv"); // 다운로드할 파일 이름 설정
-        link.style.visibility = "hidden";
-        document.body.appendChild(link);
-        link.click(); // 다운로드 실행
-        document.body.removeChild(link); // 링크 제거
-      }
-    };
+    //   // 다운로드 링크 생성
+    //   const link = document.createElement("a");
+    //   if (link.download !== undefined) {
+    //     const url = URL.createObjectURL(blob);
+    //     link.setAttribute("href", url);
+    //     link.setAttribute("download", "questions.csv"); // 다운로드할 파일 이름 설정
+    //     link.style.visibility = "hidden";
+    //     document.body.appendChild(link);
+    //     link.click(); // 다운로드 실행
+    //     document.body.removeChild(link); // 링크 제거
+    //   }
+    // };
 
     // .zip 다운로드
     const handleDownloadToZip = async () => {
@@ -238,6 +218,23 @@ function Questions() {
       }
     };
 
+    const handleDelete = async (imagePath) => {
+      console.log("handleDelete function imagePath : ", imagePath);
+      try {
+        const result = await window.electronAPI.deleteImage(imagePath);
+        if (result.success) {
+          //console.log(result.message);
+          //alert('이미지가 성공적으로 삭제되었습니다.');
+        } else {
+          console.error(result.message);
+          //alert(result.message);
+        }
+      } catch (error) {
+        console.error('삭제 중 오류 발생:', error);
+        //alert('이미지 삭제 중 오류가 발생했습니다.');
+      }
+    }
+
     const deleteQuestionsAll = () => {
       if (!window.confirm("진짜 삭제?")) return;
     
@@ -258,7 +255,6 @@ function Questions() {
     
       // 삭제할 이미지를 처리
       deleteImages.forEach((img) => {
-        console.log("deleteImages item", img);
         handleDelete(img); // handleDelete 호출
       });
     
