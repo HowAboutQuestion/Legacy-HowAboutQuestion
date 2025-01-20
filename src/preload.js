@@ -3,13 +3,20 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('electronAPI', {
 
   updateHistory: (data) => ipcRenderer.invoke('update-history', data),
-  saveImage: async (file) => {
+  saveImage: async (id, file) => {
     const reader = new FileReader();
     return new Promise((resolve, reject) => {
       reader.onload = () => {
         const arrayBuffer = reader.result;
+
+        // 파일 확장자
+        const fileExtension = file.name.split('.').pop();
+        const fileName = `${id}.${fileExtension}`; // id 기반 파일 이름 생성
+
+
+
         ipcRenderer
-          .invoke('save-image', { fileName: file.name, content: Buffer.from(arrayBuffer) })
+          .invoke('save-image', {fileName, content: Buffer.from(arrayBuffer) })
           .then(resolve)
           .catch(reject);
       };
