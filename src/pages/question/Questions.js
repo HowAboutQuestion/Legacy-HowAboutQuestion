@@ -126,6 +126,25 @@ function Questions() {
         console.error("CSV 파일 읽기 실패:", error);
       }
     };
+
+    async function handleDelete(imagePath) {
+      console.log("handleDelete function imagePath : ", imagePath);
+      try {
+        const result = await window.electronAPI.deleteImage(imagePath);
+        if (result.success) {
+          console.log(result.message);
+          alert('이미지가 성공적으로 삭제되었습니다.');
+        } else {
+          console.error(result.message);
+          alert(result.message);
+        }
+      } catch (error) {
+        console.error('삭제 중 오류 발생:', error);
+        alert('이미지 삭제 중 오류가 발생했습니다.');
+      }
+    }
+
+    
     
     const handleFileUpload = (event) => {
     const file = event.target.files[0]; // 사용자가 업로드한 파일
@@ -219,18 +238,33 @@ function Questions() {
       }
     };
 
-    // 문제 삭제
     const deleteQuestionsAll = () => {
       if (!window.confirm("진짜 삭제?")) return;
+    
+      const deleteImages = [];
+    
       const updatedQuestions = filterQuestions
-      .filter(({ question }) => question.checked !== true) // checked가 true가 아닌 데이터만 필터링
-      .map(({ question }) => {
-        const { checked, ...rest } = question; // checked 제외한 나머지 데이터 추출
-        return rest;
+        .filter(({ question }) => {
+          if (question.checked === true) {
+            if (question.img) deleteImages.push(question.img); // 삭제할 질문의 img를 배열에 추가
+            return false; // checked가 true면 삭제
+          }
+          return true; // checked가 false면 유지
+        })
+        .map(({ question }) => {
+          const { checked, ...rest } = question; // checked 속성 제외
+          return rest;
+        });
+    
+      // 삭제할 이미지를 처리
+      deleteImages.forEach((img) => {
+        console.log("deleteImages item", img);
+        handleDelete(img); // handleDelete 호출
       });
-
-      setQuestions(updatedQuestions);
+    
+      setQuestions(updatedQuestions); // 질문 업데이트
     };
+    
 
 
     //좌측 사이드바 토글

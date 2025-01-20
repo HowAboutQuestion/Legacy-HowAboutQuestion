@@ -1,7 +1,4 @@
 title,type,select1,select2,select3,select4,answer,img,level,date,update,recommenddate,solveddate,tag
-asdf,객관식,gdgdg,,,,gdgdg,/images/id-woa0g0iu6.png,0,2025-01-20,2025-01-20,2025-01-20,,
-asdfadsfds,객관식,a,,,,a,/images/id-u33igla9l.png,0,2025-01-20,2025-01-20,2025-01-20,,dfasf
-adsf,객관식,a,,,,a,/images/스크린샷 2025-01-06 170638.png,0,2025-01-20,2025-01-20,2025-01-20,,
 확인용,주관식,,,,,확인,,0,2025-01-12,2025-01-13,2025-01-20,2025-01-12,git
 음,주관식,,,,,되나?,,0,2025-01-03,2025-01-13,2025-01-20,2025-01-12,되나?
 Git에서 변경 사항을 로컬 저장소에 저장하는 명령어는 무엇인가요?,객관식,git add,git stash,git push,git commit,git stash,,0,2024-03-17,2025-01-13,2025-01-20,2025-01-12,"Software,Spring,Git,git"
