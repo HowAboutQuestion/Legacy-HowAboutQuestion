@@ -1,4 +1,5 @@
 const { contextBridge, ipcRenderer } = require('electron');
+console.log('Preload script loaded successfully');
 
 contextBridge.exposeInMainWorld('electronAPI', {
 
@@ -25,10 +26,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
     });
   },
 
-  deleteImage: (imgPath) => ipcRenderer.invoke('delete-image', imgPath),
+  deleteImage: (imgPath) => {
+    //console.log("deleteImage called with imgPath: ", imgPath);
+    return ipcRenderer.invoke('delete-image', { imgPath });
+  },
 
-
-  updateQuestion: async ({ title, type, isCorrect }) => {
+    updateQuestion: async ({ title, type, isCorrect }) => {
     return ipcRenderer.invoke('update-question', { title, type, isCorrect });
   },
 

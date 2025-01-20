@@ -21,7 +21,7 @@ function InsertModal({setInsertModal}) {
     const questions = useRecoilValue(questionsAtom);
     const setQuestions = useSetRecoilState(questionsAtom);
     const setAlltag = useSetRecoilState(allTagAtom);
-    console.log(questions)
+    //console.log(questions)
 
 
     //이미지 업로드
@@ -78,6 +78,7 @@ function InsertModal({setInsertModal}) {
         solveddate:null,
         id: generateUniqueId(questions),
         tag: tags,
+        checked:false,
       };
 
       let selectedAnswer;
