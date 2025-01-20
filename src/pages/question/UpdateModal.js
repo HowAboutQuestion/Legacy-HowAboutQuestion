@@ -30,15 +30,18 @@ function UpdateModal({setUpdateModal, question, setUpdateQuestion, isCollapsed, 
     }
   };
 
-  const handleSave = async (file) => {
+ 
+  async function handleSave(id, file) {
     try {
-      const result = await window.electronAPI.saveImage(file);
-      return result;
+      const result = await window.electronAPI.saveImage(id, file);
+      return result; // 저장 결과 반환
     } catch (error) {
       console.error("이미지 저장 중 오류 발생:", error);
       return { success: false, error: error.message };
     }
-  };
+  }
+  
+
 
   const updateEvent = async () => {
     if (!title) {
@@ -63,7 +66,7 @@ function UpdateModal({setUpdateModal, question, setUpdateQuestion, isCollapsed, 
 
     if (imageFile) {
       try {
-        const result = await handleSave(imageFile);
+        const result = await handleSave(question.id, imageFile);
         if (result.success) {
           updatedQuestion.img = result.path;
         } else {

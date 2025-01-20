@@ -263,53 +263,26 @@ ipcMain.handle('update-questions-file', async (event, questions) => {
 });
 
 
+ipcMain.handle('delete-image', async (event, {imgPath}) => {
+  //console.log("Handler registered: delete-image");
+  //console.log("delete-image imgPath: ", imgPath);
 
+  try {
+    const absolutePath = path.join(__dirname, '../public', imgPath);
+    //console.log("delete-image absolutePath: ", absolutePath);
 
-function createWindow() {
- // 먼저 recommenddate 업데이트 실행
- const updateResult = updateRecommendDates();
- if (!updateResult.success) {
-   console.error(updateResult.message);
-   // 필요에 따라 사용자에게 알림을 보내거나 애플리케이션을 종료할 수 있습니다.
- }
-
-  mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: true,
-      preload: path.join(__dirname, 'preload.js'),
-    },
-  });
-
-  // 빌드 후 index.html 파일 경로
-  //mainWindow.setMenu(null);
-  
-  mainWindow.loadURL('http://localhost:3000'); // 개발 서버에서 실행 중인 React 앱 로드
-
-//  mainWindow.loadURL(
-//    process.env.ELECTRON_START_URL || `file://${path.join(__dirname, '../build/index.html')}`
-//  );
-
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
-}
-
-app.on('ready', createWindow);
-
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
+    if (fs.existsSync(absolutePath)) {
+      fs.unlinkSync(absolutePath);
+      return { success: true, message: `Deleted: ${absolutePath}` };
+    } else {
+      return { success: false, message: `File not found: ${absolutePath}` };
+    }
+  } catch (error) {
+    console.error("Error during delete-image: ", error.message);
+    return { success: false, error: error.message };
   }
 });
 
-app.on('activate', () => {
-  if (mainWindow === null) {
-    createWindow();
-  }
-});
 
 
 // IPC 핸들러 추가: 'update-recommend-dates' 이벤트 처리
@@ -382,19 +355,6 @@ ipcMain.handle('save-image', async (event, {fileName, content}) => {
   }
 });
 
-ipcMain.handle('delete-image', async (event, imgPath) => {
-  try {
-    const absolutePath = path.join(__dirname, '../public', imgPath); // imgPath를 절대 경로로 변환
-    if (fs.existsSync(absolutePath)) {
-      fs.unlinkSync(absolutePath); // 파일 삭제
-      return { success: true, message: `Deleted: ${absolutePath}` };
-    } else {
-      return { success: false, message: `File not found: ${absolutePath}` };
-    }
-  } catch (error) {
-    return { success: false, error: error.message };
-  }
-});
 
 //.zip 내보내기
 ipcMain.handle("export-questions", async (event, questions) => {
@@ -557,3 +517,48 @@ ipcMain.handle('extract-zip', async (event, { fileName, content }) => {
 ipcMain.handle('read-questions-csv', () => readQuestionsCSV());
 ipcMain.handle('read-history-csv', () => readHistoryCSV());
 
+
+function createWindow() {
+  // 먼저 recommenddate 업데이트 실행
+  const updateResult = updateRecommendDates();
+  if (!updateResult.success) {
+    console.error(updateResult.message);
+    // 필요에 따라 사용자에게 알림을 보내거나 애플리케이션을 종료할 수 있습니다.
+  }
+ 
+   mainWindow = new BrowserWindow({
+     width: 1200,
+     height: 800,
+     webPreferences: {
+ //      nodeIntegration: true,
+        contextIsolation: true,
+        preload: path.join(__dirname, 'preload.js'),
+        enableRemoteModule: false, // 보안 관련
+        nodeIntegration: false, // 보안 관련
+     },
+    
+   });
+ 
+   // 빌드 후 index.html 파일 경로
+   mainWindow.setMenu(null);
+   mainWindow.loadURL('http://localhost:3000'); // 개발 서버에서 실행 중인 React 앱 로드
+ 
+   mainWindow.on('closed', () => {
+     mainWindow = null;
+   });
+ }
+ 
+
+ app.on('ready', createWindow);
+ 
+ app.on('window-all-closed', () => {
+   if (process.platform !== 'darwin') {
+     app.quit();
+   }
+ });
+ 
+ app.on('activate', () => {
+   if (mainWindow === null) {
+     createWindow();
+   }
+ });
