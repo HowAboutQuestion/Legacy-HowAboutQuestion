@@ -382,6 +382,20 @@ ipcMain.handle('save-image', async (event, {fileName, content}) => {
   }
 });
 
+ipcMain.handle('delete-image', async (event, imgPath) => {
+  try {
+    const absolutePath = path.join(__dirname, '../public', imgPath); // imgPath를 절대 경로로 변환
+    if (fs.existsSync(absolutePath)) {
+      fs.unlinkSync(absolutePath); // 파일 삭제
+      return { success: true, message: `Deleted: ${absolutePath}` };
+    } else {
+      return { success: false, message: `File not found: ${absolutePath}` };
+    }
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
 //.zip 내보내기
 ipcMain.handle("export-questions", async (event, questions) => {
   const savePath = dialog.showSaveDialogSync(mainWindow, {

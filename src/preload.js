@@ -25,7 +25,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
     });
   },
 
- updateQuestion: async ({ title, type, isCorrect }) => {
+  deleteImage: (imgPath) => ipcRenderer.invoke('delete-image', imgPath),
+
+
+  updateQuestion: async ({ title, type, isCorrect }) => {
     return ipcRenderer.invoke('update-question', { title, type, isCorrect });
   },
 
