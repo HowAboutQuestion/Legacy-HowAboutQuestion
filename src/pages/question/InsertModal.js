@@ -41,15 +41,16 @@ function InsertModal({setInsertModal}) {
     };
 
    
-    async function handleSave(file) {
+    async function handleSave(id, file) {
       try {
-        const result = await window.electronAPI.saveImage(file);
+        const result = await window.electronAPI.saveImage(id, file);
         return result; // 저장 결과 반환
       } catch (error) {
         console.error("이미지 저장 중 오류 발생:", error);
         return { success: false, error: error.message };
       }
     }
+    
     
     
     const insertEvent = async () => {
@@ -89,19 +90,19 @@ function InsertModal({setInsertModal}) {
         }
 
         question.answer = selectedAnswer.value;
-
       }
       
-      
-
-     
 
       // 이미지가 있는 경우 처리
       if (imageFile) {
         try {
-          const result = await handleSave(imageFile);
+          const result = await handleSave(
+            question.id, // 질문의 id를 파일명으로 사용
+            imageFile, // 파일 내용
+          );
+
           if (result.success) {
-            question.img = result.path; 
+            question.img = result.path; // 저장된 경로를 할당
           } else {
             console.error("이미지 저장 실패:", result.error);
             alert("이미지 저장에 실패했습니다.");
@@ -111,6 +112,7 @@ function InsertModal({setInsertModal}) {
           alert("이미지 저장 중 오류가 발생했습니다.");
         }
       }
+
       
       
       
