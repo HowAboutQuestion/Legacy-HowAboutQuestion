@@ -4,7 +4,7 @@ import { allTagAtom, questionsAtom } from "state/data";
 import Router from "Router";
 import Navbar from "pages/Navbar";
 import Papa from "papaparse";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, HashRouter } from "react-router-dom";
 
 const App = () => {
   const [questions, setQuestions] = useRecoilState(questionsAtom);
@@ -54,10 +54,10 @@ const App = () => {
 
   return (
     <div>
-      <BrowserRouter>
+      <HashRouter>
         <Navbar />
         <Router />
-      </BrowserRouter>
+      </HashRouter>
     </div>
   );
 };
