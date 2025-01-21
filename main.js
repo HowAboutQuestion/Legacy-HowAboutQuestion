@@ -530,19 +530,20 @@ function createWindow() {
      width: 1200,
      height: 800,
      webPreferences: {
- //      nodeIntegration: true,
+        nodeIntegration: false,
         contextIsolation: true,
         preload: path.join(__dirname, 'preload.js'),
-        enableRemoteModule: false, // 보안 관련
-        nodeIntegration: false, // 보안 관련
      },
     
    });
  
    // 빌드 후 index.html 파일 경로
    mainWindow.setMenu(null);
-   mainWindow.loadURL('http://localhost:3000'); // 개발 서버에서 실행 중인 React 앱 로드
- 
+ // 개발 서버에서 실행 중인 React 앱 로드
+  //  mainWindow.loadURL('http://localhost:3000');
+
+  mainWindow.loadURL(`file://${path.join(__dirname, '../build/index.html')}`);
+
    mainWindow.on('closed', () => {
      mainWindow = null;
    });

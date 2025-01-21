@@ -1,7 +1,13 @@
 {
-  "name": "how-about-question",
+  "name": "HowAboutQuestion",
   "version": "0.1.0",
+  "homepage": ".",
   "main": "src/main.js",
+  "files": [
+    "build/**/*",
+    "src/**/*",
+    "node_modules/**/*"
+  ],
   "private": true,
   "dependencies": {
     "adm-zip": "^0.5.16",
@@ -11,6 +17,7 @@
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
     "electron-squirrel-startup": "^1.0.1",
+    "extract-zip": "^2.0.1",
     "fs": "^0.0.1-security",
     "os": "^0.1.2",
     "papaparse": "^5.4.1",
@@ -26,7 +33,7 @@
   "scripts": {
     "start:react": "react-scripts start",
     "start:electron": "electron-forge start",
-    "start": "npm-run-all --parallel start:react start:electron",
+    "start": "npm-run-all start:electron",
     "build": "react-scripts build",
     "electron": "electron .",
     "package": "electron-forge package",

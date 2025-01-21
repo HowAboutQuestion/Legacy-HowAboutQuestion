@@ -207,7 +207,7 @@ const ProblemRecommendation = ({
               {/* 문제 없음 이미지 표시 */}
               <div className="w-full h-40 mx-auto mb-4 relative">
                 <img
-                  src="/images/no-problems.png"
+                  src="./images/no-problems.png"
                   alt="No recommended problems"
                   className="object-contain w-full h-full"
                 />
@@ -223,7 +223,7 @@ const ProblemRecommendation = ({
                   {/* 문제 없음 이미지 또는 다른 메시지 표시 */}
                   <div className="w-full h-40 mx-auto mb-4 relative">
                     <img
-                      src="/images/all-solve.png"
+                      src="./images/all-solve.png"
                       alt="No recommended problems"
                       className="object-contain w-full h-full"
                     />

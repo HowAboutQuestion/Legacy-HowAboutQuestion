@@ -8,12 +8,16 @@ module.exports = {
     asar: true,
   },
   rebuildConfig: {},
-  makers: [
+  makers: [    
     {
       name: '@electron-forge/maker-squirrel',
       config: {
-        appPackageFile: path.join(__dirname, 'my_app.nuspec')
-
+        name: 'HowAboutQuestion',
+        authors: 'Gunner', 
+        description: 'HowAboutQuestion',
+        exe: 'HowAboutQuestion.exe',
+        setupExe: 'HowAboutQuestionInstaller.exe',
+        setupIcon: path.join(__dirname, 'assets/icons/icon.ico'), 
       },
     },
     {
