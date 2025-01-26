@@ -26,18 +26,20 @@ function Multiple({ question, index, onAnswerChange }) {
       )}
 
       <form className="font-normal text-sm flex flex-col gap-2 w-max">
-        <label className="border rounded-lg p-3 pr-10">
-          <input
-            type="radio"
-            name={`choice-${index}`} 
-            value={question.select1}
-            checked={question.selected === question.select1}
-            onChange={handleAnswerChange}
-            className="mx-1 bg-gray-50 border-gray-300"
-          />
-          {question.select1}
-        </label>
-        <label className="border rounded-lg p-3 pr-10">
+        {question.select1 && (<label className="border rounded-lg p-3 pr-10">
+         
+         <input
+           type="radio"
+           name={`choice-${index}`} 
+           value={question.select1}
+           checked={question.selected === question.select1}
+           onChange={handleAnswerChange}
+           className="mx-1 bg-gray-50 border-gray-300"
+         />
+         {question.select1}
+       </label>)}
+
+        {question.select2 && (<label className="border rounded-lg p-3 pr-10">
           <input
             type="radio"
             name={`choice-${index}`}
@@ -47,8 +49,9 @@ function Multiple({ question, index, onAnswerChange }) {
             className="mx-1 bg-gray-50 border-gray-300"
           />
           {question.select2}
-        </label>
-        <label className="border rounded-lg p-3 pr-10">
+        </label>)}
+        
+        {question.select3 && (<label className="border rounded-lg p-3 pr-10">
           <input
             type="radio"
             name={`choice-${index}`}
@@ -58,8 +61,9 @@ function Multiple({ question, index, onAnswerChange }) {
             className="mx-1 bg-gray-50 border-gray-300"
           />
           {question.select3}
-        </label>
-        <label className="border rounded-lg p-3 pr-10">
+        </label>)}
+        
+        {question.select4 && (<label className="border rounded-lg p-3 pr-10">
           <input
             type="radio"
             name={`choice-${index}`}
@@ -69,7 +73,8 @@ function Multiple({ question, index, onAnswerChange }) {
             className="mx-1 bg-gray-50 border-gray-300"
           />
           {question.select4}
-        </label>
+        </label>)}
+        
       </form>
     </div>
   );
