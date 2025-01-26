@@ -2,10 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/earlyaccess/notosanskr.css');
+/* @import url('https://fonts.googleapis.com/earlyaccess/notosanskr.css'); */
+
+@font-face {
+  font-family: "Pretendard";
+  src: url("./fonts/PretendardVariable.ttf");
+}
 
 * {
-    font-family: "Noto Sans KR", serif;
+  font-family: "Pretendard";
 }
 
 .width-fill-available {

@@ -163,34 +163,38 @@ function QuestionItem({question, onUpdateClick, handleCheckboxChange}) {
             }`}
           >
             <div className="flex-1 font-normal text-sm text-gray-500 flex flex-col px-6 pb-3 gap-2">
-              <div
+              {question.select1 && (<div
                 className={`border bg-white rounded-lg p-2.5 px-4 ${
                   question.select1 === question.answer ? "font-bold text-blue-500" : ""
                 }`}
               >
                 {question.select1}
-              </div>
-              <div
+              </div>)}
+              
+              {question.select2 && (<div
                 className={`border bg-white rounded-lg p-2.5 px-4 ${
                   question.select2 === question.answer ? "font-bold text-blue-500" : ""
                 }`}
               >
                 {question.select2}
-              </div>
-              <div
+              </div>)}
+              
+              {question.select3 && (<div
                 className={`border bg-white rounded-lg p-2.5 px-4 ${
                   question.select3 === question.answer ? "font-bold text-blue-500" : ""
                 }`}
               >
                 {question.select3}
-              </div>
-              <div
+              </div>)}
+              
+              {question.select4 && (<div
                 className={`border bg-white rounded-lg p-2.5 px-4 ${
                   question.select4 === question.answer ? "font-bold text-blue-500" : ""
                 }`}
               >
                 {question.select4}
-              </div>
+              </div>)}
+              
             </div>
             
           </div>

@@ -85,7 +85,7 @@ function InsertModal({setInsertModal}) {
       if(type === "객관식"){
         selectedAnswer = document.querySelector('input[name="answer"]:checked');
 
-        if(!selectedAnswer){
+        if(!selectedAnswer || selectedAnswer.value === ""){          
           alert("객관식 답안을 설정해주세요");
           return;
         }
