@@ -23,37 +23,41 @@ function MultipleResult({ question, index }) {
       )}
 
       <div className="font-normal text-sm flex flex-col gap-2 w-max">     
-          <div className={`box border rounded-lg p-2 px-5
+        {question.select1 && (<div className={`box border rounded-lg p-2 px-5
               ${
                 question.answer === question.select1 ? "text-blue-500 font-bold" : question.selected === question.select1 ? "text-red-500 font-bold" : "" 
                 }
               `}>
                 {question.select1}
-          </div>
-          <div className={`box border rounded-lg p-2 px-5
+          </div>)}
+          
+          {question.select2 && (<div className={`box border rounded-lg p-2 px-5
               ${
                 question.answer === question.select2 ? "text-blue-500 font-bold" : question.selected === question.select2 ? "text-red-500 font-bold" : "" 
                 }
               `}>
                 {question.select2}
 
-          </div>
-          <div className={`box border rounded-lg p-2 px-5
+          </div>)}
+          
+          {question.select3 && (<div className={`box border rounded-lg p-2 px-5
               ${
                 question.answer === question.select3 ? "text-blue-500 font-bold" : question.selected === question.select3 ? "text-red-500 font-bold" : "" 
                 }
               `}>
                 {question.select3}
 
-          </div>
-          <div className={`box border rounded-lg p-2 px-5
+          </div>)}
+          
+          {question.select4 && (<div className={`box border rounded-lg p-2 px-5
               ${
                 question.answer === question.select4 ? "text-blue-500 font-bold" : question.selected === question.select4 ? "text-red-500 font-bold" : "" 
                 }
               `}>
                 {question.select4}
 
-          </div>       
+          </div>)}
+                 
       </div>
 
       </div>
