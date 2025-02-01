@@ -64,7 +64,7 @@ function CardResult() {
               <div className="mt-2 h-1/2">
                   <Doughnut data={data} options={options} />
               </div>
-              <div className="flex justify-between w-100 px-5">
+              <div className="flex justify-between w-full px-5">
                 <div 
                 onClick={goCard}
                 className="bg-blue-500 rounded-2xl py-2 w-20 whitespace-nowrap text-white font-bold text-xs text-center hover:shadow hover:scale-105">다시풀기</div>
