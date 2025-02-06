@@ -22,6 +22,8 @@ import DashboardStats from "./DashboardStats";
 import HistorySection from "./HistorySection";
 import { formatDate } from "utils/formatDate";
 import { getTodayDate } from "utils/formatDate"; // getTodayDate 함수 가져오기
+import LargeModal from "./LargeModal";
+import Helper from "./Helper";
 
 // Chart.js 등록
 ChartJS.register(
@@ -36,6 +38,8 @@ ChartJS.register(
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
 
   // 오늘 날짜 상수
   const today = useMemo(() => new Date(getTodayDate()), []);
@@ -280,8 +284,44 @@ const Dashboard = () => {
 
   const hasQuestions = questions.length>0;
 
+
+
+
+  
   return (
     <main className="ml-20 p-5 flex flex-col gap-4 flex-1">
+      <div>
+       
+        <div 
+          className="cursor-pointer absolute right-10 top-5 cursor-pointer w-10 h-10 flex items-center justify-center text-gray-400"
+          onClick={() => setIsModalOpen(true)}
+          >
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z"
+                />
+          </svg>
+        
+        </div>
+        {isModalOpen && (
+          <LargeModal>
+            <Helper 
+              closeHelper = {() => setIsModalOpen(false)}
+              >
+            </Helper>
+          </LargeModal>
+        )}
+      </div>
+     
       {/* 문제 추천 섹션 */}
       <ProblemRecommendation
         hasQuestions={hasQuestions}
