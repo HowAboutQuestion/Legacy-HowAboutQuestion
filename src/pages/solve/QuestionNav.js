@@ -23,14 +23,14 @@ function QuestionNav({ questions, setQuestionIndex }) {
   return (
     <div 
     onClick={(e) => e.stopPropagation()}
-    className="flex flex-col items-center">
+    className="flex flex-col items-center cursor-pointer">
       {/* 문제 목록 그리드 */}
       <div className="grid grid-cols-5 grid-rows-5 gap-1 mb-3">
         {currentQuestions.map((_, idx) => (
           <div
             key={idx}
             onClick={() => setQuestionIndex(currentPage * itemsPerPage + idx)} // 인덱스 계산
-            className="bg-blue-50 hover:bg-blue-100 rounded-full text-xs text-gray-500 cursor-pointer flex items-center justify-center h-5 w-5"
+            className="cursor-pointer bg-blue-50 hover:bg-blue-100 rounded-full text-xs text-gray-500 cursor-pointer flex items-center justify-center h-5 w-5"
           >
             {currentPage * itemsPerPage + idx + 1}
           </div>
