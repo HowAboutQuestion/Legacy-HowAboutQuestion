@@ -37,14 +37,14 @@ const HistorySection = ({
           {historyView === 'list' ? (
             <button
               onClick={() => setHistoryView('calendar')}
-              className="text-sm font-bold px-4 py-2 rounded transition bg-gray-100 hover:scale-105"
+              className="cursor-pointer text-sm font-bold px-4 py-2 rounded transition bg-gray-100 hover:scale-105"
             >
               달력 보기
             </button>
           ) : (
             <button
               onClick={() => setHistoryView('list')}
-              className="text-sm font-bold px-4 py-2 rounded transition bg-gray-100 hover:scale-105"
+              className="cursor-pointer text-sm font-bold px-4 py-2 rounded transition bg-gray-100 hover:scale-105"
             >
               리스트 보기
             </button>
@@ -77,7 +77,7 @@ const HistorySection = ({
           </table>
         </div>
       ) : (
-        <div className="mt-4 flex justify-center items-center relative">
+        <div className="mt-4 cursor-pointer flex justify-center items-center relative">
           <Calendar
             tileContent={tileContent}
             onClickDay={handleDateClick}
@@ -91,7 +91,7 @@ const HistorySection = ({
                 <p>정답률: {selectedDate.correctRate}%</p>
                 <button
                   onClick={closeModal}
-                  className="mt-4 bg-blue-500 text-white px-4 py-2 rounded mx-auto block"
+                  className="cursor-pointer mt-4 bg-blue-500 text-white px-4 py-2 rounded mx-auto block"
                 >
                   닫기
                 </button>

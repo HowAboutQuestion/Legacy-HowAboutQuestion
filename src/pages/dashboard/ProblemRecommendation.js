@@ -321,7 +321,7 @@ const ProblemRecommendation = ({
             /* 추천 문제가 없는 경우: 문제 생성 버튼 표시 */
             <button
               onClick={goToQuestions}
-              className="w-[300px] h-10 bg-blue-500 rounded-lg text-white font-bold hover:scale-105 transition"
+              className="cursor-pointer w-[300px] h-10 bg-blue-500 rounded-lg text-white font-bold hover:scale-105 transition"
             >
               문제 생성
             </button>
@@ -329,7 +329,7 @@ const ProblemRecommendation = ({
             /* 추천 문제가 있고, 아직 풀어야 할 문제가 있는 경우에만 문제풀기 버튼 표시 */
             totalRecommendToday !== 0 && (
               <button
-                className="w-[300px] h-10 bg-blue-500 rounded-lg text-white font-bold hover:scale-105 transition"
+                className="cursor-pointer w-[300px] h-10 bg-blue-500 rounded-lg text-white font-bold hover:scale-105 transition"
                 onClick={handleSolveClick}
               >
                 문제풀기

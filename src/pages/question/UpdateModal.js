@@ -118,13 +118,13 @@ function UpdateModal({setUpdateModal, question, setUpdateQuestion, isCollapsed, 
               <div className="items-center flex">
                 <div
                   onClick={updateEvent}
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2"
+                  className="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2"
                 >
                   저장하기
                 </div>
                 <div
                   onClick={() => updateCancleEvent()}
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2"
+                  className="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

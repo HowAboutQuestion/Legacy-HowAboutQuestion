@@ -21,7 +21,7 @@ function QuestionItem({question, onUpdateClick, handleCheckboxChange}) {
   if(question.type === '주관식'){
     return (
       <>
-      <tr onClick={toggle} className={`${!isCollapsed && "border-b hover:shadow hover:bg-white"} transition-all `}>
+      <tr onClick={toggle} className={`${!isCollapsed && "border-b hover:shadow hover:bg-white"} transition-all cursor-pointer`}>
         <td className="w-4 p-4 align-top py-4 px-8">
           <div className="flex items-center ">
             <input
@@ -30,7 +30,7 @@ function QuestionItem({question, onUpdateClick, handleCheckboxChange}) {
               checked={!!isChecked} // boolean 
               onChange={handleCheckboxChange} 
               onClick={(e) => e.stopPropagation()}
-              className="w-4 h-4 text-blue-600 bg-gray-100 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              className="w-4 h-4 text-blue-600 cursor-pointer bg-gray-100 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             />
           </div>
         </td>
@@ -50,7 +50,7 @@ function QuestionItem({question, onUpdateClick, handleCheckboxChange}) {
           <div 
           onClick={(e) => updateClick(e)}
 
-          className="rounded-xl hover:font-bold hover:bg-gray-100 w-max text-xs cursor-pointer text-blue-600 p-2">
+          className="cursor-pointer rounded-xl hover:font-bold hover:bg-gray-100 w-max text-xs cursor-pointer text-blue-600 p-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -117,7 +117,7 @@ function QuestionItem({question, onUpdateClick, handleCheckboxChange}) {
               checked={isChecked} 
               onChange={handleCheckboxChange} 
               onClick={(e) => e.stopPropagation()}
-              className="w-4 h-4 text-blue-600 bg-gray-100 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              className="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             />
           </div>
         </td>
@@ -136,7 +136,7 @@ function QuestionItem({question, onUpdateClick, handleCheckboxChange}) {
         <td className="px-3 py-2 align-top">
         <div 
           onClick={(e) => updateClick(e)}
-          className="rounded-xl hover:font-bold hover:bg-gray-100 w-max text-xs cursor-pointer text-blue-600 p-2">
+          className="cursor-pointer rounded-xl hover:font-bold hover:bg-gray-100 w-max text-xs cursor-pointer text-blue-600 p-2">
              <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

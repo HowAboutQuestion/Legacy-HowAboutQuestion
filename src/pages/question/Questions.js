@@ -404,7 +404,7 @@ function Questions() {
               <div className="bg-white items-center flex">
                 <div 
                 onClick={() => insertButtonClick()}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2">
+                className="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2">
                     문제추가
                 </div>
                 <div 
@@ -429,7 +429,7 @@ function Questions() {
                 </div>
                 <div 
                 onClick={handleDownloadToZip}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2 mb-2">
+                className="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2 mb-2">
                 <svg xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
                       fill="currentColor"
