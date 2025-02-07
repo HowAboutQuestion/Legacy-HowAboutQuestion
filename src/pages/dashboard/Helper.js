@@ -5,7 +5,7 @@ const Helper = ({closeHelper}) => {
  
 
     return (
-        <div className="flex flex-col gap-5 max-h-[80vh] overflow-y-auto">
+        <div className="flex flex-col top-0 max-h-[80vh] overflow-y-auto">
             <div className="flex justify-between sticky bg-white pb-5 top-0 border-b">
                 <div className="text-3xl font-bold">도움말</div>
                 <div

@@ -8,8 +8,11 @@ const archiver = require("archiver");
 const os = require('os');
 const extract = require('extract-zip'); // 압축 해제 모듈
 
-const questionsCsvPath = process.env.QUESTIONS_PATH; 
-const historyCsvPath = process.env.HISTORY_PATH; 
+const questionsCsvPath = `${app.getPath('exe')}/question.csv`
+const historyCsvPath = `${app.getPath('exe')}/history.csv`
+
+console.log("questionsCsvPath : ", questionsCsvPath);
+console.log("historyCsvPath : ", historyCsvPath);
 
 const { parseISO, isValid, isBefore, isAfter, format, startOfDay, addDays } = require('date-fns');
 
@@ -534,7 +537,7 @@ function createWindow() {
         contextIsolation: true,
         preload: path.join(__dirname, 'preload.js'),
      },
-    
+     autoHideMenuBar: true,
    });
  
    // 빌드 후 index.html 파일 경로

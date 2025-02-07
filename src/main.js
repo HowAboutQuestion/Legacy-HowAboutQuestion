@@ -8,8 +8,16 @@ const archiver = require("archiver");
 const os = require('os');
 const extract = require('extract-zip'); // 압축 해제 모듈
 
-const questionsCsvPath = process.env.QUESTIONS_PATH; 
-const historyCsvPath = process.env.HISTORY_PATH; 
+// 실행 파일의 디렉토리 경로 (배포 후 실행파일 위치)
+const exeDir = path.dirname(app.getPath('exe'));
+console.log("Executable directory:", exeDir);
+
+// questions.csv와 history.csv 파일 경로를 실행파일 위치 기준으로 설정
+const questionsCsvPath = path.join(exeDir, 'questions.csv');
+const historyCsvPath = path.join(exeDir, 'history.csv');
+
+console.log("questionsCsvPath:", questionsCsvPath);
+console.log("historyCsvPath:", historyCsvPath);
 
 const { parseISO, isValid, isBefore, isAfter, format, startOfDay, addDays } = require('date-fns');
 
@@ -361,18 +369,31 @@ function readHistoryCSV() {
 
 ipcMain.handle('save-image', async (event, { fileName, content }) => {
   try {
-    const imageDir = path.join(__dirname, '../public/images'); // 이미지 저장 디렉토리
+    const imageDir = path.join(exeDir, './images'); // 이미지 저장 디렉토리
     if (!fs.existsSync(imageDir)) {
       fs.mkdirSync(imageDir); // 디렉토리가 없으면 생성
     }
     const filePath = path.join(imageDir, fileName); // 파일 경로 생성
     fs.writeFileSync(filePath, content); // 파일 저장
 
+
+
+    // =================================================================================
+    // 상대경로로
     return { 
       success: true, 
-      path: "/images/" + fileName, // 경로
+      path: exeDir + "/images/" + fileName, // 경로
       filename: fileName // 파일 이름
     };
+
+    //절대경로
+    // return { 
+    //   success: true, 
+    //   path: imageDir + "/images/" + fileName, // 경로
+    //   filename: fileName // 파일 이름
+    // };
+    // =================================================================================
+
   } catch (error) {
     return { 
       success: false, 
