@@ -71,5 +71,29 @@
     "electron-builder": "^25.1.8",
     "npm-run-all": "^4.1.5",
     "tailwindcss": "^3.4.16"
+  },
+  "build": {
+    "appId": "com.HowAboutQuestion.www",
+    "productName": "HowAboutQuestion",
+    "mac": {
+      "category": "public.app-category.utilities"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    },
+    "electronVersion": "33.2.1",
+    "asar": true,
+    "files": [
+      "build/**/*",
+      "src/**/*",
+      "node_modules/**/*"
+    ],
+    "extraResources": [],
+    "extraMetadata": {
+      "main": "src/main.js"
+    }
   }
 }

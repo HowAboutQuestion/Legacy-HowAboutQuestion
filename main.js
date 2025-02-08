@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const { app, BrowserWindow, ipcMain, dialog } = require("electron");
+const { app, BrowserWindow, ipcMain, dialog, Menu } = require("electron");
 const path = require('path');
 const fs = require('fs');
 const Papa = require('papaparse');
@@ -542,6 +542,7 @@ function createWindow() {
  
    // 빌드 후 index.html 파일 경로
    mainWindow.setMenu(null);
+  Menu.setApplicationMenu(null);
  // 개발 서버에서 실행 중인 React 앱 로드
   //  mainWindow.loadURL('http://localhost:3000');
 
