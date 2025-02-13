@@ -107,8 +107,17 @@ function SelectSolve() {
    * "시험" 버튼 클릭 시 Solve로 이동
    */
   const goSolve = () => {
+
     const questionsToNavigate =
       selectedQuestions.length > 0 ? selectedQuestions : filterQuestions;
+
+    if(questionsToNavigate.length < 0){
+      alert("현재 풀이 가능한 문제가 없습니다! 문제를 생성해주세요");
+      goQuestion();
+      return;
+    }
+    
+
     const tagsToNavigate = selectedQuestions.length > 0 ? selectedTags : selectedTag;
 
     navigate("/solve", {
@@ -128,6 +137,13 @@ function SelectSolve() {
     const questionsToNavigate =
       selectedQuestions.length > 0 ? selectedQuestions : filterQuestions;
 
+      if(questionsToNavigate.length < 0){
+        alert("현재 풀이 가능한 문제가 없습니다! 문제를 생성해주세요");
+        goQuestion();
+        return;
+      }
+    
+      
     navigate("/card", {
       state: {
         questions: questionsToNavigate,
@@ -140,36 +156,54 @@ function SelectSolve() {
     // setSelectedQuestions([]);
   };
 
+  
+  const goQuestion = () => {
+    navigate("/questions");
+  };
+
   return (
     <main className="bg-gray-50 ml-20 flex items-center h-screen justify-center">
       <div className="bg-white shadow flex m-10 p-10 items-center justify-center flex-col gap-5 rounded-xl">
         <div className="text-lg font-bold">문제집 선택</div>
-
-        {/* 태그 표시 */}
-        <div className="flex gap-3 flex-wrap">{tagItemsToDisplay()}</div>
-
-        {/* 선택된 문제 수 또는 전체 문제 수 표시 */}
-        <div className="text-sm font-bold text-gray-500">
-          총 {selectedQuestions.length > 0 ? selectedQuestions.length : filterQuestions.length} 문제
-        </div>
-
-        <div className="flex gap-5">
-          <div
-            onClick={goSolve}
-            className="bg-blue-500 rounded-xl text-white font-semibold text-xs w-20 py-3 text-center hover:scale-105 cursor-pointer"
-          >
-            시험
-          </div>
-          <div
-            onClick={goCard}
-            className="bg-blue-500 rounded-xl text-white font-semibold text-xs w-20 py-3 text-center hover:scale-105 cursor-pointer"
-          >
-            카드
-          </div>
-        </div>
+  
+        {allQuestions.length > 0 ? (
+          <>
+            <div className="flex gap-3 flex-wrap">{tagItemsToDisplay()}</div>
+            <div className="text-sm font-bold text-gray-500">
+              총 {selectedQuestions.length > 0 ? selectedQuestions.length : filterQuestions.length} 문제
+            </div>
+            <div className="flex gap-5">
+              <div
+                onClick={goSolve}
+                className="bg-blue-500 rounded-xl text-white font-semibold text-xs w-20 py-3 text-center hover:scale-105 cursor-pointer"
+              >
+                시험
+              </div>
+              <div
+                onClick={goCard}
+                className="bg-blue-500 rounded-xl text-white font-semibold text-xs w-20 py-3 text-center hover:scale-105 cursor-pointer"
+              >
+                카드
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="">현재 풀이 가능한 문제가 없습니다</div>
+            <div className="flex">
+              <div
+                onClick={goQuestion}
+                className="bg-blue-500 whitespace-nowrap rounded-xl w-30 text-white font-semibold text-xs py-3 px-3 text-center hover:scale-105 cursor-pointer"
+              >
+                문제 생성하러 가기
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </main>
   );
+  
 }
 
 export default SelectSolve;
