@@ -2,7 +2,8 @@
 
 ![main](https://howaboutquestion-bucket.s3.us-east-1.amazonaws.com/main.png)
 
-* 배포 URL : [HowAboutQuestion](https://howaboutquestion-bucket.s3.us-east-1.amazonaws.com/HowAboutQuestion_Beta/HowAboutQuestion_Beta.Zip)
+
+* 배포 URL : [HowAboutQuestion](https://howaboutquestion-bucket.s3.us-east-1.amazonaws.com/HowAboutQuestion.zip)
 * TEST FILE : [TEST QUESTIONS FILE](https://howaboutquestion-bucket.s3.us-east-1.amazonaws.com/questions.csv) 
 * TEST HISTORY : [TEST HISTORY FILE](https://howaboutquestion-bucket.s3.us-east-1.amazonaws.com/history.csv)
 
