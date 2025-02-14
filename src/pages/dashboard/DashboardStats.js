@@ -27,18 +27,17 @@ const DashboardStats = ({
         </div>
       </div>
       <div className="h-auto mb-4 rounded bg-gray-50 dark:bg-gray-800 p-6">
-        {/* 정답률 표시 */}
         <div className="flex flex-col items-start w-full">
           <p className="text-lg font-bold text-gray-800 dark:text-white">정답률</p>
-          <p className="text-4xl font-extrabold text-gray-900 dark:text-white mt-2">{todayCorrectRate}% 맞춤!</p>
-
+          <p className="text-4xl font-extrabold text-gray-900 dark:text-white mt-2">
+            {todayCorrectRate}% 맞춤!
+          </p>
           <div className="flex items-center mt-1">
             <p className="text-sm text-gray-500 dark:text-gray-400 mr-1">어제보다</p>
             <p className={`text-sm font-medium ${rateChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
               {rateChange >= 0 ? `+${rateChange}%` : `${rateChange}%`}
             </p>
           </div>
-
           {/* 그래프 영역 */}
           <div className="w-full h-64 mt-4">
             <Line
@@ -56,9 +55,27 @@ const DashboardStats = ({
                   },
                 },
                 scales: {
+                  x: {
+                    type: 'time',
+                    time: {
+                      unit: 'month',
+                      tooltipFormat: 'MMM yyyy',
+                      displayFormats: {
+                        month: 'MMM yyyy',
+                      },
+                    },
+                    title: {
+                      display: true,
+                      text: '월',
+                    },
+                  },
                   y: {
                     beginAtZero: true,
                     max: 100,
+                    title: {
+                      display: true,
+                      text: '정답률 (%)',
+                    },
                   },
                 },
               }}

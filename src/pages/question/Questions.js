@@ -236,7 +236,7 @@ function Questions() {
     }
 
     const deleteQuestionsAll = () => {
-      if (!window.confirm("진짜 삭제?")) return;
+      if (!window.confirm("삭제하시겠습니까?")) return;
     
       const deleteImages = [];
     

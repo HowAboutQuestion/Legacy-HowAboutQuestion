@@ -13,6 +13,7 @@
     "adm-zip": "^0.5.16",
     "archiver": "^7.0.1",
     "chart.js": "^4.4.7",
+    "chartjs-adapter-date-fns": "^3.0.0",
     "cra-template": "1.2.0",
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
