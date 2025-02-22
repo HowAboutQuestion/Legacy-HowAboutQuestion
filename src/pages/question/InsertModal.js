@@ -40,6 +40,27 @@ function InsertModal({setInsertModal}) {
       }
     };
 
+    const handleDragOver = (e) =>{
+      e.preventDefault(); //드롭 이벤트가 발생 시 브라우저의 기본 동작(파일 새 창으로 열기 등)을 막아줌
+    }
+    const handleDrop = (e) => {
+      e.preventDefault();
+      //드롭된 파일이 존재하는지, 최소한 하나 이상의 파일이 있는지 확인
+      if(e.dataTransfer.files && e.dataTransfer.files[0]) {
+        const file = e.dataTransfer.files[0]; // 첫 번째 파일 확인
+        
+        // 객체 생성 및 파일 읽기
+        const reader = new FileReader();
+        reader.onload=()=>{
+          setThumbnail(reader.result);
+        };
+        reader.readAsDataURL(file);
+        setImageFile(file); // set으로 파일 업데이트 
+      }
+    };
+
+
+
    
     async function handleSave(id, file) {
       try {
@@ -135,7 +156,11 @@ function InsertModal({setInsertModal}) {
       const placeholderImage = "./images/insertImg.png"; // 경로를 어떻게 해야 되나 배포 시 고민 해야 될 부분
 
       return (
-
+      <div
+        className="h-full w-full p-7 flex flex-col gap-2"
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+      >
         <div className="h-full w-full p-7 flex flex-col gap-2">
                     <div className="flex justify-between">
                       <div className="font-bold text-xl pl-1">문제 추가하기</div>
@@ -295,7 +320,7 @@ function InsertModal({setInsertModal}) {
                     )}                  
                 </div>
       
-  
+                    </div>
       );
     
 }
