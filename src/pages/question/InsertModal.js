@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useRef} from 'react';
 import { questionsAtom, allTagAtom } from "state/data";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import {generateUniqueId} from "utils/util"
@@ -27,6 +27,12 @@ function InsertModal({setInsertModal}) {
     //이미지 업로드
     const [thumbnail, setThumbnail] = useState(null);
     const [imageFile, setImageFile] = useState(null);
+
+    //드래그 상태 추적용 state(이미지 업로드 영역 전용)
+    const [isDragging, setIsDragging] = useState(false);
+
+    // 드래그 카운터(자식 요소 때문에 여러 이벤트가 발생하는 것을 보완)
+    const dragCounter = useRef(0);
     
     const handleFileChange = (event) => {
       const image = event.target.files[0];
@@ -39,16 +45,35 @@ function InsertModal({setInsertModal}) {
         setImageFile(image);
       }
     };
-
-    const handleDragOver = (e) =>{
-      e.preventDefault(); //드롭 이벤트가 발생 시 브라우저의 기본 동작(파일 새 창으로 열기 등)을 막아줌
-    }
+    const handleDragOver = (e) => {
+      e.preventDefault();
+    };
+  
+    const handleDragEnter = (e) => {
+      e.preventDefault();
+      dragCounter.current++;
+      if (!isDragging) {
+        setIsDragging(true);
+      }
+    };
+  
+    const handleDragLeave = (e) => {
+      e.preventDefault();
+      dragCounter.current--;
+      if (dragCounter.current === 0) {
+        setIsDragging(false);
+      }
+    };
+  
     const handleDrop = (e) => {
       e.preventDefault();
+      dragCounter.current = 0; // 리셋
+
+      setIsDragging(false);
+
       //드롭된 파일이 존재하는지, 최소한 하나 이상의 파일이 있는지 확인
       if(e.dataTransfer.files && e.dataTransfer.files[0]) {
         const file = e.dataTransfer.files[0]; // 첫 번째 파일 확인
-        
         // 객체 생성 및 파일 읽기
         const reader = new FileReader();
         reader.onload=()=>{
@@ -58,9 +83,6 @@ function InsertModal({setInsertModal}) {
         setImageFile(file); // set으로 파일 업데이트 
       }
     };
-
-
-
    
     async function handleSave(id, file) {
       try {
@@ -71,8 +93,6 @@ function InsertModal({setInsertModal}) {
         return { success: false, error: error.message };
       }
     }
-    
-    
     
     const insertEvent = async () => {
       if (!(title)) {
@@ -154,13 +174,30 @@ function InsertModal({setInsertModal}) {
 
       
       const placeholderImage = "./images/insertImg.png"; // 경로를 어떻게 해야 되나 배포 시 고민 해야 될 부분
+      const uploadImage = "./images/uploadImg.png";
 
       return (
       <div
         className="h-full w-full p-7 flex flex-col gap-2"
         onDragOver={handleDragOver}
-        onDrop={handleDrop}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
       >
+        {isDragging && (
+        <div
+        className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black bg-opacity-50 bg-cover pointer-events-none"
+          style={{
+            backgroundImage: `url(${uploadImage})`,
+            backgroundSize: "contain",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+          }}
+        >
+          <span className="text-white text-xl">파일을 놓으면 이미지가 업로드 됩니다</span>
+        </div>
+      )}
+      
         <div className="h-full w-full p-7 flex flex-col gap-2">
                     <div className="flex justify-between">
                       <div className="font-bold text-xl pl-1">문제 추가하기</div>
