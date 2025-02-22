@@ -8,8 +8,8 @@ const archiver = require("archiver");
 const os = require('os');
 const extract = require('extract-zip'); // 압축 해제 모듈
 
-const questionsCsvPath = `${app.getPath('exe')}/question.csv`
-const historyCsvPath = `${app.getPath('exe')}/history.csv`
+// const questionsCsvPath = `${app.getPath('exe')}/question.csv`
+// const historyCsvPath = `${app.getPath('exe')}/history.csv`
 
 console.log("questionsCsvPath : ", questionsCsvPath);
 console.log("historyCsvPath : ", historyCsvPath);
