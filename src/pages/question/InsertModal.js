@@ -130,7 +130,9 @@ function InsertModal({setInsertModal}) {
     
       setQuestions((prevQuestions) => [question, ...prevQuestions]);
       };
-    
+
+      
+      const placeholderImage = "./images/insertImg.png"; // 경로를 어떻게 해야 되나 배포 시 고민 해야 될 부분
 
       return (
 
@@ -252,7 +254,7 @@ function InsertModal({setInsertModal}) {
                       <div
                         className="bg-gray-50 flex rounded"
                         style={{
-                          backgroundImage: thumbnail ? `url(${thumbnail})` : "none",
+                          backgroundImage: thumbnail ? `url(${thumbnail})` : `url(${placeholderImage})`,
                           backgroundSize: "cover",
                           backgroundPosition: "center",
                         }}
