@@ -186,10 +186,10 @@ function InsertModal({setInsertModal}) {
       >
         {isDragging && (
         <div
-        className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black bg-opacity-50 bg-cover pointer-events-none"
+          className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black bg-opacity-50 pointer-events-none rounded-lg"
           style={{
             backgroundImage: `url(${uploadImage})`,
-            backgroundSize: "contain",
+            backgroundSize: "100% 100%", // 전체 영역에 맞게 늘림 (비율 유지하지 않음)
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center",
           }}
@@ -197,6 +197,7 @@ function InsertModal({setInsertModal}) {
           <span className="text-white text-xl">파일을 놓으면 이미지가 업로드 됩니다</span>
         </div>
       )}
+
       
         <div className="h-full w-full p-7 flex flex-col gap-2">
                     <div className="flex justify-between">
