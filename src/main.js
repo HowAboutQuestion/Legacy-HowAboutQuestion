@@ -12,18 +12,9 @@ const extract = require('extract-zip'); // 압축 해제 모듈
 const exeDir = path.dirname(app.getPath('exe'));
 console.log("Executable directory:", exeDir);
 
-
-//============== Window 개발 전용 ================================
 // questions.csv와 history.csv 파일 경로를 실행파일 위치 기준으로 설정
-// const questionsCsvPath = path.join(exeDir, 'questions.csv');
-// const historyCsvPath = path.join(exeDir, 'history.csv');
-//===============================================================
-
-
-//============== MacBook 개발 전용 ================================
-const questionsCsvPath = process.env.QUESTIONS_PATH; 
-const historyCsvPath = process.env.HISTORY_PATH; 
-//===============================================================
+const questionsCsvPath = path.join(exeDir, 'questions.csv');
+const historyCsvPath = path.join(exeDir, 'history.csv');
 
 console.log("questionsCsvPath:", questionsCsvPath);
 console.log("historyCsvPath:", historyCsvPath);
@@ -305,8 +296,8 @@ function createWindow() {
   // 빌드 후 index.html 파일 경로
   //mainWindow.setMenu(null);
   
-  mainWindow.loadURL('http://localhost:3000'); // 개발 서버에서 실행 중인 React 앱 로드
-  // mainWindow.loadFile(path.join(__dirname, '../build', 'index.html'));
+  // mainWindow.loadURL('http://localhost:3000'); // 개발 서버에서 실행 중인 React 앱 로드
+  mainWindow.loadFile(path.join(__dirname, '../build', 'index.html'));
 
 
   mainWindow.on('closed', () => {
@@ -314,19 +305,19 @@ function createWindow() {
   });
 }
 
-// app.on('ready', createWindow);
+app.on('ready', createWindow);
 
-// app.on('window-all-closed', () => {
-//   if (process.platform !== 'darwin') {
-//     app.quit();
-//   }
-// });
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});
 
-// app.on('activate', () => {
-//   if (mainWindow === null) {
-//     createWindow();
-//   }
-// });
+app.on('activate', () => {
+  if (mainWindow === null) {
+    createWindow();
+  }
+});
 
 
 // IPC 핸들러 추가: 'update-recommend-dates' 이벤트 처리

@@ -1,8 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { questionsAtom, allTagAtom } from "state/data";
 import { useSetRecoilState } from "recoil";
 
-function UpdateModal({setUpdateModal, question, setUpdateQuestion, isCollapsed, index }) {
+function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed, index }) {
+  const placeholderImage = "./images/insertImg.png";
+
   const [title, setTitle] = useState(question.title || "");
   const [type, setType] = useState(question.type || "객관식");
   const [select1, setSelect1] = useState(question.select1 || "");
@@ -12,11 +14,51 @@ function UpdateModal({setUpdateModal, question, setUpdateQuestion, isCollapsed, 
   const [answer, setAnswer] = useState(question.answer || "");
   const [tag, setTag] = useState(question.tag.join(", ") || "");
   const [date, setDate] = useState(question.date || "");
-  const [thumbnail, setThumbnail] = useState(question.img || null);
+  const [thumbnail, setThumbnail] = useState(question.img || placeholderImage);
   const [imageFile, setImageFile] = useState(null);
 
 
   const setQuestions = useSetRecoilState(questionsAtom);
+
+  // 드래그 앤 드롭 관련 state 및 ref
+  const [isDragging, setIsDragging] = useState(false);
+  const dragCounter = useRef(0);
+  const uploadImage = "./images/uploadImg.png"; // 드롭시 배경 이미지
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    dragCounter.current++;
+    if (!isDragging) {
+      setIsDragging(true);
+    }
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    dragCounter.current--;
+    if (dragCounter.current === 0) {
+      setIsDragging(false);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    dragCounter.current = 0;
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const file = e.dataTransfer.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        setThumbnail(reader.result);
+      };
+      reader.readAsDataURL(file);
+      setImageFile(file);
+    }
+  };
 
   const handleFileChange = (event) => {
     const image = event.target.files[0];
@@ -30,7 +72,11 @@ function UpdateModal({setUpdateModal, question, setUpdateQuestion, isCollapsed, 
     }
   };
 
- 
+  const handleRemoveImage = () => {
+    setThumbnail(placeholderImage);
+    setImageFile(null);
+  };
+
   async function handleSave(id, file) {
     try {
       const result = await window.electronAPI.saveImage(id, file);
@@ -40,8 +86,6 @@ function UpdateModal({setUpdateModal, question, setUpdateQuestion, isCollapsed, 
       return { success: false, error: error.message };
     }
   }
-  
-
 
   const updateEvent = async () => {
     if (!title) {
@@ -79,6 +123,10 @@ function UpdateModal({setUpdateModal, question, setUpdateQuestion, isCollapsed, 
         alert("이미지 저장 중 오류가 발생했습니다.");
         return;
       }
+    }else {
+      // 새 이미지 파일이 없으면 현재 thumbnail 상태를 반영
+      // 만약 thumbnail이 placeholderImage라면 삭제된 것으로 간주해 null을 저장합니다.
+      updatedQuestion.img = thumbnail === placeholderImage ? null : thumbnail;
     }
 
     setQuestions((prevQuestions) => {
@@ -106,182 +154,201 @@ function UpdateModal({setUpdateModal, question, setUpdateQuestion, isCollapsed, 
     setAnswer(question.answer || "");
     setTag(question.tag.join(", ") || "");
     setDate(question.date || "");
-    setThumbnail(question.img || null);
-  }, [question]);
+    setThumbnail(question.img || placeholderImage);
+  }, [question, placeholderImage]);
 
 
-      return (
+  //x 버튼 공통 이미지 업로드 컴포넌트
+  const renderImageUpload = () => (
+    <div
+      className="relative bg-gray-50 flex rounded"
+      style={{
+        backgroundImage: thumbnail ? `url("${thumbnail}")` : "none",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      {thumbnail && thumbnail !== placeholderImage && (
+        <button 
+          type="button"
+          onClick={handleRemoveImage}
+          className="absolute top-1 right-1 bg-blue-500 text-white rounded-full p-1 text-xs z-10 transform transition duration-300 hover:scale-105"
+        >
+          삭제
+        </button>
+      )}
+      <input
+        type="file"
+        accept=".jpg, .jpeg, .png"
+        className="w-full h-full text-xs opacity-0"
+        onChange={handleFileChange}
+      />
+    </div>
+  );
 
-        <div className="h-full w-full p-7 flex flex-col gap-2">
-            <div className="flex justify-between">
-              <div className="font-bold text-xl pl-1">문제 수정하기</div>
-              <div className="items-center flex">
-                <div
-                  onClick={updateEvent}
-                  className="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2"
-                >
-                  저장하기
-                </div>
-                <div
-                  onClick={() => updateCancleEvent()}
-                  className="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="2"
-                    stroke="currentColor"
-                    className="size-4"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                  </svg>
-                </div>
-              </div>
+  return (
+    <div
+      className="h-full w-full p-7 flex flex-col gap-2 relative"
+      onDragOver={handleDragOver}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
+
+      {isDragging && (
+        <div
+          className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black bg-opacity-50 pointer-events-none rounded-xl"
+          style={{
+            backgroundImage: `url(${uploadImage})`,
+            backgroundSize: "100% 100%",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+          }}
+        >
+          <span className="text-white text-xl">파일을 놓으면 이미지가 업로드 됩니다</span>
+        </div>
+      )}
+      <div className="h-full w-full p-7 flex flex-col gap-2">
+        <div className="flex justify-between">
+          <div className="font-bold text-xl pl-1">문제 수정하기</div>
+          <div className="items-center flex">
+            <div
+              onClick={updateEvent}
+              className="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2"
+            >
+              저장하기
             </div>
+            <div
+              onClick={() => updateCancleEvent()}
+              className="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="2"
+                stroke="currentColor"
+                className="size-4"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+            </div>
+          </div>
+        </div>
 
 
-            
+
+        <div className="flex gap-3">
+          <input
+            type="text"
+            className="block min-w-[50%] outline-none border-b-2 border-gray-200 focus:border-blue-500 text-sm px-2 py-1 h-10"
+            placeholder="문제를 입력해주세요"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+          <select
+            className="block border-b-2 text-sm px-2 py-1 h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500"
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+          >
+            <option value="객관식">객관식</option>
+            <option value="주관식">주관식</option>
+          </select>
+        </div>
+
+
+        <input
+          type="text"
+          className="block outline-none border-b-2 border-gray-200 focus:border-blue-500 text-sm px-2 py-1 h-10 w-1/2 flex-none"
+          placeholder="태그를 입력해주세요"
+          value={tag}
+          onChange={(e) => setTag(e.target.value)}
+        />
+
+        {type === "객관식" ? (<div className="flex gap-5">
+          <div className="flex flex-1 flex-col gap-2">
             <div className="flex gap-3">
               <input
-                type="text"
-                className="block min-w-[50%] outline-none border-b-2 border-gray-200 focus:border-blue-500 text-sm px-2 py-1 h-10"
-                placeholder="문제를 입력해주세요"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                required
+                type="radio"
+                name="answer"
+                onChange={() => setAnswer(select1)}
+                checked={answer === select1}
               />
-              <select
-                className="block border-b-2 text-sm px-2 py-1 h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500"
-                value={type}
-                onChange={(e) => setType(e.target.value)}
-              >
-                <option value="객관식">객관식</option>
-                <option value="주관식">주관식</option>
-              </select>
+              <input
+                type="text"
+                className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                placeholder="선택지1"
+                value={select1}
+                onChange={(e) => setSelect1(e.target.value)}
+              />
             </div>
-
-
+            <div className="flex gap-3">
+              <input
+                type="radio"
+                name="answer"
+                checked={answer === select2}
+                onChange={() => setAnswer(select2)}
+              />
+              <input
+                type="text"
+                className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                placeholder="선택지2"
+                value={select2}
+                onChange={(e) => setSelect2(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="flex flex-1 flex-col gap-2">
+            <div className="flex gap-3">
+              <input
+                type="radio"
+                name="answer"
+                checked={answer === select3}
+                onChange={() => setAnswer(select3)}
+              />
+              <input
+                type="text"
+                className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                placeholder="선택지3"
+                value={select3}
+                onChange={(e) => setSelect3(e.target.value)}
+              />
+            </div>
+            <div className="flex gap-3">
+              <input
+                type="radio"
+                name="answer"
+                checked={answer === select4}
+                onChange={() => setAnswer(select4)}
+              />
+              <input
+                type="text"
+                className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                placeholder="선택지4"
+                value={select4}
+                onChange={(e) => setSelect4(e.target.value)}
+              />
+            </div>
+          </div>
+          {renderImageUpload()}
+          </div>
+        ) : (
+          <div className="flex gap-3 flex-1">
             <input
               type="text"
-              className="block outline-none border-b-2 border-gray-200 focus:border-blue-500 text-sm px-2 py-1 h-10 w-1/2 flex-none"
-              placeholder="태그를 입력해주세요"
-              value={tag}
-              onChange={(e) => setTag(e.target.value)}
+              className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+              placeholder="정답"
+              value={answer}
+              onChange={(e) => setAnswer(e.target.value)}
             />
-
-            {type === "객관식" ? (<div className="flex gap-5">
-              <div className="flex flex-1 flex-col gap-2">
-                <div className="flex gap-3">
-                  <input
-                    type="radio"
-                    name="answer"
-                    onChange={() => setAnswer(select1)}
-                    checked={answer === select1} 
-                    />
-                  <input
-                    type="text"
-                    className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
-                    placeholder="선택지1"
-                    value={select1}
-                    onChange={(e) => setSelect1(e.target.value)}
-                  />
-                </div>
-                <div className="flex gap-3">
-                  <input
-                    type="radio"
-                    name="answer"
-                    checked={answer === select2} 
-                    onChange={() => setAnswer(select2)}
-                  />
-                  <input
-                    type="text"
-                    className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
-                    placeholder="선택지2"
-                    value={select2}
-                    onChange={(e) => setSelect2(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="flex flex-1 flex-col gap-2">
-                <div className="flex gap-3">
-                  <input
-                    type="radio"
-                    name="answer"
-                    checked={answer === select3} 
-                    onChange={() => setAnswer(select3)}
-                  />
-                  <input
-                    type="text"
-                    className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
-                    placeholder="선택지3"
-                    value={select3}
-                    onChange={(e) => setSelect3(e.target.value)}
-                  />
-                </div>
-                <div className="flex gap-3">
-                  <input
-                    type="radio"
-                    name="answer"
-                    checked={answer === select4} 
-                    onChange={() => setAnswer(select4)}
-                  />
-                  <input
-                    type="text"
-                    className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
-                    placeholder="선택지4"
-                    value={select4}
-                    onChange={(e) => setSelect4(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div
-                className="bg-gray-50 flex rounded"
-                style={{
-                  backgroundImage: thumbnail ? `url("${thumbnail}")` : "none",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
-              >
-                <input
-                  type="file"
-                  accept=".jpg, .jpeg, .png"
-                  className="w-full h-full text-xs opacity-0"
-                  onChange={handleFileChange}
-                />
-              </div>
-            </div>) : (                      
-              <div className="flex gap-3 flex-1">
-                                  <input
-                                    type="text"
-                                    className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
-                                    placeholder="정답"
-                                    value={answer}
-                                    onChange={(e) => setAnswer(e.target.value)}
-                                  />
-                                  <div
-                                    className="bg-gray-50 flex rounded"
-                                    style={{
-                                      backgroundImage: thumbnail ? `url("${thumbnail}")` : "none",
-                                      backgroundSize: "cover",
-                                      backgroundPosition: "center",
-                                    }}
-                                  >
-                                    <input
-                                      type="file"
-                                      accept=".jpg, .jpeg, .png"
-                                      className="w-full h-full text-xs opacity-0"
-                                      onChange={handleFileChange}
-                                    />
-                                  </div>
-                        </div>)}
-            
-          
+            {renderImageUpload()}
           </div>
-      
-  
-      );
-    
+        )}
+      </div>
+    </div>
+  );
+
 }
 
 export default UpdateModal;

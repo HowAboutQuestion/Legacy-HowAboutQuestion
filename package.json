@@ -34,7 +34,8 @@
   "scripts": {
     "start:react": "react-scripts start",
     "start:electron": "electron-forge start",
-    "start": "npm-run-all --parallel start:react start:electron",
+    "start": "npm-run-all start:electron",
+    "clean": "rimraf dist && rimraf build",
     "build": "react-scripts build",
     "electron": "electron .",
     "package": "electron-forge package",
