@@ -1,5 +1,6 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
+import { ko } from 'date-fns/locale';
 
 const DashboardStats = ({
   todaySolved,
@@ -59,14 +60,15 @@ const DashboardStats = ({
                     type: 'time',
                     time: {
                       unit: 'month',
-                      tooltipFormat: 'MMM yyyy',
+                      tooltipFormat: 'yyyy년 M월 d일',
                       displayFormats: {
-                        month: 'MMM yyyy',
+                        month: 'yyyy년 M월',
                       },
+                      locale: ko, // 한글 locale 사용
                     },
                     title: {
                       display: true,
-                      text: '월',
+                      text: '날짜',
                     },
                   },
                   y: {
