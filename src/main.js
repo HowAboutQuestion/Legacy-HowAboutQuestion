@@ -13,8 +13,12 @@ const exeDir = path.dirname(app.getPath('exe'));
 console.log("Executable directory:", exeDir);
 
 // questions.csv와 history.csv 파일 경로를 실행파일 위치 기준으로 설정
-const questionsCsvPath = path.join(exeDir, 'questions.csv');
-const historyCsvPath = path.join(exeDir, 'history.csv');
+// const questionsCsvPath = path.join(exeDir, 'questions.csv');
+// const historyCsvPath = path.join(exeDir, 'history.csv');
+
+const questionsCsvPath = "./public/question.csv";
+const historyCsvPath = "./public/history.csv";
+
 
 console.log("questionsCsvPath:", questionsCsvPath);
 console.log("historyCsvPath:", historyCsvPath);
