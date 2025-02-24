@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { questionsAtom, allTagAtom, selectedTagsAtom, selectedQuestionsAtom } from "state/data";
 import { useNavigate, useLocation } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function SelectSolve() {
@@ -112,7 +114,10 @@ function SelectSolve() {
       selectedQuestions.length > 0 ? selectedQuestions : filterQuestions;
 
     if(questionsToNavigate.length < 0){
-      alert("현재 풀이 가능한 문제가 없습니다! 문제를 생성해주세요");
+      
+      if (!toast.isActive("no-question-error")) {
+        toast.error("현재 풀이 가능한 문제가 없습니다! 문제를 생성해주세요", { toastId: "no-question-error" });
+      }
       goToQuestions();
       return;
     }
@@ -138,7 +143,9 @@ function SelectSolve() {
       selectedQuestions.length > 0 ? selectedQuestions : filterQuestions;
 
       if(questionsToNavigate.length < 0){
-        alert("현재 풀이 가능한 문제가 없습니다! 문제를 생성해주세요");
+        if (!toast.isActive("no-question-error2")) {
+          toast.error("현재 풀이 가능한 문제가 없습니다! 문제를 생성해주세요", { toastId: "no-question-error2" });
+        }
         goToQuestions();
         return;
       }
