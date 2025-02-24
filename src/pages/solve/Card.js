@@ -4,7 +4,7 @@ import { useSetRecoilState } from "recoil";
 import { questionsAtom } from "state/data";
 import { addDays, format } from 'date-fns'; // date-fns 함수 추가
 
-function Card() {  
+function Card() {
   const [questionIndex, setQuestionIndex] = useState(0); // 현재 문제의 인덱스
   const location = useLocation();
   const questions = location.state.questions;
@@ -17,8 +17,9 @@ function Card() {
   const setRecoilQuestions = useSetRecoilState(questionsAtom);
 
   const [showAnswer, setShowAnswer] = useState(false);
-  const [correctCount, setCorrectCount] = useState(0); 
-  const [wrongCount, setWrongCount] = useState(0); 
+  const [correctCount, setCorrectCount] = useState(0);
+  const [wrongCount, setWrongCount] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const goResult = (correct, wrong) => {
     navigate("/card/result", {
@@ -57,7 +58,7 @@ function Card() {
     const currentLevel = currentQuestion.level ? parseInt(currentQuestion.level, 10) : 0;
     const newLevel = Math.min(currentLevel + 1, 3); // 레벨 증가 (최대 3)
     const newUpdateDate = calculateUpdateDate(today, newLevel);
-    
+
     setCorrectCount((prevCount) => {
       const updatedCount = prevCount + 1;
       if (questionIndex === questions.length - 1) {
@@ -67,18 +68,18 @@ function Card() {
       }
       return updatedCount;
     });
-    setShowAnswer(false);   
+    setShowAnswer(false);
 
     // Recoil 상태 업데이트: level, updateDate, solveddate 반영
     setRecoilQuestions((prevQuestions) => {
       const updatedQuestions = prevQuestions.map((item) =>
         item.id === currentQuestion.id
-          ? { 
-              ...item, 
-              level: newLevel.toString(),
-              update: newUpdateDate,
-              solveddate: formattedToday
-            } 
+          ? {
+            ...item,
+            level: newLevel.toString(),
+            update: newUpdateDate,
+            solveddate: formattedToday
+          }
           : item
       );
       return updatedQuestions;
@@ -95,13 +96,13 @@ function Card() {
     }
   };
 
-  const wrong = async () => { 
+  const wrong = async () => {
     // 현재 질문 정보 가져오기
     const currentQuestion = questions[questionIndex];
     const currentLevel = currentQuestion.level ? parseInt(currentQuestion.level, 10) : 0;
     const newLevel = Math.max(currentLevel - 1, 0); // 레벨 감소 (최소 0)
     const newUpdateDate = calculateUpdateDate(today, newLevel);
-    
+
     setWrongCount((prevCount) => {
       const updatedCount = prevCount + 1;
       if (questionIndex === questions.length - 1) {
@@ -117,12 +118,12 @@ function Card() {
     setRecoilQuestions((prevQuestions) => {
       const updatedQuestions = prevQuestions.map((item) =>
         item.id === currentQuestion.id
-          ? { 
-              ...item, 
-              level: newLevel.toString(),
-              update: newUpdateDate,
-              solveddate: formattedToday
-            } 
+          ? {
+            ...item,
+            level: newLevel.toString(),
+            update: newUpdateDate,
+            solveddate: formattedToday
+          }
           : item
       );
       return updatedQuestions;
@@ -143,6 +144,10 @@ function Card() {
     setQuestionIndex((prevIndex) => prevIndex + 1);
   };
 
+  // 모달 열기/닫기 함수
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
   return (
     <main className="ml-20 h-[100vh]">
       <div className="sm:rounded-lg h-full flex flex-col">
@@ -160,6 +165,7 @@ function Card() {
                 className="w-1/2 bg-gray-50 h-auto rounded-l-2xl"
                 src={questions[questionIndex].img}
                 alt=""
+                onClick={openModal} // 이미지 클릭시 모달 열기
               />
               <div className="w-1/2 p-5">
                 <div className="text-lg font-bold">
@@ -173,11 +179,11 @@ function Card() {
           )}
 
           {!questions[questionIndex].img && (
-            <div className="w-3/4 h-[300px] bg-white rounded-2xl">         
-              <div 
+            <div className="w-3/4 h-[300px] bg-white rounded-2xl">
+              <div
                 style={{
                   fontSize: "clamp(0.8rem, 2vw, 1.3rem)", // 글자 크기를 동적으로 조정
-                }}            
+                }}
                 className="w-full text-center text-lg font-bold mt-10 px-3">
                 {questions[questionIndex].title}
               </div>
@@ -190,7 +196,7 @@ function Card() {
 
           {!showAnswer && (
             <div className="flex justify-center">
-              <div 
+              <div
                 onClick={() => setShowAnswer(true)}
                 className="cursor-pointer rounded-2xl bg-blue-500 font-bold text-white py-2 w-40 text-center text-sm">
                 정답
@@ -199,12 +205,12 @@ function Card() {
           )}
           {showAnswer && (
             <div className="flex gap-5 justify-center">
-              <div 
+              <div
                 onClick={wrong}
                 className="cursor-pointer rounded-2xl bg-gray-100 font-bold py-2 w-40 text-center text-sm">
                 틀림
               </div>
-              <div 
+              <div
                 onClick={correct}
                 className="cursor-pointer rounded-2xl bg-blue-500 font-bold text-white py-2 w-40 text-center text-sm">
                 맞음
@@ -256,6 +262,22 @@ function Card() {
           </svg>
         </div>
       </div>
+
+      {/* 모달 컴포넌트 */}
+      {isModalOpen && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75"
+          onClick={closeModal} // 모달 배경 클릭 시 닫힘
+        >
+          <div className="relative">
+            <img 
+              src={questions[questionIndex].img} 
+              alt=""
+              className="max-w-full max-h-full rounded-lg"
+            />
+          </div>
+        </div>
+      )}
     </main>
   );
 }

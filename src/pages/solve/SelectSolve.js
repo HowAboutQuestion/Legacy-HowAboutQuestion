@@ -56,7 +56,7 @@ function SelectSolve() {
         <span
           onClick={() => handleTagClick(tagName)}
           key={index}
-          className={`cursor-pointer whitespace-nowrap py-1 px-2 rounded-xl text-xs font-semibold border-none ${
+          className={`cursor-pointer whitespace-nowrap hover:scale-105 transition py-1 px-2 rounded-xl text-xs font-semibold border-none ${
             isSelected ? "bg-blue-500 text-white" : "bg-gray-300 text-black"
           }`}
         >
@@ -175,13 +175,13 @@ function SelectSolve() {
             <div className="flex gap-5">
               <div
                 onClick={goSolve}
-                className="bg-blue-500 rounded-xl text-white font-semibold text-xs w-20 py-3 text-center hover:scale-105 cursor-pointer"
+                className="bg-blue-500 rounded-xl text-white font-semibold text-xs w-20 py-3 text-center hover:scale-105 transition cursor-pointer"
               >
                 시험
               </div>
               <div
                 onClick={goCard}
-                className="bg-blue-500 rounded-xl text-white font-semibold text-xs w-20 py-3 text-center hover:scale-105 cursor-pointer"
+                className="bg-blue-500 rounded-xl text-white font-semibold text-xs w-20 py-3 text-center hover:scale-105 transition cursor-pointer"
               >
                 카드
               </div>
@@ -193,7 +193,7 @@ function SelectSolve() {
             <div className="flex">
               <div
                 onClick={goQuestion}
-                className="bg-blue-500 whitespace-nowrap rounded-xl w-30 text-white font-semibold text-xs py-3 px-3 text-center hover:scale-105 cursor-pointer"
+                className="bg-blue-500 whitespace-nowrap rounded-xl w-30 text-white font-semibold text-xs py-3 px-3 text-center hover:scale-105 transition cursor-pointer"
               >
                 문제 생성하러 가기
               </div>
