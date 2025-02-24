@@ -2,11 +2,20 @@ import React, { useState } from "react";
 
 function Multiple({ question, index, onAnswerChange }) {
   const [answer, setAnswer] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
    
   const handleAnswerChange = (e) => {
     const selectedAnswer = e.target.value;
     setAnswer(selectedAnswer); 
     onAnswerChange(index, selectedAnswer); 
+  };
+
+  const handleImageClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = (e) => {
+      setIsModalOpen(false);
   };
 
   return (
@@ -18,10 +27,26 @@ function Multiple({ question, index, onAnswerChange }) {
       {question.img && (
         <div>
           <img
+            onClick={handleImageClick}
             className="bg-gray-50 max-w-max w-96 h-auto rounded"
             src={question.img}
             alt=""
           />
+        </div>
+      )}
+
+{isModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75"
+          onClick={handleCloseModal}
+        >
+          <div className="relative">
+            <img
+              src={question.img}
+              alt=""
+              className="max-w-full max-h-full rounded"
+            />
+        </div>
         </div>
       )}
 

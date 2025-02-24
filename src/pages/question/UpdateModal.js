@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { questionsAtom, allTagAtom } from "state/data";
-import { useSetRecoilState } from "recoil";
+import { questionsAtom } from "state/data";
+import { useSetRecoilState, useRecoilValue } from "recoil";
+import { generateUniqueId }  from "utils/util"; 
 
 function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed, index }) {
   const placeholderImage = "./images/insertImg.png";
@@ -32,6 +33,7 @@ const getProperImageUrl = (path) => {
 
 
   const setQuestions = useSetRecoilState(questionsAtom);
+  const questions = useRecoilValue(questionsAtom);
 
   // 드래그 앤 드롭 관련 state 및 ref
   const [isDragging, setIsDragging] = useState(false);
@@ -79,6 +81,8 @@ const getProperImageUrl = (path) => {
       const reader = new FileReader();
       reader.onload = () => {
         setThumbnail(reader.result);
+        // 파일 입력 리셋: 같은 파일 재선택 시 이벤트 발생 보장
+        event.target.value = null;
       };
       reader.readAsDataURL(image);
       setImageFile(image);
@@ -122,10 +126,28 @@ const getProperImageUrl = (path) => {
     };
 
     if (imageFile) {
+      // 기존 이미지가 있으면 삭제 (삭제에 실패해도 진행할 수 있도록 try-catch)
+      if (question.img) {
+        try {
+          const deleteResult = await window.electronAPI.deleteImage(question.img);
+          if (!deleteResult.success) {
+            console.error("기존 이미지 삭제 실패:", deleteResult.message);
+            // 삭제 실패 시 추가 처리가 필요하면 여기서 처리
+          }
+        } catch (error) {
+          console.error("기존 이미지 삭제 중 오류 발생:", error);
+        }
+      }
+
+      // 새 파일 이름 생성 (questions 배열을 활용)
+      const newFileName = generateUniqueId(questions);
+
       try {
-        const result = await handleSave(question.id, imageFile);
+        const result = await handleSave(newFileName, imageFile);
         if (result.success) {
           updatedQuestion.img = result.path;
+          // 이미지 저장 후 파일 상태 초기화
+          setImageFile(null);
         } else {
           console.error("이미지 저장 실패:", result.error);
           alert("이미지 저장에 실패했습니다.");
@@ -137,11 +159,11 @@ const getProperImageUrl = (path) => {
         return;
       }
     } else {
-      // 새 이미지 파일이 없으면 현재 thumbnail 상태를 반영
-      // 만약 thumbnail이 placeholderImage라면 삭제된 것으로 간주해 null을 저장합니다.
+      // 새 이미지 파일이 없는 경우, 현재 썸네일 상태 반영 (플레이스홀더면 null)
       updatedQuestion.img = thumbnail === placeholderImage ? null : thumbnail;
     }
 
+    // 질문 업데이트
     setQuestions((prevQuestions) => {
       const updatedQuestions = [...prevQuestions];
       updatedQuestions[index] = updatedQuestion;
