@@ -562,6 +562,24 @@ ipcMain.handle('extract-zip', async (event, { fileName, content }) => {
   }
 });
 
+ipcMain.handle('delete-image', async (event, imgPath) => {
+  console.log("delete-image imgPath: ", imgPath);
+
+  try {
+    const imageDir = path.join(exeDir, './images', imgPath); // 이미지 저장 디렉토리
+
+    console.log("delete-image imageDir: ", imageDir);
+
+    if (fs.existsSync(imageDir)) {
+      fs.unlinkSync(imageDir); // 파일 삭제
+      return { success: true, message: `Deleted: ${imageDir}` };
+    } else {
+      return { success: false, message: `File not found: ${imageDir}` };
+    }
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
 
 // `readQuestionsCSV` 함수 호출 시 결과를 React로 보내는 IPC 핸들러 설정
 ipcMain.handle('read-questions-csv', () => readQuestionsCSV());
