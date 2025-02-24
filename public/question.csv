@@ -1,2 +1,3 @@
 title,type,select1,select2,select3,select4,answer,img,level,date,update,recommenddate,solveddate,tag
-d,객관식,sdf,sd3,sdf3,s,sdf,,0,2025-02-24,2025-02-24,2025-02-24,,df
+sdf,객관식,s,d,,,s,C:\Users\SSAFY\Desktop\HowAboutQuestion\node_modules\electron\dist/images/id-bsk3g6lyp.png,0,2025-02-24,2025-02-24,2025-02-24,,sdf
+d,객관식,d,a,,,d,file:///C:/Users/SSAFY/Desktop/HowAboutQuestion/node_modules/electron/dist/images/id-wxsdwmycl.png,0,2025-02-24,2025-02-24,2025-02-24,,s

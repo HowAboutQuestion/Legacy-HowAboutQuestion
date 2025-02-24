@@ -2,11 +2,21 @@ import React, { useState } from "react";
 
 function Single({ question, index, onAnswerChange }) {
   const [answer, setAnswer] = useState(question.selected);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleAnswerChange = (e) => {
     const selectedAnswer = e.target.value;
     setAnswer(selectedAnswer); // 로컬 상태 업데이트
     onAnswerChange(index, selectedAnswer.trim()); // 부모 컴포넌트에 전달
+  };
+
+  const handleImageClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = (e) => {
+      setIsModalOpen(false);
+    
   };
 
   return (
@@ -18,10 +28,26 @@ function Single({ question, index, onAnswerChange }) {
       {question.img && (
         <div>
           <img
+          onClick={handleImageClick}
             className="bg-gray-50 max-w-max w-96 h-auto"
             src={question.img}
             alt=""
           />
+        </div>
+      )}
+
+{isModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75"
+          onClick={handleCloseModal}
+        >
+          <div className="relative">
+            <img
+              src={question.img}
+              alt=""
+              className="max-w-full max-h-full rounded"
+            />
+          </div>
         </div>
       )}
 
