@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { questionsAtom } from "state/data";
 import { useSetRecoilState, useRecoilValue } from "recoil";
 import { generateUniqueId }  from "utils/util"; 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed, index }) {
   const placeholderImage = "./images/insertImg.png";
@@ -106,7 +108,9 @@ const getProperImageUrl = (path) => {
 
   const updateEvent = async () => {
     if (!title) {
-      alert("제목은 필수 입력 항목입니다");
+       if (!toast.isActive("update-title-error")) {
+              toast.error("제목은 필수 입력 항목입니다", { toastId: "update-title-error" });
+            }
       return;
     }
 
@@ -150,12 +154,16 @@ const getProperImageUrl = (path) => {
           setImageFile(null);
         } else {
           console.error("이미지 저장 실패:", result.error);
-          alert("이미지 저장에 실패했습니다.");
+          if (!toast.isActive("saving-image-false")) {
+            toast.error("이미지 저장에 실패했습니다.", { toastId: "saving-image-false" });
+        }
           return;
         }
       } catch (error) {
         console.error("이미지 저장 중 오류 발생:", error);
-        alert("이미지 저장 중 오류가 발생했습니다.");
+        if (!toast.isActive("saving-image-error")) {
+              toast.error("이미지 저장 중 오류가 발생했습니다.", { toastId: "saving-image-error" });
+        }
         return;
       }
     } else {

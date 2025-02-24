@@ -5,6 +5,9 @@ import QuestionItem from 'pages/question/QuestionItem';
 import UpdateModal from 'pages/question/UpdateModal';
 import { useLocation } from "react-router-dom";
 import InsertModal from './InsertModal';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 function Questions() {
@@ -211,57 +214,101 @@ function Questions() {
     const result = await window.electronAPI.exportQuestions(downloadQuestions);
 
     if (result.success) {
-      alert(`Questions exported to: ${result.path}`);
+      if (!toast.isActive("export-success")) {
+        toast.success(`문제 내보내기가 완료됐습니다. ${result.path}`, { toastId: "export-success" });
+      }
     } else {
-      alert(`Error exporting questions: ${result.message}`);
+      if (!toast.isActive("export-error")) {
+        toast.error(`문제 내보내기 중 문제가 발생했습니다. ${result.message}`, { toastId: "export-error" });
+      }
     }
   };
 
+  // 1. confirmDeletion 함수 정의
+const confirmDeletion = () => {
+  return new Promise((resolve) => {
+    toast.info(
+      <div>
+        <p className="text-sm">삭제하시겠습니까?</p>
+        <div className="flex gap-2 justify-end mt-2">
+          <button
+            onClick={() => {
+              resolve(true);
+              toast.dismiss();
+            }}
+            className="bg-red-500 text-white px-2 py-1 rounded text-xs"
+          >
+            확인
+          </button>
+          <button
+            onClick={() => {
+              resolve(false);
+              toast.dismiss();
+            }}
+            className="bg-gray-300 text-black px-2 py-1 rounded text-xs"
+          >
+            취소
+          </button>
+        </div>
+      </div>,
+      {
+        position: "top-center",
+        autoClose: false,
+        closeOnClick: false,
+        closeButton: false,
+      }
+    );
+  });
+};
+
+// 2. deleteQuestionsAll 함수 수정
+const deleteQuestionsAll = async () => {
+  const confirmed = await confirmDeletion();
+  if (!confirmed) return; // 취소한 경우 중단
+
+  const deleteImages = [];
+
+  const updatedQuestions = filterQuestions
+    .filter(({ question }) => {
+      if (question.checked === true) {
+        if (question.img) deleteImages.push(question.img); // 삭제할 질문의 img 추가
+        return false; // checked가 true면 삭제
+      }
+      return true;
+    })
+    .map(({ question }) => {
+      const { checked, ...rest } = question;
+      return rest;
+    });
+
+  setQuestions([...updatedQuestions]); // 질문 업데이트
+
+  // CSV 파일 업데이트 (CSV 파일에도 반영)
+  await window.electronAPI.updateQuestions(updatedQuestions);
+
   const handleDelete = async (imagePath) => {
-    console.log("handleDelete function imagePath : ", imagePath);
+    console.log("handleDelete function imagePath:", imagePath);
     try {
       const result = await window.electronAPI.deleteImage(imagePath);
       if (result.success) {
-        //console.log(result.message);
-        //alert('이미지가 성공적으로 삭제되었습니다.');
+        console.log("이미지가 성공적으로 삭제되었습니다.");
       } else {
-        console.error(result.message);
-        //alert(result.message);
+        console.error("삭제 실패:", result.message);
       }
     } catch (error) {
-      console.error('삭제 중 오류 발생:', error);
-      //alert('이미지 삭제 중 오류가 발생했습니다.');
+      console.error("삭제 중 오류 발생:", error);
     }
-  }
-
-  const deleteQuestionsAll = async () => {
-    if (!window.confirm("삭제하시겠습니까?")) return;
-
-    const deleteImages = [];
-
-    const updatedQuestions = filterQuestions
-      .filter(({ question }) => {
-        if (question.checked === true) {
-          if (question.img) deleteImages.push(question.img); // 삭제할 질문의 img를 배열에 추가
-          return false; // checked가 true면 삭제
-        }
-        return true; // checked가 false면 유지
-      })
-      .map(({ question }) => {
-        const { checked, ...rest } = question; // checked 속성 제외
-        return rest;
-      });
-
-    setQuestions([...updatedQuestions]); // 질문 업데이트
-
-    // CSV 파일 업데이트 (CSV 파일에도 반영)
-    await window.electronAPI.updateQuestions(updatedQuestions);
-
-    // 삭제할 이미지를 처리
-    deleteImages.forEach((img) => {
-      handleDelete(img); // handleDelete 호출
-    });
   };
+  // 삭제할 이미지 처리
+  deleteImages.forEach((img) => {
+    handleDelete(img);
+  });
+
+  toast.success("선택된 문제가 삭제되었습니다.", {
+    position: "top-center",
+    autoClose: 1000,
+  });
+};
 
 
 

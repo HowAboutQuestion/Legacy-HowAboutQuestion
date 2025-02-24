@@ -3,6 +3,8 @@ import { questionsAtom, allTagAtom } from "state/data";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { generateUniqueId } from "utils/util"
 import { getTodayDate } from "utils/formatDate";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function InsertModal({ setInsertModal }) {
@@ -99,10 +101,13 @@ function InsertModal({ setInsertModal }) {
   }
 
   const insertEvent = async () => {
-    if (!(title)) {
-      alert("제목은 필수 입력 항목입니다");
+    if (!title) {
+      if (!toast.isActive("insert-title-error")) {
+        toast.error("제목은 필수 입력 항목입니다", { toastId: "insert-title-error" });
+      }
       return;
     }
+
 
     const tags = tag ? [...new Set(tag.split(",").map((item) => item.trim()))] : [];
 
@@ -131,7 +136,9 @@ function InsertModal({ setInsertModal }) {
       selectedAnswer = document.querySelector('input[name="answer"]:checked');
 
       if (!selectedAnswer || selectedAnswer.value === "") {
-        alert("객관식 답안을 설정해주세요");
+        if (!toast.isActive("write-multi")) {
+          toast.error("객관식 답안을 설정해주세요", { toastId: "write-multi" });
+        }
         return;
       }
 
@@ -151,11 +158,15 @@ function InsertModal({ setInsertModal }) {
           question.img = result.path; // 저장된 경로를 할당
         } else {
           console.error("이미지 저장 실패:", result.error);
-          alert("이미지 저장에 실패했습니다.");
+            if (!toast.isActive("image-false")) {
+              toast.error("이미지 저장에 실패했습니다..",{ toastId: "image-false"});
+            }
         }
       } catch (error) {
         console.error("이미지 저장 중 오류 발생:", error);
-        alert("이미지 저장 중 오류가 발생했습니다.");
+         if (!toast.isActive("image-error")) {
+                toast.error("이미지 저장 중 오류가 발생했습니다.",{ toastId: "image-error"});
+          }
       }
     }
 
@@ -191,7 +202,7 @@ function InsertModal({ setInsertModal }) {
         backgroundPosition: "center",
       }}
     >
-      {thumbnail && thumbnail !== placeholderImage && (
+      {thumbnail && (
         <button
           type="button"
           onClick={handleRemoveImage}
