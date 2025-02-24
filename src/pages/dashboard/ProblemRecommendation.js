@@ -246,7 +246,7 @@ const ProblemRecommendation = ({
                   <p className="text-2xl font-bold">오늘의 추천 문제</p>
                   <div className="mt-4 flex items-center justify-center space-x-2">
                     <label htmlFor="problemCount" className="mr-2 text-lg font-bold">
-                      풀어야 할 문제 수:
+                      선택한 문제 수:
                     </label>
 
                     <div className="flex items-center bg-neutral-50">
@@ -316,7 +316,7 @@ const ProblemRecommendation = ({
 
                     <p className="mr-2 text-lg font-bold">문제 </p>
                     <p className="text-2xl font-bold">
-                      / 총 {toSolveCount + solvedCount}문제
+                      / 총 {toSolveCount}문제
                     </p>
                   </div>
                 </>

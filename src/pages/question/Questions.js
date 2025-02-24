@@ -224,8 +224,12 @@ function Questions() {
     }
   };
 
-  // 1. confirmDeletion 함수 정의
+ // 1. confirmDeletion 함수 수정
 const confirmDeletion = () => {
+  // 기존에 confirm toast가 있다면 먼저 제거
+  if (toast.isActive("confirm-deletion")) {
+    toast.dismiss("confirm-deletion");
+  }
   return new Promise((resolve) => {
     toast.info(
       <div>
@@ -234,7 +238,7 @@ const confirmDeletion = () => {
           <button
             onClick={() => {
               resolve(true);
-              toast.dismiss();
+              toast.dismiss("confirm-deletion");
             }}
             className="bg-blue-500 text-white px-2 py-1 rounded text-xs"
           >
@@ -243,7 +247,7 @@ const confirmDeletion = () => {
           <button
             onClick={() => {
               resolve(false);
-              toast.dismiss();
+              toast.dismiss("confirm-deletion");
             }}
             className="bg-gray-300 text-black px-2 py-1 rounded text-xs"
           >
@@ -252,6 +256,7 @@ const confirmDeletion = () => {
         </div>
       </div>,
       {
+        toastId: "confirm-deletion", // 고유 ID 지정
         position: "top-center",
         autoClose: false,
         closeOnClick: false,
@@ -260,6 +265,7 @@ const confirmDeletion = () => {
     );
   });
 };
+
 
 // 2. deleteQuestionsAll 함수 수정
 const deleteQuestionsAll = async () => {
