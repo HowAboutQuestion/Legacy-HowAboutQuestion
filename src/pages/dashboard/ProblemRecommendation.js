@@ -1,6 +1,8 @@
 import Questions from "pages/question/Questions";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ProblemRecommendation = ({
   hasQuestions,
@@ -37,14 +39,21 @@ const ProblemRecommendation = ({
 
     // 입력 값이 비어 있거나 유효하지 않은 경우 최소값으로 설정
     if (isNaN(count) || count < 1) {
-      alert("문제 수는 최소 1 이상이어야 합니다.");
+
+      if (!toast.isActive("min-error")) {
+        toast.error("문제 수는 최소 1 이상이어야 합니다.", 
+          { toastId: "min-error" });
+      }
       setSelectedProblemCount(1);
       count = 1;
     }
 
     // 입력 값이 최대값을 초과하는 경우 최대값으로 설정
     if (count > problemsToSolveToday.length) {
-      alert(`문제 수는 최대 ${problemsToSolveToday.length} 이하이어야 합니다.`);
+      if (!toast.isActive("max-error")) {
+              toast.error(`문제 수는 최대 ${problemsToSolveToday.length} 이하이어야 합니다.`, 
+                { toastId: "max-error" });
+            }
       setSelectedProblemCount(problemsToSolveToday.length);
       count = problemsToSolveToday.length;
     }
