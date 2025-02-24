@@ -40,7 +40,7 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
       </div>
     );
   };
-  
+
   if (question.type === '주관식') {
     return (
       <>
@@ -113,13 +113,16 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
                 }`}
             >
 
-              <div className="p-5 px-6">
-                <img
-                  art=""
-                  src={question.img}
-                  className="rounded aspect-video min-w-[10vw] max-w-[20vw]"
-                />
-              </div>
+              {question.img && (
+                <div className="p-5 px-6">
+                  <img
+                    src={question.img}
+                    onClick={openModal}
+                    className="rounded aspect-video min-w-[10vw] max-w-[20vw] cursor-pointer"
+                    alt="미리보기"
+                  />
+                </div>
+              )}
             </div>
           </td>
         </tr>
@@ -211,9 +214,7 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
               >
                 {question.select4}
               </div>)}
-
             </div>
-
           </div>
         </td>
         <td colSpan={2} className="overflow-hidden">
@@ -222,14 +223,16 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
               }`}
           >
 
-            <div className="p-5 px-6">
-              <img
-                src={question.img}
-                onClick={openModal}
-                className="rounded aspect-video min-w-[10vw] max-w-[20vw] cursor-pointer"
-                alt="미리보기"
-              />
-            </div>
+            {question.img && (
+              <div className="p-5 px-6">
+                <img
+                  src={question.img}
+                  onClick={openModal}
+                  className="rounded aspect-video min-w-[10vw] max-w-[20vw] cursor-pointer"
+                  alt="미리보기"
+                />
+              </div>
+            )}
           </div>
         </td>
       </tr>

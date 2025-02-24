@@ -252,14 +252,15 @@ function Questions() {
           const { checked, ...rest } = question; // checked 속성 제외
           return rest;
         });
-    
-      // 삭제할 이미지를 처리
-      deleteImages.forEach((img) => {
+  
+      setQuestions([...updatedQuestions]); // 질문 업데이트
+
+       // 삭제할 이미지를 처리
+       deleteImages.forEach((img) => {
         handleDelete(img); // handleDelete 호출
       });
-    
-      setQuestions(updatedQuestions); // 질문 업데이트
     };
+    
     
 
 
