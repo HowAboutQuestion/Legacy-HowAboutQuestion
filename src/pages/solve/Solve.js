@@ -23,7 +23,7 @@ function Solve() {
   const [answers, setAnswers] = useState(
     passedQuestions.map((question) => ({
       ...question,
-      selected: question.selected || '',
+      selected: '',
     }))
   );
 
@@ -129,6 +129,14 @@ function Solve() {
     });
   };
 
+  const allAnswered = answers.every(
+    (question) => question.selected && question.selected.trim() !== ""
+  );
+
+// 조건에 따른 스타일 변수들
+const isFirstQuestion = questionIndex === 0;
+const isLastQuestion = questionIndex === answers.length - 1;
+
   return (
     <main className="ml-20">
       <div className="sm:rounded-lg">
@@ -155,7 +163,7 @@ function Solve() {
             </div>
             <div
               onClick={submit}
-              className="cursor-pointer bg-blue-500 hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2 cursor-pointer transition"
+              className={`cursor-pointer ${allAnswered ? 'bg-blue-500' : 'bg-gray-500'} hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2 transition`}
             >
               제출
             </div>
@@ -178,9 +186,9 @@ function Solve() {
         )}
       </div>
       <div className="fixed z-40 bottom-5 right-5 flex gap-2">
-        <div
+      <div
           onClick={beforeQuestion}
-          className="rounded-full p-2 text-white bg-blue-500 hover:scale-105 transition shadow cursor-pointer"
+          className={`rounded-full p-2 text-white ${isFirstQuestion ? 'bg-gray-500' : 'bg-blue-500'} hover:scale-105 transition shadow`}
         >
           {/* 이전 아이콘 */}
           <svg
@@ -201,7 +209,7 @@ function Solve() {
 
         <div
           onClick={nextQuestion}
-          className="rounded-full p-2 text-white bg-blue-500 hover:scale-105 transition shadow cursor-pointer"
+          className={`rounded-full p-2 text-white ${isLastQuestion ? 'bg-gray-500' : 'bg-blue-500'} hover:scale-105 transition shadow cursor-pointer`}
         >
           {/* 다음 아이콘 */}
           <svg
