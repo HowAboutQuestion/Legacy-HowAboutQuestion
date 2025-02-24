@@ -562,18 +562,21 @@ ipcMain.handle('extract-zip', async (event, { fileName, content }) => {
   }
 });
 
-ipcMain.handle('delete-image', async (event, imgPath) => {
+ipcMain.handle('delete-image', async (event, { imgPath }) => {
   console.log("delete-image imgPath: ", imgPath);
 
   try {
-    const imageDir = path.join(exeDir, './images', imgPath); // 이미지 저장 디렉토리
+    // exeDir와 images 폴더 그리고 imgPath를 결합하여 이미지 파일의 절대경로를 생성
+    const imageFullPath = path.isAbsolute(imgPath)
+    ? imgPath
+    : path.join(exeDir, 'images', imgPath);
+    
+  console.log("delete-image imageFullPath: ", imageFullPath);
 
-    console.log("delete-image imageDir: ", imageDir);
-
-    if (fs.existsSync(imageDir)) {
-      fs.unlinkSync(imageDir); // 파일 삭제
-      return { success: true, message: `Deleted: ${imageDir}` };
-    } else {
+  if (fs.existsSync(imageFullPath)) {
+    fs.unlinkSync(imageFullPath); // 파일 삭제
+    return { success: true, message: `Deleted: ${imageFullPath}` };
+  } else {
       return { success: false, message: `File not found: ${imageDir}` };
     }
   } catch (error) {
