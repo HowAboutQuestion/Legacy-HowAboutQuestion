@@ -113,7 +113,7 @@ function SelectSolve() {
 
     if(questionsToNavigate.length < 0){
       alert("현재 풀이 가능한 문제가 없습니다! 문제를 생성해주세요");
-      goQuestion();
+      goToQuestions();
       return;
     }
     
@@ -139,7 +139,7 @@ function SelectSolve() {
 
       if(questionsToNavigate.length < 0){
         alert("현재 풀이 가능한 문제가 없습니다! 문제를 생성해주세요");
-        goQuestion();
+        goToQuestions();
         return;
       }
     
@@ -157,8 +157,8 @@ function SelectSolve() {
   };
 
   
-  const goQuestion = () => {
-    navigate("/questions");
+  const goToQuestions = () => {
+    navigate("/questions", { state: { openModal: true } });
   };
 
   return (
@@ -189,13 +189,20 @@ function SelectSolve() {
           </>
         ) : (
           <>
+          <div className="w-full h-40 mx-auto mb-4 relative">
+                <img
+                  src="./images/no-problems.png"
+                  alt="No recommended problems"
+                  className="object-contain w-full h-full"
+                />
+              </div>
             <div className="">현재 풀이 가능한 문제가 없습니다</div>
             <div className="flex">
               <div
-                onClick={goQuestion}
-                className="bg-blue-500 whitespace-nowrap rounded-xl w-30 text-white font-semibold text-xs py-3 px-3 text-center hover:scale-105 transition cursor-pointer"
+                onClick={goToQuestions}
+                className="bg-blue-500 whitespace-nowrap rounded-xl w-30 text-white font-semibold text- py-3 px-3 text-center hover:scale-105 transition cursor-pointer"
               >
-                문제 생성하러 가기
+               문제 생성
               </div>
             </div>
           </>

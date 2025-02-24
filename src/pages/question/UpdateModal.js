@@ -14,6 +14,19 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
   const [answer, setAnswer] = useState(question.answer || "");
   const [tag, setTag] = useState(question.tag.join(", ") || "");
   const [date, setDate] = useState(question.date || "");
+  
+// thumbnail 상태를 설정할 때, 경로를 보정하는 헬퍼 함수 추가
+const getProperImageUrl = (path) => {
+  if (!path) return placeholderImage;
+  // Windows의 역슬래시를 슬래시로 변경
+  let normalizedPath = path.replace(/\\/g, '/');
+  // 이미 "file://"로 시작하지 않는다면 file:/// 접두어 추가
+  if (!normalizedPath.startsWith('file://')) {
+    normalizedPath = `file:///${normalizedPath}`;
+  }
+  return normalizedPath;
+};
+
   const [thumbnail, setThumbnail] = useState(question.img || placeholderImage);
   const [imageFile, setImageFile] = useState(null);
 
@@ -142,7 +155,7 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
   const updateCancleEvent = () => {
     setUpdateQuestion(null);
     setUpdateModal(false);
-  }
+  };
 
   useEffect(() => {
     setTitle(question.title || "");
@@ -154,8 +167,8 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
     setAnswer(question.answer || "");
     setTag(question.tag.join(", ") || "");
     setDate(question.date || "");
-    setThumbnail(question.img || placeholderImage);
-  }, [question, placeholderImage]);
+    setThumbnail(getProperImageUrl(question.img));
+  }, [question]);
 
 
   //x 버튼 공통 이미지 업로드 컴포넌트
