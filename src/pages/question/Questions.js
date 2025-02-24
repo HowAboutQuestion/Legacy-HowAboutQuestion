@@ -234,7 +234,7 @@ function Questions() {
     }
   }
 
-  const deleteQuestionsAll = () => {
+  const deleteQuestionsAll = async () => {
     if (!window.confirm("삭제하시겠습니까?")) return;
 
     const deleteImages = [];
@@ -253,6 +253,9 @@ function Questions() {
       });
 
     setQuestions([...updatedQuestions]); // 질문 업데이트
+
+    // CSV 파일 업데이트 (CSV 파일에도 반영)
+    await window.electronAPI.updateQuestions(updatedQuestions);
 
     // 삭제할 이미지를 처리
     deleteImages.forEach((img) => {
