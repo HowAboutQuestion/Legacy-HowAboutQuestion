@@ -236,7 +236,7 @@ const confirmDeletion = () => {
               resolve(true);
               toast.dismiss();
             }}
-            className="bg-red-500 text-white px-2 py-1 rounded text-xs"
+            className="bg-blue-500 text-white px-2 py-1 rounded text-xs"
           >
             확인
           </button>
