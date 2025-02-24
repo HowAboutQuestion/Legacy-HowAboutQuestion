@@ -155,7 +155,7 @@ function Solve() {
             </div>
             <div
               onClick={submit}
-              className="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2 cursor-pointer"
+              className="cursor-pointer bg-blue-500 hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2 cursor-pointer transition"
             >
               제출
             </div>
@@ -180,7 +180,7 @@ function Solve() {
       <div className="fixed z-40 bottom-5 right-5 flex gap-2">
         <div
           onClick={beforeQuestion}
-          className="rounded-full p-2 text-white bg-blue-500 hover:scale-105 shadow cursor-pointer"
+          className="rounded-full p-2 text-white bg-blue-500 hover:scale-105 transition shadow cursor-pointer"
         >
           {/* 이전 아이콘 */}
           <svg
@@ -201,7 +201,7 @@ function Solve() {
 
         <div
           onClick={nextQuestion}
-          className="rounded-full p-2 text-white bg-blue-500 hover:scale-105 shadow cursor-pointer"
+          className="rounded-full p-2 text-white bg-blue-500 hover:scale-105 transition shadow cursor-pointer"
         >
           {/* 다음 아이콘 */}
           <svg

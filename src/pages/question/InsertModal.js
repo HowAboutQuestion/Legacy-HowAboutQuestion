@@ -182,7 +182,7 @@ function InsertModal({ setInsertModal }) {
 
   const renderImageUpload = () => (
     <div
-      className="relative bg-gray-50 flex rounded"
+      className="relative bg-gray-50 flex rounded w-full h-full"
       style={{
         backgroundImage: thumbnail
           ? `url("${thumbnail}")`
@@ -191,8 +191,8 @@ function InsertModal({ setInsertModal }) {
         backgroundPosition: "center",
       }}
     >
-      {thumbnail && (
-        <button 
+      {thumbnail && thumbnail !== placeholderImage && (
+        <button
           type="button"
           onClick={handleRemoveImage}
           className="absolute top-1 right-1 bg-blue-500 text-white rounded-full p-1 text-xs z-10 transform transition duration-300 hover:scale-105"
@@ -259,108 +259,113 @@ function InsertModal({ setInsertModal }) {
             </div>
           </div>
         </div>
-        <div className="flex gap-3">
-          <input
-            type="text"
-            className="block min-w-[50%] outline-none border-b-2 border-gray-200 focus:border-blue-500 text-sm px-2 py-1 h-10"
-            placeholder="문제를 입력해주세요"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-          <select
-            className="block border-b-2 text-sm px-2 py-1 h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500"
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-          >
-            <option value="객관식">객관식</option>
-            <option value="주관식">주관식</option>
-          </select>
-        </div>
-        <input
-          type="text"
-          className="block outline-none border-b-2 border-gray-200 focus:border-blue-500 text-sm px-2 py-1 h-10 w-1/2 flex-none"
-          placeholder="태그를 입력해주세요"
-          value={tag}
-          onChange={(e) => setTag(e.target.value)}
-        />
-
-        {type === "객관식" ? (<div className="flex gap-5">
-          <div className="flex flex-1 flex-col gap-2">
+        <div className="flex gap-2">
+          <div className="flex-[2]">
             <div className="flex gap-3">
               <input
-                type="radio"
-                name="answer"
-                value={select1}
-              />
-              <input
                 type="text"
-                className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
-                placeholder="선택지1"
-                value={select1}
-                onChange={(e) => setSelect1(e.target.value)}
+                className="block min-w-[50%] outline-none border-b-2 border-gray-200 focus:border-blue-500 text-sm px-2 py-1 h-10"
+                placeholder="문제를 입력해주세요"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
               />
+              <select
+                className="block border-b-2 text-sm px-2 py-1 h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500"
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+              >
+                <option value="객관식">객관식</option>
+                <option value="주관식">주관식</option>
+              </select>
             </div>
-            <div className="flex gap-3">
-              <input
-                type="radio"
-                name="answer"
-                value={select2}
-              />
-              <input
-                type="text"
-                className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
-                placeholder="선택지2"
-                value={select2}
-                onChange={(e) => setSelect2(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="flex flex-1 flex-col gap-2">
-            <div className="flex gap-3">
-              <input
-                type="radio"
-                name="answer"
-                value={select3}
-
-              />
-              <input
-                type="text"
-                className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
-                placeholder="선택지3"
-                value={select3}
-                onChange={(e) => setSelect3(e.target.value)}
-              />
-            </div>
-            <div className="flex gap-3">
-              <input
-                type="radio"
-                name="answer"
-                value={select4}
-              />
-              <input
-                type="text"
-                className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
-                placeholder="선택지4"
-                value={select4}
-                onChange={(e) => setSelect4(e.target.value)}
-              />
-            </div>
-          </div>
-          {renderImageUpload()}
-          </div>
-        ) : (
-          <div className="flex gap-3 flex-1">
             <input
               type="text"
-              className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
-              placeholder="정답"
-              value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
+              className="block outline-none border-b-2 border-gray-200 focus:border-blue-500 text-sm px-2 py-1 h-10 w-1/2 flex-none"
+              placeholder="태그를 입력해주세요"
+              value={tag}
+              onChange={(e) => setTag(e.target.value)}
             />
+
+            {type === "객관식" ? (<div className="flex gap-5">
+              <div className="flex flex-1 flex-col gap-2">
+                <div className="flex gap-3">
+                  <input
+                    type="radio"
+                    name="answer"
+                    value={select1}
+                  />
+                  <input
+                    type="text"
+                    className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                    placeholder="선택지1"
+                    value={select1}
+                    onChange={(e) => setSelect1(e.target.value)}
+                  />
+                </div>
+                <div className="flex gap-3">
+                  <input
+                    type="radio"
+                    name="answer"
+                    value={select2}
+                  />
+                  <input
+                    type="text"
+                    className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                    placeholder="선택지2"
+                    value={select2}
+                    onChange={(e) => setSelect2(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="flex flex-1 flex-col gap-2">
+                <div className="flex gap-3">
+                  <input
+                    type="radio"
+                    name="answer"
+                    value={select3}
+
+                  />
+                  <input
+                    type="text"
+                    className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                    placeholder="선택지3"
+                    value={select3}
+                    onChange={(e) => setSelect3(e.target.value)}
+                  />
+                </div>
+                <div className="flex gap-3">
+                  <input
+                    type="radio"
+                    name="answer"
+                    value={select4}
+                  />
+                  <input
+                    type="text"
+                    className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                    placeholder="선택지4"
+                    value={select4}
+                    onChange={(e) => setSelect4(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+            ) : (
+              <div className="flex gap-3 flex-1">
+                <input
+                  type="text"
+                  className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                  placeholder="정답"
+                  value={answer}
+                  onChange={(e) => setAnswer(e.target.value)}
+                />
+              </div>
+            )}
+          </div>
+          <div className="flex-1">
             {renderImageUpload()}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

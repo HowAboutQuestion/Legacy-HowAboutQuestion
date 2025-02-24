@@ -67,11 +67,11 @@ function CardResult() {
               <div className="flex justify-between w-full px-5">
                 <div 
                 onClick={goCard}
-                className="cursor-pointer bg-blue-500 rounded-2xl py-2 w-20 whitespace-nowrap text-white font-bold text-xs text-center hover:shadow hover:scale-105">다시풀기</div>
+                className="cursor-pointer bg-blue-500 rounded-2xl py-2 w-20 whitespace-nowrap text-white font-bold text-xs text-center hover:shadow hover:scale-105 transition ">다시풀기</div>
               
               <div 
                 onClick={goDashBoard}
-                className="cursor-pointer bg-blue-500 rounded-2xl py-2 w-20 whitespace-nowrap text-white font-bold text-xs text-center hover:shadow hover:scale-105">완료</div>
+                className="cursor-pointer bg-blue-500 rounded-2xl py-2 w-20 whitespace-nowrap text-white font-bold text-xs text-center hover:shadow hover:scale-105 transition ">완료</div>
             
               </div>
               
