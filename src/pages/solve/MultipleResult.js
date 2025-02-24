@@ -1,6 +1,25 @@
-import React from "react";
+import React,{ useState } from "react";
 
 function MultipleResult({ question, index }) {
+  const [showModal, setShowModal] = useState(false);
+  const openModal = () => setShowModal(true);
+  const closeModal = () => setShowModal(false);
+
+  const Modal = ({ imgSrc, onClose }) => {
+    return (
+      <div
+        onClick={onClose}
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75"
+      >
+        <img
+          src={imgSrc}
+          alt="Enlarged"
+          onClick={onClose}
+          className="max-w-full max-h-full rounded"
+        />
+      </div>
+    );
+  };
 
   return (
     <div className="flex flex-col gap-5 p-10">
@@ -15,6 +34,7 @@ function MultipleResult({ question, index }) {
       {question.img && (
         <div>
           <img
+            onClick={openModal}
             className="bg-gray-50 max-w-max w-60 h-auto rounded"
             src={question.img}
             alt=""
@@ -59,8 +79,8 @@ function MultipleResult({ question, index }) {
           </div>)}
                  
       </div>
-
       </div>
+      {showModal && <Modal imgSrc={question.img} onClose={closeModal} />}
     </div>
   );
 }

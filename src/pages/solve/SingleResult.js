@@ -1,7 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 
 function SingleResult({ question, index }) {
+  const [showModal, setShowModal] = useState(false);
+  const openModal = () => setShowModal(true);
+  const closeModal = () => setShowModal(false);
 
+  const Modal = ({ imgSrc, onClose}) => (
+    <div
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75"
+    >
+       <img
+        src={imgSrc}
+        alt="Enlarged"
+        onClick={onClose}
+        className="max-w-full max-h-full rounded"
+      />
+    </div>
+  );
 
   return (
     <div className="flex flex-col gap-3 p-10 ">
@@ -12,6 +28,7 @@ function SingleResult({ question, index }) {
       {question.img && (
         <div>
           <img
+            onClick={openModal}
             className="bg-gray-50 max-w-max w-96 h-auto"
             src={question.img}
             alt=""
@@ -29,11 +46,8 @@ function SingleResult({ question, index }) {
         <div className="box text-blue-500 font-bold border rounded-lg p-2 px-5 mt-2">
           {question.answer}
         </div>
-      </div>
-        
-
-      
-      
+        </div>
+      {showModal && <Modal imgSrc={question.img} onClose={closeModal} />}
     </div>
   );
 }

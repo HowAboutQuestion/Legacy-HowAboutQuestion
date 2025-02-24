@@ -18,10 +18,7 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
   };
 
   const [showModal, setShowModal] = useState(false);
-  const openModal = (e) => {
-    e.stopPropagation();
-    setShowModal(true);
-  };
+  const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
 
   const Modal = ({ imgSrc, onClose }) => {
@@ -30,10 +27,11 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
         onClick={onClose}
         className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
       >
-        <div onClick={(e) => e.stopPropagation()} className="relative">
+        <div className="relative">
           <img
             src={imgSrc}
             alt="Preview"
+            onClick={onClose}
             className="max-h-[80vh] max-w-[80vw] rounded"
           />
         </div>
@@ -118,7 +116,7 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
                   <img
                     src={question.img}
                     onClick={openModal}
-                    className="rounded aspect-video min-w-[10vw] max-w-[20vw] cursor-pointer"
+                    className="rounded aspect-video min-w-[10vw] max-w-[20vw]"
                     alt="미리보기"
                   />
                 </div>
