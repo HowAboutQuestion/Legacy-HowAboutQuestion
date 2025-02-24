@@ -249,13 +249,13 @@ function InsertModal({ setInsertModal }) {
           <div className="items-center flex">
             <div
               onClick={insertEvent}
-              className="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2"
+              className="cursor-pointer bg-blue-500 hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2"
             >
               저장하기
             </div>
             <div
               onClick={() => setInsertModal(false)}
-              className="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2"
+              className="cursor-pointer bg-blue-500 hover:scale-105 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -293,7 +293,7 @@ function InsertModal({ setInsertModal }) {
             <input
               type="text"
               className="block outline-none border-b-2 border-gray-200 focus:border-blue-500 text-sm px-2 py-1 h-10 w-1/2 flex-none"
-              placeholder="태그를 입력해주세요"
+              placeholder="문제집 또는 태그를 입력해주세요"
               value={tag}
               onChange={(e) => setTag(e.target.value)}
             />
@@ -373,7 +373,7 @@ function InsertModal({ setInsertModal }) {
               </div>
             )}
           </div>
-          <div className="flex-1">
+          <div className="flex-1 transform transition duration-300 hover:scale-105" >
             {renderImageUpload()}
           </div>
         </div>
