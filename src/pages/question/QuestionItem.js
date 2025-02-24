@@ -42,7 +42,7 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
   if (question.type === '주관식') {
     return (
       <>
-        <tr onClick={toggle} className={`${!isCollapsed && "border-b hover:shadow hover:bg-white"} transition-all cursor-pointer`}>
+        <tr onClick={toggle} className={`${!isCollapsed && "border-b hover:shadow"} transition-all cursor-pointer`}>
           <td className="w-4 p-4 align-top py-4 px-8">
             <div className="flex items-center ">
               <input
@@ -131,7 +131,7 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
 
   return (
     <>
-      <tr onClick={toggle} className={`${!isCollapsed && "border-b hover:shadow hover:bg-white"} transition-all `}>
+      <tr onClick={toggle} className={`${!isCollapsed && "border-b hover:shadow"} transition-all `}>
         <td className="w-4 p-4 align-top py-4 px-8">
           <div className="flex items-center ">
             <input
