@@ -257,13 +257,13 @@ const getProperImageUrl = (path) => {
           <div className="items-center flex">
             <div
               onClick={updateEvent}
-              className="cursor-pointer bg-blue-500 hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2"
+              className="cursor-pointer bg-blue-500 transition hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2"
             >
               저장하기
             </div>
             <div
               onClick={() => updateCancleEvent()}
-              className="cursor-pointer bg-blue-500 hover:scale-105 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2"
+              className="cursor-pointer bg-blue-500 transition hover:scale-105 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
