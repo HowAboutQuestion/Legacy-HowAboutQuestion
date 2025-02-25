@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
-import { questionsAtom } from "state/data";
+import { useSetRecoilState, useRecoilValue } from "recoil";
+import { questionsAtom, appPathAtom } from "state/data";
 import { addDays, format } from 'date-fns'; // date-fns 함수 추가
 
 function Card() {
+  const appPath = useRecoilValue(appPathAtom);
+
   const [questionIndex, setQuestionIndex] = useState(0); // 현재 문제의 인덱스
   const location = useLocation();
   const questions = location.state.questions;
@@ -163,7 +165,7 @@ function Card() {
             <div className="flex w-3/4 h-[300px] bg-white rounded-2xl">
               <img
                 className="w-1/2 bg-gray-50 h-auto rounded-l-2xl"
-                src={questions[questionIndex].img}
+                src={appPath + questions[questionIndex].img}
                 alt=""
                 onClick={openModal} // 이미지 클릭시 모달 열기
               />
@@ -271,7 +273,7 @@ function Card() {
         >
           <div className="relative">
             <img 
-              src={questions[questionIndex].img} 
+              src={appPath + questions[questionIndex].img} 
               alt=""
               className="max-w-full max-h-full rounded-lg"
             />

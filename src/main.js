@@ -10,7 +10,6 @@ const extract = require('extract-zip'); // 압축 해제 모듈
 
 // 실행 파일의 디렉토리 경로 (배포 후 실행파일 위치)
 const exeDir = path.dirname(app.getPath('exe'));
-console.log("Executable directory:", exeDir);
 
 // questions.csv와 history.csv 파일 경로를 실행파일 위치 기준으로 설정
 // const questionsCsvPath = path.join(exeDir, 'questions.csv');
@@ -263,7 +262,6 @@ function updateQuestion(title, type, isCorrect) {
   }
 }
 
-
 // 메인 프로세스에서 CSV 파일만 수정
 ipcMain.handle('update-questions-file', async (event, questions) => {
   const csvPath = questionsCsvPath;
@@ -275,9 +273,6 @@ ipcMain.handle('update-questions-file', async (event, questions) => {
 
   return { success: true };
 });
-
-
-
 
 function createWindow() {
  // 먼저 recommenddate 업데이트 실행
@@ -380,23 +375,13 @@ ipcMain.handle('save-image', async (event, { fileName, content }) => {
     const filePath = path.join(imageDir, fileName); // 파일 경로 생성
     fs.writeFileSync(filePath, content); // 파일 저장
 
-
-
     // =================================================================================
     // 상대경로로
     return { 
       success: true, 
-      path: exeDir + "/images/" + fileName, // 경로
+      path: "/images/" + fileName, // 경로
       filename: fileName // 파일 이름
     };
-
-    //절대경로
-    // return { 
-    //   success: true, 
-    //   path: imageDir + "/images/" + fileName, // 경로
-    //   filename: fileName // 파일 이름
-    // };
-    // =================================================================================
 
   } catch (error) {
     return { 
@@ -406,7 +391,7 @@ ipcMain.handle('save-image', async (event, { fileName, content }) => {
   }
 });
 
-//.zip 내보내기
+// .zip 내보내기
 ipcMain.handle("export-questions", async (event, questions) => {
   const savePath = dialog.showSaveDialogSync(mainWindow, {
     title: "Export Questions as ZIP",
@@ -421,7 +406,7 @@ ipcMain.handle("export-questions", async (event, questions) => {
     const tempDir = path.join(app.getPath("temp"), "questions_export");
     const csvPath = path.join(tempDir, "questions.csv");
 
-    if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir);
+    if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });
 
     const csvContent = convertToCSV(questions);
     fs.writeFileSync(csvPath, csvContent, "utf-8");
@@ -436,13 +421,15 @@ ipcMain.handle("export-questions", async (event, questions) => {
     archive.pipe(output);
     archive.file(csvPath, { name: "questions.csv" });
 
-    // Add images to ZIP
-    const imagesDir = path.join(__dirname, "public", "images", "image");
     for (const question of questions) {
       if (question.img) {
-        const imgPath = path.join(__dirname, question.img);
+        const imgPath = path.join(exeDir, question.img);
+        console.log("Checking image:", imgPath, fs.existsSync(imgPath));
+
         if (fs.existsSync(imgPath)) {
           archive.file(imgPath, { name: `images/${path.basename(imgPath)}` });
+        } else {
+          console.warn(`Image not found: ${imgPath}`);
         }
       }
     }
@@ -456,6 +443,7 @@ ipcMain.handle("export-questions", async (event, questions) => {
     return { success: false, message: error.message };
   }
 });
+
 
 function convertToCSV(questions) {
   const headers = Object.keys(questions[0]);
@@ -569,7 +557,7 @@ ipcMain.handle('delete-image', async (event, { imgPath }) => {
     // exeDir와 images 폴더 그리고 imgPath를 결합하여 이미지 파일의 절대경로를 생성
     const imageFullPath = path.isAbsolute(imgPath)
     ? imgPath
-    : path.join(exeDir, 'images', imgPath);
+    : path.join(exeDir, imgPath);
     
   console.log("delete-image imageFullPath: ", imageFullPath);
 
@@ -587,4 +575,6 @@ ipcMain.handle('delete-image', async (event, { imgPath }) => {
 // `readQuestionsCSV` 함수 호출 시 결과를 React로 보내는 IPC 핸들러 설정
 ipcMain.handle('read-questions-csv', () => readQuestionsCSV());
 ipcMain.handle('read-history-csv', () => readHistoryCSV());
-
+ipcMain.handle("read-app-path", () => {
+  return { appPath: exeDir }; 
+});

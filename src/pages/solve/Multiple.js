@@ -1,6 +1,10 @@
 import React, { useState } from "react";
+import { appPathAtom } from "state/data";
+import { useRecoilValue } from "recoil";
 
 function Multiple({ question, index, onAnswerChange }) {
+  const appPath = useRecoilValue(appPathAtom);
+  
   const [answer, setAnswer] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
    
@@ -29,7 +33,7 @@ function Multiple({ question, index, onAnswerChange }) {
           <img
             onClick={handleImageClick}
             className="bg-gray-50 max-w-max w-96 h-auto rounded"
-            src={question.img}
+            src={appPath + question.img}
             alt=""
           />
         </div>
@@ -42,7 +46,7 @@ function Multiple({ question, index, onAnswerChange }) {
         >
           <div className="relative">
             <img
-              src={question.img}
+              src={appPath + question.img}
               alt=""
               className="max-w-full max-h-full rounded"
             />
