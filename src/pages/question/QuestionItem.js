@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { appPathAtom } from "state/data";
+import { useRecoilValue } from "recoil";
+
 
 function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
+  const appPath = useRecoilValue(appPathAtom);
   const tags = question.tag || [];
   const tag = tags.map((tagName, index) => <span key={index} className="font-medium text-xs whitespace-nowrap bg-gray-200 rounded-xl py-1 px-2">{tagName}</span>);
 
@@ -114,7 +118,7 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
               {question.img && (
                 <div className="p-5 px-6">
                   <img
-                    src={question.img}
+                    src={ appPath + question.img}
                     onClick={openModal}
                     className="rounded aspect-video min-w-[10vw] max-w-[20vw]"
                     alt="미리보기"
@@ -124,7 +128,7 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
             </div>
           </td>
         </tr>
-        {showModal && <Modal imgSrc={question.img} onClose={closeModal} />}
+        {showModal && <Modal imgSrc={appPath + question.img} onClose={closeModal} />}
       </>
     );
   }
@@ -224,7 +228,7 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
             {question.img && (
               <div className="p-5 px-6">
                 <img
-                  src={question.img}
+                  src={ appPath + question.img}
                   onClick={openModal}
                   className="rounded aspect-video min-w-[10vw] max-w-[20vw] cursor-pointer"
                   alt="미리보기"
@@ -234,7 +238,7 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
           </div>
         </td>
       </tr>
-      {showModal && <Modal imgSrc={question.img} onClose={closeModal} />}
+      {showModal && <Modal imgSrc={appPath + question.img} onClose={closeModal} />}
     </>
 
   );

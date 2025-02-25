@@ -1,6 +1,10 @@
 import React, { useState } from "react";
+import { appPathAtom } from "state/data";
+import { useRecoilValue } from "recoil";
 
 function SingleResult({ question, index }) {
+    const appPath = useRecoilValue(appPathAtom);
+  
   const [showModal, setShowModal] = useState(false);
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
@@ -30,7 +34,7 @@ function SingleResult({ question, index }) {
           <img
             onClick={openModal}
             className="bg-gray-50 max-w-max w-96 h-auto"
-            src={question.img}
+            src={appPath + question.img}
             alt=""
           />
         </div>
@@ -47,7 +51,7 @@ function SingleResult({ question, index }) {
           {question.answer}
         </div>
         </div>
-      {showModal && <Modal imgSrc={question.img} onClose={closeModal} />}
+      {showModal && <Modal imgSrc={appPath + question.img} onClose={closeModal} />}
     </div>
   );
 }
