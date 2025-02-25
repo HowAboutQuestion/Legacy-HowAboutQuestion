@@ -470,7 +470,9 @@ ipcMain.handle('extract-zip', async (event, { fileName, content }) => {
     await extract(zipFilePath, { dir: tempDir });
 
     // 이미지 저장 디렉토리 생성
-    const imageDir = path.join(__dirname, '../public/images');
+    const imageDir = path.join(exeDir, './images'); // 이미지 저장 디렉토리
+//    const imageDir = path.join(exeDir, 'images');
+
     if (!fs.existsSync(imageDir)) {
       fs.mkdirSync(imageDir, { recursive: true });
     }
