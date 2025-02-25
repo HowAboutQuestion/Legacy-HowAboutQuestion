@@ -45,4 +45,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
   readQuestionsCSV: () => ipcRenderer.invoke('read-questions-csv'),
   readHistoryCSV: () => ipcRenderer.invoke('read-history-csv'),
-});
+  readAppPath:() => ipcRenderer.invoke('read-app-path'),
+}
+)

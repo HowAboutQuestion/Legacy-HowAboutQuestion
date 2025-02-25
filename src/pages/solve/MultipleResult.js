@@ -1,6 +1,11 @@
 import React,{ useState } from "react";
+import { appPathAtom } from "state/data";
+import { useRecoilValue } from "recoil";
+
 
 function MultipleResult({ question, index }) {
+  const appPath = useRecoilValue(appPathAtom);
+
   const [showModal, setShowModal] = useState(false);
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
@@ -36,7 +41,7 @@ function MultipleResult({ question, index }) {
           <img
             onClick={openModal}
             className="bg-gray-50 max-w-max w-60 h-auto rounded"
-            src={question.img}
+            src={appPath + question.img}
             alt=""
           />
         </div>
@@ -80,7 +85,7 @@ function MultipleResult({ question, index }) {
                  
       </div>
       </div>
-      {showModal && <Modal imgSrc={question.img} onClose={closeModal} />}
+      {showModal && <Modal imgSrc={appPath + question.img} onClose={closeModal} />}
     </div>
   );
 }

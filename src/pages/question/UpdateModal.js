@@ -4,8 +4,11 @@ import { useSetRecoilState, useRecoilValue } from "recoil";
 import { generateUniqueId }  from "utils/util"; 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { appPathAtom } from "state/data";
 
 function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed, index }) {
+  const appPath = useRecoilValue(appPathAtom);
+
   const placeholderImage = "./images/insertImg.png";
 
   const [title, setTitle] = useState(question.title || "");
@@ -30,7 +33,7 @@ const getProperImageUrl = (path) => {
   return normalizedPath;
 };
 
-  const [thumbnail, setThumbnail] = useState(question.img || placeholderImage);
+  const [thumbnail, setThumbnail] = useState(appPath + question.img || placeholderImage);
   const [imageFile, setImageFile] = useState(null);
 
 

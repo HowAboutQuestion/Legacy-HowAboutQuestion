@@ -1,6 +1,11 @@
 import React, { useState } from "react";
+import { appPathAtom } from "state/data";
+import { useRecoilValue } from "recoil";
+
 
 function Single({ question, index, onAnswerChange }) {
+    const appPath = useRecoilValue(appPathAtom);
+  
   const [answer, setAnswer] = useState(question.selected);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -30,7 +35,7 @@ function Single({ question, index, onAnswerChange }) {
           <img
           onClick={handleImageClick}
             className="bg-gray-50 max-w-max w-96 h-auto"
-            src={question.img}
+            src={appPath + question.img}
             alt=""
           />
         </div>
@@ -43,7 +48,7 @@ function Single({ question, index, onAnswerChange }) {
         >
           <div className="relative">
             <img
-              src={question.img}
+              src={appPath + question.img}
               alt=""
               className="max-w-full max-h-full rounded"
             />
