@@ -538,6 +538,7 @@
             update: today,
             solveddate: null,
             tag: tags,
+            id:generateUniqueId()
           });
         });
       } else {
@@ -557,10 +558,7 @@
 
     try {
       // exeDir와 images 폴더 그리고 imgPath를 결합하여 이미지 파일의 절대경로를 생성
-      const imageFullPath = path.isAbsolute(imgPath)
-      ? imgPath
-      : path.join(exeDir, imgPath);
-      
+      const imageFullPath = path.join(exeDir, imgPath);
     console.log("delete-image imageFullPath: ", imageFullPath);
 
     if (fs.existsSync(imageFullPath)) {
