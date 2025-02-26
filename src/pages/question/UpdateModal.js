@@ -200,7 +200,7 @@ const getProperImageUrl = (path) => {
     setAnswer(question.answer || "");
     setTag(question.tag.join(", ") || "");
     setDate(question.date || "");
-    setThumbnail(getProperImageUrl(appPath + question.img));
+    setThumbnail(getProperImageUrl((question.img ? appPath + question.img : null)));
   }, [question]);
 
 
