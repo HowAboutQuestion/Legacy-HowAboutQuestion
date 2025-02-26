@@ -33,7 +33,7 @@ const getProperImageUrl = (path) => {
   return normalizedPath;
 };
 
-  const [thumbnail, setThumbnail] = useState(appPath + question.img || placeholderImage);
+  const [thumbnail, setThumbnail] = useState(question.img || placeholderImage);
   const [imageFile, setImageFile] = useState(null);
 
 
@@ -200,7 +200,7 @@ const getProperImageUrl = (path) => {
     setAnswer(question.answer || "");
     setTag(question.tag.join(", ") || "");
     setDate(question.date || "");
-    setThumbnail(getProperImageUrl(question.img));
+    setThumbnail(getProperImageUrl(appPath + question.img));
   }, [question]);
 
 
