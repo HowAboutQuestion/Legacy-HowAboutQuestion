@@ -509,7 +509,7 @@ ipcMain.handle('extract-zip', async (event, { fileName, content }) => {
     if (csvFilePath) {
       const csvData = fs.readFileSync(csvFilePath, 'utf-8');
       const tagSet = new Set();
-      const today = new Date().toISOString().split('T')[0];
+      const today = getTodayDate();
 
       // PapaParse로 CSV 파싱
       const { data } = Papa.parse(csvData, {
