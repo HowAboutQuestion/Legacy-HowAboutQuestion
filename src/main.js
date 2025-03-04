@@ -185,7 +185,9 @@ function updateHistory(isCorrect) {
 }
 
 
-
+/**
+ * 현재 사용하는 메소드인지 확인 필요요
+ */
 function updateQuestion(title, type, isCorrect) {
   try {
     const csvPath = questionsCsvPath;
@@ -531,6 +533,7 @@ ipcMain.handle('extract-zip', async (event, { fileName, content }) => {
           select2: item.select2 || '',
           select3: item.select3 || '',
           select4: item.select4 || '',
+          description : item.description || '',
           answer: item.answer || '',
           img: item.img || '',
           level: 0,
@@ -560,8 +563,6 @@ ipcMain.handle('extract-zip', async (event, { fileName, content }) => {
   }
   return result;
 });
-
-
 
 ipcMain.handle('delete-image', async (event, { imgPath }) => {
   console.log("delete-image imgPath: ", imgPath);
