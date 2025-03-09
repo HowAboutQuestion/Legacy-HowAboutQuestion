@@ -224,97 +224,97 @@ function Questions() {
     }
   };
 
- // 1. confirmDeletion 함수 수정
-const confirmDeletion = () => {
-  // 기존에 confirm toast가 있다면 먼저 제거
-  if (toast.isActive("confirm-deletion")) {
-    toast.dismiss("confirm-deletion");
-  }
-  return new Promise((resolve) => {
-    toast.info(
-      <div>
-        <p className="text-sm">삭제하시겠습니까?</p>
-        <div className="flex gap-2 justify-end mt-2">
-          <button
-            onClick={() => {
-              resolve(true);
-              toast.dismiss("confirm-deletion");
-            }}
-            className="bg-blue-500 text-white px-2 py-1 rounded text-xs"
-          >
-            확인
-          </button>
-          <button
-            onClick={() => {
-              resolve(false);
-              toast.dismiss("confirm-deletion");
-            }}
-            className="bg-gray-300 text-black px-2 py-1 rounded text-xs"
-          >
-            취소
-          </button>
-        </div>
-      </div>,
-      {
-        toastId: "confirm-deletion", // 고유 ID 지정
-        position: "top-center",
-        autoClose: false,
-        closeOnClick: false,
-        closeButton: false,
+  // 1. confirmDeletion 함수 수정
+  const confirmDeletion = () => {
+    // 기존에 confirm toast가 있다면 먼저 제거
+    if (toast.isActive("confirm-deletion")) {
+      toast.dismiss("confirm-deletion");
+    }
+    return new Promise((resolve) => {
+      toast.info(
+        <div>
+          <p className="text-sm">삭제하시겠습니까?</p>
+          <div className="flex gap-2 justify-end mt-2">
+            <button
+              onClick={() => {
+                resolve(true);
+                toast.dismiss("confirm-deletion");
+              }}
+              className="bg-blue-500 text-white px-2 py-1 rounded text-xs"
+            >
+              확인
+            </button>
+            <button
+              onClick={() => {
+                resolve(false);
+                toast.dismiss("confirm-deletion");
+              }}
+              className="bg-gray-300 text-black px-2 py-1 rounded text-xs"
+            >
+              취소
+            </button>
+          </div>
+        </div>,
+        {
+          toastId: "confirm-deletion", // 고유 ID 지정
+          position: "top-center",
+          autoClose: false,
+          closeOnClick: false,
+          closeButton: false,
+        }
+      );
+    });
+  };
+
+
+  // 2. deleteQuestionsAll 함수 수정
+  const deleteQuestionsAll = async () => {
+    const confirmed = await confirmDeletion();
+    if (!confirmed) return; // 취소한 경우 중단
+
+    const deleteImages = [];
+
+    const updatedQuestions = filterQuestions
+      .filter(({ question }) => {
+        if (question.checked === true) {
+          if (question.img) deleteImages.push(question.img); // 삭제할 질문의 img 추가
+          return false; // checked가 true면 삭제
+        }
+        return true;
+      })
+      .map(({ question }) => {
+        const { checked, ...rest } = question;
+        return rest;
+      });
+
+    setQuestions([...updatedQuestions]); // 질문 업데이트
+
+    // CSV 파일 업데이트 (CSV 파일에도 반영)
+    await window.electronAPI.updateQuestions(updatedQuestions);
+
+    const handleDelete = async (imagePath) => {
+      console.log("handleDelete function imagePath:", imagePath);
+      try {
+        const result = await window.electronAPI.deleteImage(imagePath);
+        if (result.success) {
+          console.log("이미지가 성공적으로 삭제되었습니다.");
+        } else {
+          console.error("삭제 실패:", result.message);
+        }
+      } catch (error) {
+        console.error("삭제 중 오류 발생:", error);
       }
-    );
-  });
-};
-
-
-// 2. deleteQuestionsAll 함수 수정
-const deleteQuestionsAll = async () => {
-  const confirmed = await confirmDeletion();
-  if (!confirmed) return; // 취소한 경우 중단
-
-  const deleteImages = [];
-
-  const updatedQuestions = filterQuestions
-    .filter(({ question }) => {
-      if (question.checked === true) {
-        if (question.img) deleteImages.push(question.img); // 삭제할 질문의 img 추가
-        return false; // checked가 true면 삭제
-      }
-      return true;
-    })
-    .map(({ question }) => {
-      const { checked, ...rest } = question;
-      return rest;
+    };
+    // 삭제할 이미지 처리
+    deleteImages.forEach((img) => {
+      handleDelete(img);
     });
 
-  setQuestions([...updatedQuestions]); // 질문 업데이트
-
-  // CSV 파일 업데이트 (CSV 파일에도 반영)
-  await window.electronAPI.updateQuestions(updatedQuestions);
-
-  const handleDelete = async (imagePath) => {
-    console.log("handleDelete function imagePath:", imagePath);
-    try {
-      const result = await window.electronAPI.deleteImage(imagePath);
-      if (result.success) {
-        console.log("이미지가 성공적으로 삭제되었습니다.");
-      } else {
-        console.error("삭제 실패:", result.message);
-      }
-    } catch (error) {
-      console.error("삭제 중 오류 발생:", error);
-    }
+    toast.success("선택된 문제가 삭제되었습니다.", {
+      position: "top-center",
+      autoClose: 1000,
+    });
   };
-  // 삭제할 이미지 처리
-  deleteImages.forEach((img) => {
-    handleDelete(img);
-  });
-
-  toast.success("선택된 문제가 삭제되었습니다.", {
-    position: "top-center",
-    autoClose: 1000,
-  });
-};
 
 
 
@@ -390,8 +390,29 @@ const deleteQuestionsAll = async () => {
     />
   ));
 
+  // 모달 높이 상태 (기본 300px)
+  const [modalHeight, setModalHeight] = useState(300);
 
+  const handleDragMouseDown = (e) => {
+    const startY = e.clientY;
+    const startHeight = modalHeight;
+    const MIN_HEIGHT = 300;
+    const MAX_HEIGHT = window.innerHeight; // 현재 창의 최대 높이로 설정
 
+  const onMouseMove = (e) => {
+    const diff = startY - e.clientY; // 위로 드래그하면 양수가 됨
+    const newHeight = startHeight + diff;
+    setModalHeight(Math.min(MAX_HEIGHT, Math.max(MIN_HEIGHT, newHeight)));
+  };
+
+  const onMouseUp = () => {
+    window.removeEventListener("mousemove", onMouseMove);
+    window.removeEventListener("mouseup", onMouseUp);
+  };
+
+  window.addEventListener("mousemove", onMouseMove);
+  window.addEventListener("mouseup", onMouseUp);
+};
 
   return (
 
@@ -553,11 +574,25 @@ const deleteQuestionsAll = async () => {
 
 
 
-      <div className={`
-              ${(insertModal || updateModal) ? "h-[300px]" : "h-0"}
-                transition-all width-fill-available shadow-[10px_0px_10px_10px_rgba(0,0,0,0.1)] rounded-t-2xl duration-500 fixed bottom-0 bg-white  ${isCollapsed ? "ml-10" : "ml-80"
+      {/* 모달 컨테이너 */}
+      <div
+        className={`transition-all duration-500 width-fill-available shadow-[10px_0px_10px_10px_rgba(0,0,0,0.1)] rounded-t-2xl fixed bottom-0 bg-white ${
+          isCollapsed ? "ml-10" : "ml-80"
         }`}
+        style={{ height: (insertModal || updateModal) ? modalHeight : 0 }}
       >
+        {/* 드래그 핸들 (모달 상단 중앙에 위치) */}
+        <div
+          onMouseDown={handleDragMouseDown}
+          style={{
+            height: '8px',
+            width: '50px',
+            margin: '0 auto',
+            backgroundColor: '#ccc',
+            borderRadius: '4px',
+            cursor: 'ns-resize'
+          }}
+        />
         {insertModal && <InsertModal
           setInsertModal={setInsertModal}>
         </InsertModal>}
