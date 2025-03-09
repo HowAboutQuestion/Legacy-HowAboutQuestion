@@ -390,8 +390,11 @@ function Questions() {
     />
   ));
 
-  // 모달 높이 상태 (기본 300px)
+  // 모달 기본 높이 300px
   const [modalHeight, setModalHeight] = useState(300);
+
+  // 모달 높이 70%면 내용 바뀜
+  const expanded = modalHeight >= window.innerHeight * 0.7;
 
   const handleDragMouseDown = (e) => {
     const startY = e.clientY;
@@ -594,7 +597,7 @@ function Questions() {
           }}
         />
         {insertModal && <InsertModal
-          setInsertModal={setInsertModal}>
+          setInsertModal={setInsertModal} expanded={expanded}>
         </InsertModal>}
 
         {updateModal &&
@@ -604,6 +607,7 @@ function Questions() {
             setUpdateQuestion={setUpdateQuestion}
             isCollapsed={isCollapsed}
             index={updateIndex}
+            expanded={expanded}
           />
         }
 
