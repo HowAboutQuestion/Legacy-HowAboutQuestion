@@ -322,9 +322,10 @@ const getProperImageUrl = (path) => {
                     onChange={() => setAnswer(select1)}
                     checked={answer === select1}
                   />
-                  <input
-                    type="text"
-                    className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                  <textarea
+                    rows="1"
+                    className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                    style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
                     placeholder="선택지1"
                     value={select1}
                     onChange={(e) => setSelect1(e.target.value)}
@@ -337,9 +338,10 @@ const getProperImageUrl = (path) => {
                     checked={answer === select2}
                     onChange={() => setAnswer(select2)}
                   />
-                  <input
-                    type="text"
-                    className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                  <textarea
+                    rows="1"
+                    className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                    style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
                     placeholder="선택지2"
                     value={select2}
                     onChange={(e) => setSelect2(e.target.value)}
@@ -354,9 +356,10 @@ const getProperImageUrl = (path) => {
                     checked={answer === select3}
                     onChange={() => setAnswer(select3)}
                   />
-                  <input
-                    type="text"
-                    className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                  <textarea
+                    rows="1"
+                    className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                    style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
                     placeholder="선택지3"
                     value={select3}
                     onChange={(e) => setSelect3(e.target.value)}
@@ -369,9 +372,10 @@ const getProperImageUrl = (path) => {
                     checked={answer === select4}
                     onChange={() => setAnswer(select4)}
                   />
-                  <input
-                    type="text"
-                    className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                  <textarea
+                    rows="1"
+                    className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                    style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
                     placeholder="선택지4"
                     value={select4}
                     onChange={(e) => setSelect4(e.target.value)}
@@ -381,9 +385,10 @@ const getProperImageUrl = (path) => {
             </div>
             ) : (
               <div className="flex gap-3 flex-1">
-                <input
-                  type="text"
+                <textarea
+                  rows="1"
                   className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                  style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
                   placeholder="정답"
                   value={answer}
                   onChange={(e) => setAnswer(e.target.value)}
