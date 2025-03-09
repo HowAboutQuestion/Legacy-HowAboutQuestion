@@ -1,19 +1,51 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Single from './Single';
 import Multiple from './Multiple';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { questionsAtom } from 'state/data';
 import QuestionNav from 'pages/solve/QuestionNav';
-import { addDays, format } from 'date-fns'; // date-fns 함수 추가
+import { addDays, format } from 'date-fns';
 
 function Solve() {
   const location = useLocation();
   const navigate = useNavigate();
-  const allQuestions = useRecoilValue(questionsAtom); // Recoil에서 모든 문제 가져오기
-  const setRecoilQuestions = useSetRecoilState(questionsAtom); // Recoil 상태 업데이트 함수
+  const allQuestions = useRecoilValue(questionsAtom);
+  const setRecoilQuestions = useSetRecoilState(questionsAtom);
   const [navCollapse, setNavCollapse] = useState(false);
-  const today = new Date(); // 오늘 날짜 객체
+  const today = new Date();
+
+  // SelectSolve에서 전달한 timerMinutes와 timerSeconds받는 곳
+  const timerMinutesInput = location.state?.timerMinutes || "00";
+  const timerSecondsInput = location.state?.timerSeconds || "00";
+
+  const initialTimer = parseInt(timerMinutesInput, 10) * 60 + parseInt(timerSecondsInput, 10);
+  const [timeLeft, setTimeLeft] = useState(initialTimer);
+  const [submitted, setSubmitted] = useState(false);
+
+  // MM:SS 형식으로 남은 시간을 표시하는 함수
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  };
+
+  // 타이머 카운트다운
+  useEffect(() => {
+    if (initialTimer > 0) {
+      const interval = setInterval(() => {
+        setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [initialTimer]);
+
+  // 타이머가 0이 되었을 때 자동 제출
+  useEffect(() => {
+    if (timeLeft === 0 && initialTimer > 0 && !submitted) {
+      submit();
+    }
+  }, [timeLeft, initialTimer, submitted]);
 
   // 네비게이션을 통해 전달된 문제 집합 확인
   const passedQuestions = location.state?.questions || allQuestions; // 전달된 문제가 없으면 모든 문제 사용
@@ -35,7 +67,7 @@ function Solve() {
       prevIndex === answers.length - 1 ? prevIndex : prevIndex + 1
     );
   };
-  
+
   const beforeQuestion = () => {
     setQuestionIndex((prevIndex) =>
       prevIndex === 0 ? prevIndex : prevIndex - 1
@@ -117,11 +149,21 @@ function Solve() {
 
     // Recoil 상태 업데이트: 기존 상태와 병합하여 업데이트된 질문 반영
     setRecoilQuestions((prevQuestions) => {
-      const updatedQuestionsMap = updatedData.reduce((acc, q) => {
-        acc[q.id] = q;
+      const updatedQuestionsMap = updatedData.reduce((acc, updated) => {
+        acc[updated.id] = updated;
         return acc;
       }, {});
-      return prevQuestions.map((q) => updatedQuestionsMap[q.id] || q);
+      return prevQuestions.map((q) => {
+        if(updatedQuestionsMap[q.id]) {
+          return {
+            ...q,
+            level: updatedQuestionsMap[q.id].level,
+            update: updatedQuestionsMap[q.id].update,
+            solveddate: updatedQuestionsMap[q.id].solveddate,
+          };
+        }
+        return q;
+      });
     });
 
     navigate('/solve/result', {
@@ -133,9 +175,9 @@ function Solve() {
     (question) => question.selected && question.selected.trim() !== ""
   );
 
-// 조건에 따른 스타일 변수들
-const isFirstQuestion = questionIndex === 0;
-const isLastQuestion = questionIndex === answers.length - 1;
+  // 조건에 따른 스타일 변수들
+  const isFirstQuestion = questionIndex === 0;
+  const isLastQuestion = questionIndex === answers.length - 1;
 
   return (
     <main className="ml-20">
@@ -151,7 +193,11 @@ const isLastQuestion = questionIndex === answers.length - 1;
               총 {passedQuestions.length}문제
             </h1>
           </div>
+          
           <div className="text-right items-center flex gap-2">
+          {initialTimer > 0 && (
+              <h1 className="text-md font-normal text-gray-400">남은시간: {formatTime(timeLeft)}</h1>
+            )}
             <div
               onClick={() => setNavCollapse(!navCollapse)}
               className="cursor-pointer border-2 border-gray-200 hover:bg-blue-300 hover:border-blue-300 rounded-xl p-2.5 text-center me-2 mb-2">
@@ -186,7 +232,7 @@ const isLastQuestion = questionIndex === answers.length - 1;
         )}
       </div>
       <div className="fixed z-40 bottom-5 right-5 flex gap-2">
-      <div
+        <div
           onClick={beforeQuestion}
           className={`rounded-full p-2 text-white ${isFirstQuestion ? 'bg-gray-500' : 'bg-blue-500'} hover:scale-105 transition shadow`}
         >
