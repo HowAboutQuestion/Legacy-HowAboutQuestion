@@ -396,6 +396,14 @@ function Questions() {
   // 모달 높이 70%면 내용 바뀜
   const expanded = modalHeight >= window.innerHeight * 0.7;
 
+  const toggleModalHeight = () => {
+    if (modalHeight < window.innerHeight * 0.7) {
+      setModalHeight(window.innerHeight);
+    } else {
+      setModalHeight(300);
+    }
+  };
+
   const handleDragMouseDown = (e) => {
     const startY = e.clientY;
     const startHeight = modalHeight;
@@ -415,6 +423,7 @@ function Questions() {
 
   window.addEventListener("mousemove", onMouseMove);
   window.addEventListener("mouseup", onMouseUp);
+
 };
 
   return (
@@ -587,6 +596,7 @@ function Questions() {
         {/* 드래그 핸들 (모달 상단 중앙에 위치) */}
         <div
           onMouseDown={handleDragMouseDown}
+          onClick={toggleModalHeight}
           style={{
             height: '8px',
             width: '50px',
