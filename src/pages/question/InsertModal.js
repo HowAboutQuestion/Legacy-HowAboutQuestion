@@ -398,6 +398,7 @@ function InsertModal({ setInsertModal, expanded }) {
                 </div>
               </div>
             </div>
+            
             <div className="flex gap-2">
               <div className="flex-[2]">
                 <div className="flex gap-3">
