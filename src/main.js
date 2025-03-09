@@ -295,8 +295,8 @@ function createWindow() {
   // 빌드 후 index.html 파일 경로
   mainWindow.setMenu(null);
 
-  // mainWindow.loadURL('http://localhost:3000'); // 개발 서버에서 실행 중인 React 앱 로드
-  mainWindow.loadFile(path.join(__dirname, '../build', 'index.html'));
+  mainWindow.loadURL('http://localhost:3000'); // 개발 서버에서 실행 중인 React 앱 로드
+  // mainWindow.loadFile(path.join(__dirname, '../build', 'index.html'));
 
 
   mainWindow.on('closed', () => {

@@ -1,12 +1,51 @@
 import React, { useEffect, useState } from 'react';
 import { appPathAtom } from "state/data";
 import { useRecoilValue } from "recoil";
+import ReactMarkdown from 'react-markdown';
+import remarkBreaks from 'remark-breaks';
 
+
+
+
+// 마크다운 커스텀 하는 곳
+const markdownComponents = {
+  //code 인라인이랑 블록
+  code({ node, inline, className, children, ...props }) {
+    if (inline) {
+      return <>{children}</>;
+    }
+    return (
+      <pre className="bg-gray-100 p-2 rounded" {...props}>
+        <code className={className}>
+          {children}
+        </code>
+      </pre>
+    );
+  },
+  
+  //제외 할 명령어 모음
+  p({ node, children }) { return <>{children}</>; },
+  h1({ node, children }) { return <>{children}</>; },
+  h2({ node, children }) { return <>{children}</>; },
+  h3({ node, children }) { return <>{children}</>; },
+  h4({ node, children }) { return <>{children}</>; },
+  h5({ node, children }) { return <>{children}</>; },
+  h6({ node, children }) { return <>{children}</>; },
+  em({ node, children }) { return <>{children}</>; },
+  strong({ node, children }) { return <>{children}</>; },
+  blockquote({ node, children }) { return <>{children}</>; },
+  ul({ node, children }) { return <>{children}</>; },
+  ol({ node, children }) { return <>{children}</>; },
+  li({ node, children }) { return <>{children}</>; },
+  a({ node, children }) { return <>{children}</>; }
+};
 
 function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
   const appPath = useRecoilValue(appPathAtom);
   const tags = question.tag || [];
-  const tag = tags.map((tagName, index) => <span key={index} className="font-medium text-xs whitespace-nowrap bg-gray-200 rounded-xl py-1 px-2">{tagName}</span>);
+  const tag = tags.map((tagName, index) => (
+    <span key={index} className="font-medium text-xs whitespace-nowrap bg-gray-200 rounded-xl py-1 px-2">{tagName}</span>
+  ));
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const toggle = () => { setIsCollapsed((state) => !(state)) }
@@ -102,7 +141,9 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
             >
               <div className="flex-1 font-normal text-sm text-gray-500 flex flex-col px-6 pb-3 gap-2">
                 <div className="border bg-white rounded-lg p-2.5 px-4">
+                  <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkBreaks]}>
                   {question.answer}
+                  </ReactMarkdown>
                 </div>
 
               </div>
@@ -118,7 +159,7 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
               {question.img && (
                 <div className="p-5 px-6">
                   <img
-                    src={ appPath + question.img}
+                    src={appPath + question.img}
                     onClick={openModal}
                     className="rounded aspect-video min-w-[10vw] max-w-[20vw]"
                     alt="미리보기"
@@ -189,33 +230,26 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
               }`}
           >
             <div className="flex-1 font-normal text-sm text-gray-500 flex flex-col px-6 pb-3 gap-2">
-              {question.select1 && (<div
-                className={`border bg-white rounded-lg p-2.5 px-4 ${question.select1 === question.answer ? "font-bold text-blue-500" : ""
-                  }`}
-              >
-                {question.select1}
-              </div>)}
-
-              {question.select2 && (<div
-                className={`border bg-white rounded-lg p-2.5 px-4 ${question.select2 === question.answer ? "font-bold text-blue-500" : ""
-                  }`}
-              >
-                {question.select2}
-              </div>)}
-
-              {question.select3 && (<div
-                className={`border bg-white rounded-lg p-2.5 px-4 ${question.select3 === question.answer ? "font-bold text-blue-500" : ""
-                  }`}
-              >
-                {question.select3}
-              </div>)}
-
-              {question.select4 && (<div
-                className={`border bg-white rounded-lg p-2.5 px-4 ${question.select4 === question.answer ? "font-bold text-blue-500" : ""
-                  }`}
-              >
-                {question.select4}
-              </div>)}
+              {question.select1 && (
+                <div className={`border bg-white rounded-lg p-2.5 px-4 whitespace-pre-wrap ${question.select1 === question.answer ? "font-bold text-blue-500" : ""}`}>
+                  <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkBreaks]}>{question.select1}</ReactMarkdown>
+                </div>
+              )}
+              {question.select2 && (
+                <div className={`border bg-white rounded-lg p-2.5 px-4 whitespace-pre-wrap ${question.select2 === question.answer ? "font-bold text-blue-500" : ""}`}>
+                  <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkBreaks]}>{question.select2}</ReactMarkdown>
+                </div>
+              )}
+              {question.select3 && (
+                <div className={`border bg-white rounded-lg p-2.5 px-4 whitespace-pre-wrap ${question.select3 === question.answer ? "font-bold text-blue-500" : ""}`}>
+                  <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkBreaks]}>{question.select3}</ReactMarkdown>
+                </div>
+              )}
+              {question.select4 && (
+                <div className={`border bg-white rounded-lg p-2.5 px-4 whitespace-pre-wrap ${question.select4 === question.answer ? "font-bold text-blue-500" : ""}`}>
+                  <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkBreaks]}>{question.select4}</ReactMarkdown>
+                </div>
+              )}
             </div>
           </div>
         </td>
@@ -228,7 +262,7 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
             {question.img && (
               <div className="p-5 px-6">
                 <img
-                  src={ appPath + question.img}
+                  src={appPath + question.img}
                   onClick={openModal}
                   className="rounded aspect-video min-w-[10vw] max-w-[20vw] cursor-pointer"
                   alt="미리보기"
@@ -240,9 +274,7 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
       </tr>
       {showModal && <Modal imgSrc={appPath + question.img} onClose={closeModal} />}
     </>
-
   );
-
 }
 
 export default QuestionItem;
