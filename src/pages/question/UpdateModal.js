@@ -321,6 +321,7 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
                     placeholder="선택지1"
                     value={select1}
                     onChange={(e) => setSelect1(e.target.value)}
+                    
                   />
                 </div>
                 <div className="flex gap-3">
@@ -450,6 +451,17 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
                         placeholder="선택지1"
                         value={select1}
                         onChange={(e) => setSelect1(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (
+                            !expanded &&
+                            e.key === 'Enter' &&
+                            !e.shiftKey &&
+                            e.target.value.split('\n').length === 1
+                          ) {
+                            e.preventDefault();
+                            updateEvent();
+                          }
+                        }}
                       />
                     </div>
                     <div className="flex gap-3">
@@ -466,6 +478,17 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
                         placeholder="선택지2"
                         value={select2}
                         onChange={(e) => setSelect2(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (
+                            !expanded &&
+                            e.key === 'Enter' &&
+                            !e.shiftKey &&
+                            e.target.value.split('\n').length === 1
+                          ) {
+                            e.preventDefault();
+                            updateEvent();
+                          }
+                        }}
                       />
                     </div>
                   </div>
@@ -484,6 +507,17 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
                         placeholder="선택지3"
                         value={select3}
                         onChange={(e) => setSelect3(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (
+                            !expanded &&
+                            e.key === 'Enter' &&
+                            !e.shiftKey &&
+                            e.target.value.split('\n').length === 1
+                          ) {
+                            e.preventDefault();
+                            updateEvent();
+                          }
+                        }}
                       />
                     </div>
                     <div className="flex gap-3">
@@ -500,6 +534,17 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
                         placeholder="선택지4"
                         value={select4}
                         onChange={(e) => setSelect4(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (
+                            !expanded &&
+                            e.key === 'Enter' &&
+                            !e.shiftKey &&
+                            e.target.value.split('\n').length === 1
+                          ) {
+                            e.preventDefault();
+                            updateEvent();
+                          }
+                        }}
                       />
                     </div>
                   </div>
