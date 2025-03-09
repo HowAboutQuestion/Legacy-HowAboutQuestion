@@ -7,7 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-function InsertModal({ setInsertModal }) {
+function InsertModal({ setInsertModal, expanded }) {
   //문제추가폼
   const [title, setTitle] = useState("");
   const [type, setType] = useState("객관식");
@@ -158,15 +158,15 @@ function InsertModal({ setInsertModal }) {
           question.img = result.path; // 저장된 경로를 할당
         } else {
           console.error("이미지 저장 실패:", result.error);
-            if (!toast.isActive("image-false")) {
-              toast.error("이미지 저장에 실패했습니다..",{ toastId: "image-false"});
-            }
+          if (!toast.isActive("image-false")) {
+            toast.error("이미지 저장에 실패했습니다..", { toastId: "image-false" });
+          }
         }
       } catch (error) {
         console.error("이미지 저장 중 오류 발생:", error);
-         if (!toast.isActive("image-error")) {
-                toast.error("이미지 저장 중 오류가 발생했습니다.",{ toastId: "image-error"});
-          }
+        if (!toast.isActive("image-error")) {
+          toast.error("이미지 저장 중 오류가 발생했습니다.", { toastId: "image-error" });
+        }
       }
     }
 
@@ -193,12 +193,12 @@ function InsertModal({ setInsertModal }) {
 
   const renderImageUpload = () => (
     <div
-      className="relative bg-gray-50 flex rounded w-full h-full"
+      className={`relative bg-gray-50 flex rounded w-full ${expanded ? "h-64" : "h-full"}`}
       style={{
         backgroundImage: thumbnail
           ? `url("${thumbnail}")`
           : `url(${placeholderImage})`,
-        backgroundSize: "cover",
+        backgroundSize: "100% 100%", // 여기서 100% 비율로 맞춤
         backgroundPosition: "center",
       }}
     >
@@ -220,6 +220,7 @@ function InsertModal({ setInsertModal }) {
     </div>
   );
 
+
   return (
     <div
       className="h-full w-full p-7 flex flex-col gap-2"
@@ -233,7 +234,7 @@ function InsertModal({ setInsertModal }) {
           className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black bg-opacity-50 pointer-events-none rounded-xl"
           style={{
             backgroundImage: `url(${uploadImage})`,
-            backgroundSize: "100% 100%", // 전체 영역에 맞게 늘림 (비율 유지하지 않음)
+            backgroundSize: "100% 100%",
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center",
           }}
@@ -242,150 +243,274 @@ function InsertModal({ setInsertModal }) {
         </div>
       )}
 
-
-      <div className="h-full w-full p-7 flex flex-col gap-2">
-        <div className="flex justify-between">
-          <div className="font-bold text-xl pl-1">문제 추가하기</div>
-          <div className="items-center flex">
-            <div
-              onClick={insertEvent}
-              className="cursor-pointer bg-blue-500 transition hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2"
-            >
-              저장하기
-            </div>
-            <div
-              onClick={() => setInsertModal(false)}
-              className="cursor-pointer bg-blue-500 transition hover:scale-105 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="2"
-                stroke="currentColor"
-                className="size-4"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-              </svg>
-            </div>
+      {/* 조건부 레이아웃: expanded 상태에 따라 이미지 업로드 위치 변경 */}
+      {expanded ? (
+  // 확장된 상태: 질문/옵션 영역은 세로로 나열되고, 그 아래에 이미지 업로드 영역이 별도로 렌더링됨
+  <div className="flex flex-col gap-4">
+    <div>
+      <div className="flex justify-between">
+        <div className="font-bold text-xl pl-1">문제 추가하기</div>
+        <div className="items-center flex">
+          <div
+            onClick={insertEvent}
+            className="cursor-pointer bg-blue-500 transition hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2"
+          >
+            저장하기
           </div>
-        </div>
-        <div className="flex gap-2">
-          <div className="flex-[2]">
-            <div className="flex gap-3">
-              <input
-                type="text"
-                className="block min-w-[50%] outline-none border-b-2 border-gray-200 focus:border-blue-500 text-sm px-2 py-1 h-10"
-                placeholder="문제를 입력해주세요"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                required
-              />
-              <select
-                className="block border-b-2 text-sm px-2 py-1 h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500"
-                value={type}
-                onChange={(e) => setType(e.target.value)}
-              >
-                <option value="객관식">객관식</option>
-                <option value="주관식">주관식</option>
-              </select>
-            </div>
-            <input
-              type="text"
-              className="block outline-none border-b-2 border-gray-200 focus:border-blue-500 text-sm px-2 py-1 h-10 w-1/2 flex-none"
-              placeholder="문제집 또는 태그를 입력해주세요"
-              value={tag}
-              onChange={(e) => setTag(e.target.value)}
-            />
-
-            {type === "객관식" ? (<div className="flex gap-5">
-              <div className="flex flex-1 flex-col gap-2">
-                <div className="flex gap-3">
-                  <input
-                    type="radio"
-                    name="answer"
-                    value={select1}
-                  />
-                  <textarea
-                    rows="1"
-                    className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
-                    style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
-                    placeholder="선택지1"
-                    value={select1}
-                    onChange={(e) => setSelect1(e.target.value)}
-                  />
-                </div>
-                <div className="flex gap-3">
-                  <input
-                    type="radio"
-                    name="answer"
-                    value={select2}
-                  />
-                  <textarea
-                    rows="1"
-                    className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
-                    style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
-                    placeholder="선택지2"
-                    value={select2}
-                    onChange={(e) => setSelect2(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="flex flex-1 flex-col gap-2">
-                <div className="flex gap-3">
-                  <input
-                    type="radio"
-                    name="answer"
-                    value={select3}
-
-                  />
-                  <textarea
-                    rows="1"
-                    className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
-                    style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
-                    placeholder="선택지3"
-                    value={select3}
-                    onChange={(e) => setSelect3(e.target.value)}
-                  />
-                </div>
-                <div className="flex gap-3">
-                  <input
-                    type="radio"
-                    name="answer"
-                    value={select4}
-                  />
-                  <textarea
-                    rows="1"
-                    className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
-                    style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
-                    placeholder="선택지4"
-                    value={select4}
-                    onChange={(e) => setSelect4(e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
-            ) : (
-              <div className="flex gap-3 flex-1">
-                <textarea
-                  rows="1"
-                  className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
-                  style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
-                  placeholder="정답"
-                  value={answer}
-                  onChange={(e) => setAnswer(e.target.value)}
-                />
-              </div>
-            )}
-          </div>
-          <div className="flex-1 transform transition duration-300 hover:scale-105" >
-            {renderImageUpload()}
+          <div
+            onClick={() => setInsertModal(false)}
+            className="cursor-pointer bg-blue-500 transition hover:scale-105 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="2"
+              stroke="currentColor"
+              className="size-4"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
           </div>
         </div>
       </div>
+      <div className="flex flex-col gap-2">
+        <div className="flex gap-3">
+          <input
+            type="text"
+            className="block min-w-[50%] outline-none border-b-2 border-gray-200 focus:border-blue-500 text-sm px-2 py-1 h-10"
+            placeholder="문제를 입력해주세요"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+          <select
+            className="block border-b-2 text-sm px-2 py-1 h-10 outline-none border-gray-200 focus:border-blue-500"
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+          >
+            <option value="객관식">객관식</option>
+            <option value="주관식">주관식</option>
+          </select>
+        </div>
+        <input
+          type="text"
+          className="block outline-none border-b-2 border-gray-200 focus:border-blue-500 text-sm px-2 py-1 h-10 w-1/2"
+          placeholder="문제집 또는 태그를 입력해주세요"
+          value={tag}
+          onChange={(e) => setTag(e.target.value)}
+        />
+        {type === "객관식" ? (
+          // 객관식 입력
+          <div className="flex flex-col gap-3">
+            <div className="flex gap-3">
+              <input type="radio" name="answer" value={select1} onChange={() => { }} />
+              <textarea
+                rows="1"
+                className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                placeholder="선택지1"
+                value={select1}
+                onChange={(e) => setSelect1(e.target.value)}
+              />
+            </div>
+            <div className="flex gap-3">
+              <input type="radio" name="answer" value={select2} onChange={() => { }} />
+              <textarea
+                rows="1"
+                className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                placeholder="선택지2"
+                value={select2}
+                onChange={(e) => setSelect2(e.target.value)}
+              />
+            </div>
+            <div className="flex gap-3">
+              <input type="radio" name="answer" value={select3} onChange={() => { }} />
+              <textarea
+                rows="1"
+                className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                placeholder="선택지3"
+                value={select3}
+                onChange={(e) => setSelect3(e.target.value)}
+              />
+            </div>
+            <div className="flex gap-3">
+              <input type="radio" name="answer" value={select4} onChange={() => { }} />
+              <textarea
+                rows="1"
+                className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                placeholder="선택지4"
+                value={select4}
+                onChange={(e) => setSelect4(e.target.value)}
+              />
+            </div>
+            {/* 넓이 수정: w-1/2 (부모의 절반 넓이)와 중앙정렬을 위한 mx-auto 추가 */}
+            <div className="mt-4 transform transition duration-300 hover:scale-105 w-1/2 mx-auto">
+              {renderImageUpload()}
+            </div>
+          </div>
+        ) : (
+          <div className="flex gap-3 flex-1">
+            <textarea
+              rows="1"
+              className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+              style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
+              placeholder="정답"
+              value={answer}
+              onChange={(e) => setAnswer(e.target.value)}
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+) : (
+
+        <div className="flex gap-2">
+          <div className="flex-[2]">
+            <div className="flex justify-between">
+              <div className="font-bold text-xl pl-1">문제 추가하기</div>
+              <div className="items-center flex">
+                <div
+                  onClick={insertEvent}
+                  className="cursor-pointer bg-blue-500 transition hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2"
+                >
+                  저장하기
+                </div>
+                <div
+                  onClick={() => setInsertModal(false)}
+                  className="cursor-pointer bg-blue-500 transition hover:scale-105 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2"
+                    stroke="currentColor"
+                    className="size-4"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <div className="flex-[2]">
+                <div className="flex gap-3">
+                  <input
+                    type="text"
+                    className="block min-w-[50%] outline-none border-b-2 border-gray-200 focus:border-blue-500 text-sm px-2 py-1 h-10"
+                    placeholder="문제를 입력해주세요"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    required
+                  />
+                  <select
+                    className="block border-b-2 text-sm px-2 py-1 h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500"
+                    value={type}
+                    onChange={(e) => setType(e.target.value)}
+                  >
+                    <option value="객관식">객관식</option>
+                    <option value="주관식">주관식</option>
+                  </select>
+                </div>
+                <input
+                  type="text"
+                  className="block outline-none border-b-2 border-gray-200 focus:border-blue-500 text-sm px-2 py-1 h-10 w-1/2 flex-none"
+                  placeholder="문제집 또는 태그를 입력해주세요"
+                  value={tag}
+                  onChange={(e) => setTag(e.target.value)}
+                />
+                {type === "객관식" ? (
+                  <div className="flex gap-5">
+                    <div className="flex flex-1 flex-col gap-2">
+                      <div className="flex gap-3">
+                        <input
+                          type="radio"
+                          name="answer"
+                          value={select1}
+                        />
+                        <textarea
+                          rows="1"
+                          className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                          style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
+                          placeholder="선택지1"
+                          value={select1}
+                          onChange={(e) => setSelect1(e.target.value)}
+                        />
+                      </div>
+                      <div className="flex gap-3">
+                        <input
+                          type="radio"
+                          name="answer"
+                          value={select2}
+                        />
+                        <textarea
+                          rows="1"
+                          className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                          style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
+                          placeholder="선택지2"
+                          value={select2}
+                          onChange={(e) => setSelect2(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex flex-1 flex-col gap-2">
+                      <div className="flex gap-3">
+                        <input
+                          type="radio"
+                          name="answer"
+                          value={select3}
+
+                        />
+                        <textarea
+                          rows="1"
+                          className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                          style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
+                          placeholder="선택지3"
+                          value={select3}
+                          onChange={(e) => setSelect3(e.target.value)}
+                        />
+                      </div>
+                      <div className="flex gap-3">
+                        <input
+                          type="radio"
+                          name="answer"
+                          value={select4}
+                        />
+                        <textarea
+                          rows="1"
+                          className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                          style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
+                          placeholder="선택지4"
+                          value={select4}
+                          onChange={(e) => setSelect4(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                ) : (
+                  <div className="flex gap-3 flex-1">
+                    <textarea
+                      rows="1"
+                      className="flex-1 block text-sm h-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                      style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
+                      placeholder="정답"
+                      value={answer}
+                      onChange={(e) => setAnswer(e.target.value)}
+                    />
+                  </div>
+                )}
+              </div>
+              <div className="flex-1 mt-4 transform transition duration-300 hover:scale-105">
+                {renderImageUpload()}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
-
 }
 
 export default InsertModal;
