@@ -57,7 +57,7 @@ function MultipleResult({ question, index }) {
       )}
 
       {/* 사용자 입력 답안 / 문제 정답 */}
-      <div className="font-normal text-sm flex flex-col gap-2 w-full text-center">     
+      <div className="font-normal text-sm flex flex-col gap-2 w-full">     
         {question.select1 && (<div className={`box border rounded-lg p-2 px-5
               ${
                 question.answer === question.select1 ? "text-blue-500 font-bold" : question.selected === question.select1 ? "text-red-500 font-bold" : "" 
@@ -115,6 +115,7 @@ function MultipleResult({ question, index }) {
               onClick={() => setShowDescription(true)}
             >
               해설보기
+              
             </button>
           )}
         </div>
