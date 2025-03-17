@@ -1,29 +1,58 @@
-import React, { useRef } from "react";
+import React, { useRef} from "react";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import SingleResult from "pages/solve/SingleResult";
 import MultipleResult from "pages/solve/MultipleResult";
-import { Doughnut } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { useLocation } from "react-router-dom";
+import { Doughnut, Bar } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from "chart.js";
+
+import { useNavigate, useLocation } from "react-router-dom";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import { questionsAtom} from "state/data";
 
-ChartJS.register(ArcElement, Tooltip, Legend);
 
+ChartJS.register(ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 function SolveResult() {
+  
   const location = useLocation();
-  const answers = location.state.answers;
+  const setQuestions = useSetRecoilState(questionsAtom);
   const tags = location.state.tags;
   const pdfRef = useRef(); // PDF로 변환할 영역 참조
 
 
+  const answers = location.state.answers;
   let correct = 0;
   let wrong = 0;
 
-  answers.forEach((question) =>
-    question.answer === question.selected ? correct++ : wrong++
-  );
+  // 태그별 정답/오답 개수 저장 객체
+  const tagAccuracy = {};
 
-  const data = {
+  answers.forEach((question) => {
+    const isCorrect = question.answer === question.selected;
+
+    if (isCorrect) correct++;
+    else wrong++;
+
+    // 태그별 정답률 계산
+    (question.tag || []).forEach((tag) => {
+      if (!tagAccuracy[tag]) {
+        tagAccuracy[tag] = { correct: 0, wrong: 0 };
+      }
+      if (isCorrect) {
+        tagAccuracy[tag].correct++;
+      } else {
+        tagAccuracy[tag].wrong++;
+      }
+    });
+  });
+
+  // 태그 및 데이터 추출
+  const tagLabels = Object.keys(tagAccuracy);
+  const correctData = tagLabels.map((tag) => tagAccuracy[tag].correct);
+  const wrongData = tagLabels.map((tag) => tagAccuracy[tag].wrong);
+
+  // 정답/오답 전체 그래프
+  const totalData = {
     labels: ["정답", "오답"],
     datasets: [
       {
@@ -31,6 +60,23 @@ function SolveResult() {
         backgroundColor: ["#3B8BF6", "#F44336"],
         borderColor: ["#3B8BF6", "#F44336"],
         borderWidth: 1,
+      },
+    ],
+  };
+
+  // 태그별 정답률 그래프
+  const tagData = {
+    labels: tagLabels,
+    datasets: [
+      {
+        label: "정답",
+        data: correctData,
+        backgroundColor: "#3B8BF6",
+      },
+      {
+        label: "오답",
+        data: wrongData,
+        backgroundColor: "#F44336",
       },
     ],
   };
@@ -48,8 +94,8 @@ function SolveResult() {
     },
     responsive: true,
     maintainAspectRatio: false,
-
   };
+
 
   /**
    * 현재 페이지 pdf 로 변환하는 메소드
@@ -90,15 +136,36 @@ function SolveResult() {
   const resultPage = () => {
     return answers.map((answer, index) => {
       return answer.type === "주관식" ? (
-        <SingleResult key={index} question={answer} index={index} />
+        <SingleResult key={index} question={answer} index={index} setQuestions={setQuestions} />
       ) : (
         <MultipleResult key={index} question={answer} index={index} />
       );
     });
   };
 
-  const retry = () => {
+  const navigate = useNavigate();
 
+  const retry = () => {
+    const retryTags = new Set();
+    const retryQuestions = answers.filter((item) => item.answer !== item.selected);
+    
+    if(retryQuestions.length <= 0){
+      // if (!toast.isActive("no-question-error")) {
+      //         toast.error("현재 풀이 가능한 문제가 없습니다! 문제를 생성해주세요", { toastId: "no-question-error" });
+      // } 
+      return;
+    }
+     // 틀린 문제에서 태그 값을 Set에 추가
+    retryQuestions.forEach((item) => {
+      if (item.tag) {
+        item.tag.forEach((tag) => retryTags.add(tag)); // 중복 없이 태그 추가
+      }
+    });
+
+    navigate("/solve", {
+      state: { questions: retryQuestions, tags: [...retryTags] },
+    });
+  
   }
 
 
@@ -115,12 +182,9 @@ function SolveResult() {
               총 {answers.length}문제
             </h1>
           </div>
-
-
           <div className="flex items-center">
             {/* PDF 다운로드 버튼 */}
           <div 
-//          className="bg-blue-500 rounded-full cursor-pointer" 
           className="cursor-pointer bg-blue-500 hover:scale-105 transition text-white font-semibold rounded-2xl text-xs h-8 w-8 inline-flex items-center justify-center me-2 mb-2"
 
           onClick={handleDownloadPDF}>
@@ -148,8 +212,20 @@ function SolveResult() {
           </div>
         </div>
 
-        <div className="m-10 flex items-center">
-          <Doughnut data={data} options={options} />
+        <div className="w-80 max-w-full m-10 flex gap-10 items-baseline justify-center max-[800px]:flex-wrap min-[800px]:flex-nowrap ">
+            <div className="flex-1">
+              <h2 className="text-lg font-bold text-center">총 정답/오답 비율</h2>
+              <div className="h-40">
+              <Doughnut data={totalData} options={options} />
+              </div>
+            </div>
+
+            <div className="flex-1">
+              <h2 className="text-lg font-bold text-center">태그별 정답/오답</h2>
+              <div className="h-60">
+                <Bar data={tagData} options={options} />
+              </div>
+            </div>
         </div>
 
         <div className="flex flex-col items-center max-[800px]:w-full min-[800px]:w-3/5">
