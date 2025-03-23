@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import { questionsAtom, allTagAtom } from "state/data";
 import { useRecoilValue, useSetRecoilState } from "recoil";
@@ -34,6 +35,8 @@ function InsertModal({ setInsertModal, expanded }) {
 
   // 드래그 카운터(자식 요소 때문에 여러 이벤트가 발생하는 것을 보완)
   const dragCounter = useRef(0);
+
+  const titleInputRef = useRef(null);
 
   const handleFileChange = (event) => {
     const image = event.target.files[0];
@@ -182,9 +185,13 @@ function InsertModal({ setInsertModal, expanded }) {
     setSelect4("");
     setAnswer("");
     setThumbnail(null);
-    setTag(""); // 태그 초기화
+    // setTag(""); // 태그 초기화
 
     setQuestions((prevQuestions) => [question, ...prevQuestions]);
+    
+    if (titleInputRef.current) {
+      titleInputRef.current.focus();
+    }
   };
 
 
@@ -277,6 +284,7 @@ function InsertModal({ setInsertModal, expanded }) {
             <div className="flex flex-col gap-2">
               <div className="flex gap-3">
                 <input
+                ref={titleInputRef}
                   type="text"
                   className="block min-w-[50%] outline-none border-b-2 border-gray-200 focus:border-blue-500 text-sm px-2 py-1 h-10"
                   placeholder="문제를 입력해주세요"
@@ -403,6 +411,7 @@ function InsertModal({ setInsertModal, expanded }) {
               <div className="flex-[2]">
                 <div className="flex gap-3">
                   <input
+                  ref={titleInputRef}
                     type="text"
                     className="block min-w-[50%] outline-none border-b-2 border-gray-200 focus:border-blue-500 text-sm px-2 py-1 h-10"
                     placeholder="문제를 입력해주세요"
