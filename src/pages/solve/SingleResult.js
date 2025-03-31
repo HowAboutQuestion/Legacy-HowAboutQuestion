@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { appPathAtom } from "state/data";
 import { useRecoilValue } from "recoil";
 import { addDays, format } from 'date-fns'; // date-fns 함수 추가
+import ReactMarkdown from 'react-markdown';
+import remarkBreaks from 'remark-breaks';
+import { markdownComponents } from "utils/markdownUtil"
 
 function SingleResult({ question, index, setQuestions }) {
   const appPath = useRecoilValue(appPathAtom);
@@ -144,7 +147,9 @@ function SingleResult({ question, index, setQuestions }) {
         </div>
         
         <div className="box text-blue-500 font-bold border rounded-lg p-2 px-5 mt-2">
-            {question.answer}
+            <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkBreaks]}>
+                {question.answer}
+            </ReactMarkdown>
         </div>
         
       </div>

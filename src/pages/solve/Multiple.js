@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { appPathAtom } from "state/data";
 import { useRecoilValue } from "recoil";
+import ReactMarkdown from 'react-markdown';
+import remarkBreaks from 'remark-breaks';
+import { markdownComponents } from "utils/markdownUtil"
 
 function Multiple({ question, index, onAnswerChange }) {
   const appPath = useRecoilValue(appPathAtom);
@@ -65,7 +68,7 @@ function Multiple({ question, index, onAnswerChange }) {
            onChange={handleAnswerChange}
            className="mx-1 bg-gray-50 border-gray-300"
          />
-         {question.select1}
+                  <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkBreaks]}>{question.select1}</ReactMarkdown>
        </label>)}
 
         {question.select2 && (<label className="border rounded-lg p-3 pr-10">
@@ -77,7 +80,7 @@ function Multiple({ question, index, onAnswerChange }) {
             onChange={handleAnswerChange}
             className="mx-1 bg-gray-50 border-gray-300"
           />
-          {question.select2}
+                  <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkBreaks]}>{question.select2}</ReactMarkdown>
         </label>)}
         
         {question.select3 && (<label className="border rounded-lg p-3 pr-10">
@@ -89,7 +92,7 @@ function Multiple({ question, index, onAnswerChange }) {
             onChange={handleAnswerChange}
             className="mx-1 bg-gray-50 border-gray-300"
           />
-          {question.select3}
+                  <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkBreaks]}>{question.select3}</ReactMarkdown>
         </label>)}
         
         {question.select4 && (<label className="border rounded-lg p-3 pr-10">
@@ -101,7 +104,7 @@ function Multiple({ question, index, onAnswerChange }) {
             onChange={handleAnswerChange}
             className="mx-1 bg-gray-50 border-gray-300"
           />
-          {question.select4}
+                  <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkBreaks]}>{question.select4}</ReactMarkdown>
         </label>)}
         
       </form>
