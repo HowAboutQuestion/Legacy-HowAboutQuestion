@@ -404,27 +404,7 @@ function Questions() {
     }
   };
 
-  const handleDragMouseDown = (e) => {
-    const startY = e.clientY;
-    const startHeight = modalHeight;
-    const MIN_HEIGHT = 300;
-    const MAX_HEIGHT = window.innerHeight; // 현재 창의 최대 높이로 설정
-
-  const onMouseMove = (e) => {
-    const diff = startY - e.clientY; // 위로 드래그하면 양수가 됨
-    const newHeight = startHeight + diff;
-    setModalHeight(Math.min(MAX_HEIGHT, Math.max(MIN_HEIGHT, newHeight)));
-  };
-
-  const onMouseUp = () => {
-    window.removeEventListener("mousemove", onMouseMove);
-    window.removeEventListener("mouseup", onMouseUp);
-  };
-
-  window.addEventListener("mousemove", onMouseMove);
-  window.addEventListener("mouseup", onMouseUp);
-
-};
+  
 
   return (
 
@@ -595,17 +575,16 @@ function Questions() {
       >
         {/* 드래그 핸들 (모달 상단 중앙에 위치) */}
         <div
-          onMouseDown={handleDragMouseDown}
-          onClick={toggleModalHeight}
-          style={{
-            height: '8px',
-            width: '50px',
-            margin: '0 auto',
-            backgroundColor: '#ccc',
-            borderRadius: '4px',
-            cursor: 'ns-resize'
-          }}
-        />
+  onClick={toggleModalHeight}
+  style={{
+    height: '8px',
+    width: '50px',
+    margin: '0 auto',
+    backgroundColor: '#ccc',
+    borderRadius: '4px',
+    cursor: 'pointer' // 클릭임을 강조하기 위해 커서를 pointer로 변경
+  }}
+/>
         {insertModal && <InsertModal
           setInsertModal={setInsertModal} expanded={expanded}>
         </InsertModal>}
