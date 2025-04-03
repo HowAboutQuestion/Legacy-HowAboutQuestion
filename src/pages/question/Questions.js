@@ -582,7 +582,7 @@ function Questions() {
     margin: '0 auto',
     backgroundColor: '#ccc',
     borderRadius: '4px',
-    cursor: 'pointer' // 클릭임을 강조하기 위해 커서를 pointer로 변경
+    cursor: 'pointer' 
   }}
 />
         {insertModal && <InsertModal

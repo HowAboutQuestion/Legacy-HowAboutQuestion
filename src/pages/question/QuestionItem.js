@@ -139,7 +139,7 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
               className={`flex transition-all duration-500 ease-in-out ${isCollapsed ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
                 }`}
             >
-              <div className="flex-1 font-normal text-sm text-gray-500 flex flex-col px-6 pb-3 gap-2">
+              <div className="flex-1 font-normal text-sm text-gray-500 flex flex-col px-6 pb-3 gap-2 max-h-60 overflow-y-auto">
                 <div className="border bg-white rounded-lg p-2.5 px-4">
                   <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkBreaks]}>
                   {question.answer}
@@ -229,7 +229,7 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
             className={`flex transition-all duration-500 ease-in-out ${isCollapsed ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
               }`}
           >
-            <div className="flex-1 font-normal text-sm text-gray-500 flex flex-col px-6 pb-3 gap-2">
+            <div className="flex-1 font-normal text-sm text-gray-500 flex flex-col px-6 pb-3 gap-2 max-h-60 overflow-y-auto">
               {question.select1 && (
                 <div className={`border bg-white rounded-lg p-2.5 px-4 whitespace-pre-wrap ${question.select1 === question.answer ? "font-bold text-blue-500" : ""}`}>
                   <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkBreaks]}>{question.select1}</ReactMarkdown>

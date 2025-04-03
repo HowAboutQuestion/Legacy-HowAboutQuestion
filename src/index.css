@@ -4,6 +4,11 @@
 
 /* @import url('https://fonts.googleapis.com/earlyaccess/notosanskr.css'); */
 
+pre {
+  background: white !important;
+  width: 0 !important;
+}
+
 @font-face {
   font-family: "Pretendard";
   src: url("./fonts/PretendardVariable.ttf");
