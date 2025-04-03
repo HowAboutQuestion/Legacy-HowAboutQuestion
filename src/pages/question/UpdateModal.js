@@ -317,6 +317,7 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
                   <input type="radio" name="answer" checked={answer === select1} onChange={() => setAnswer(select1)} />
                   <textarea
                     rows="3"
+                    maxLength={300}
                     className="flex-1 block text-sm leading-6 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3 resize-none"
                     placeholder="선택지1"
                     value={select1}
@@ -327,6 +328,7 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
                   <input type="radio" name="answer" checked={answer === select2} onChange={() => setAnswer(select2)} />
                   <textarea
                     rows="3"
+                    maxLength={300}
                     className="flex-1 block text-sm leading-6 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3 resize-none"
                     placeholder="선택지2"
                     value={select2}
@@ -337,6 +339,7 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
                   <input type="radio" name="answer" checked={answer === select3} onChange={() => setAnswer(select3)} />
                   <textarea
                     rows="3"
+                    maxLength={300}
                     className="flex-1 block text-sm leading-6 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3 resize-none"
                     placeholder="선택지3"
                     value={select3}
@@ -347,6 +350,7 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
                   <input type="radio" name="answer" checked={answer === select4} onChange={() => setAnswer(select4)} />
                   <textarea
                     rows="3"
+                    maxLength={300}
                     className="flex-1 block text-sm leading-6 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3 resize-none"
                     placeholder="선택지4"
                     value={select4}
@@ -362,6 +366,7 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
               <div className="flex flex-col gap-3">
                 <textarea
                   rows="9"
+                  maxLength={800}
                   className="flex-1 block text-sm outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3 resize-none"
                   placeholder="정답"
                   value={answer}
@@ -445,6 +450,7 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
                       />
                       <textarea
                         rows="1"
+                        maxLength={300}
                         className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
                         style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
                         placeholder="선택지1"
@@ -461,6 +467,7 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
                       />
                       <textarea
                         rows="1"
+                        maxLength={300}
                         className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
                         style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
                         placeholder="선택지2"
@@ -479,6 +486,7 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
                       />
                       <textarea
                         rows="1"
+                        maxLength={300}
                         className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
                         style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
                         placeholder="선택지3"
@@ -495,6 +503,7 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
                       />
                       <textarea
                         rows="1"
+                        maxLength={300}
                         className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
                         style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
                         placeholder="선택지4"
@@ -508,6 +517,7 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
                   <div className="flex flex-col gap-3 mt-[6px] ">
                     <textarea
                       rows="4"
+                      maxLength={800}
                       className="flex-1 block text-sm outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3 resize-none"
                       placeholder="정답"
                       value={answer}
