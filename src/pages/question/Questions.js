@@ -153,49 +153,6 @@ function Questions() {
     }
   };
 
-
-  //.csv 만 다운로드
-  // const handleDownload = () => {
-  //   const downloadQuestions = filterQuestions.some(({index, question}) => question.checked)
-  //     ? filterQuestions
-  //         .filter(({index, question}) => question.checked)  // question.checked가 true인 것만 필터링
-  //         .map(({index, question}) => {
-  //             const { checked, ...rest } = question; 
-  //             return rest;
-  //           })
-  //     : filterQuestions
-  //         .map(({index, question}) => {
-  //           const { checked, ...rest } = question;  // checked 제외한 데이터만 추출
-  //           return rest;
-  //         });
-
-
-
-  //   const csv = Papa.unparse(downloadQuestions, {
-  //     header: true, // 첫 번째 줄에 헤더 포함
-  //     columns: [
-  //       "title", "type", "select1", "select2", "select3", "select4", "answer", 
-  //       "img", "level", "date", "update", "recommenddate", "solveddate", "tag"
-  //     ], // 원하는 헤더 순서 설정
-  //   });
-
-
-  //   // Blob을 사용하여 CSV 데이터를 파일로 변환
-  //   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-
-  //   // 다운로드 링크 생성
-  //   const link = document.createElement("a");
-  //   if (link.download !== undefined) {
-  //     const url = URL.createObjectURL(blob);
-  //     link.setAttribute("href", url);
-  //     link.setAttribute("download", "questions.csv"); // 다운로드할 파일 이름 설정
-  //     link.style.visibility = "hidden";
-  //     document.body.appendChild(link);
-  //     link.click(); // 다운로드 실행
-  //     document.body.removeChild(link); // 링크 제거
-  //   }
-  // };
-
   // .zip 다운로드
   const handleDownloadToZip = async () => {
     const downloadQuestions = filterQuestions.some(({ index, question }) => question.checked)
