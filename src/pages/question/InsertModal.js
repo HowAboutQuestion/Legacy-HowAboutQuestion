@@ -308,7 +308,7 @@ function InsertModal({ setInsertModal, expanded }) {
                     <textarea
                       rows="3"
                       maxLength={300}
-                      className="flex-1 block text-sm leading-6 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3 resize-none"
+                      className="flex-1 block text-sm leading-6 border-2 border-gray-200 focus:border-blue-500 px-3 resize-none"
                       placeholder="선택지1"
                       value={select1}
                       
@@ -320,7 +320,7 @@ function InsertModal({ setInsertModal, expanded }) {
                     <textarea
                       rows="3"
                       maxLength={300}
-                      className="flex-1 block text-sm leading-6 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3 resize-none"
+                      className="flex-1 block text-sm leading-6 border-2 border-gray-200 focus:border-blue-500 px-3 resize-none"
                       placeholder="선택지2"
                       value={select2}
                       onChange={(e) => setSelect2(e.target.value)}
@@ -331,7 +331,7 @@ function InsertModal({ setInsertModal, expanded }) {
                     <textarea
                       rows="3"
                       maxLength={300}
-                      className="flex-1 block text-sm leading-6 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3 resize-none"
+                      className="flex-1 block text-sm leading-6 border-2 border-gray-200 focus:border-blue-500 px-3 resize-none"
                       placeholder="선택지3"
                       value={select3}
                       onChange={(e) => setSelect3(e.target.value)}
@@ -342,7 +342,7 @@ function InsertModal({ setInsertModal, expanded }) {
                     <textarea
                       rows="3"
                       maxLength={300}
-                      className="flex-1 block text-sm leading-6 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3 resize-none"
+                      className="flex-1 block text-sm leading-6 border-2 border-gray-200 focus:border-blue-500 px-3 resize-none"
                       placeholder="선택지4"
                       value={select4}
                       onChange={(e) => setSelect4(e.target.value)}
@@ -359,7 +359,7 @@ function InsertModal({ setInsertModal, expanded }) {
                   <textarea
                     rows="9"
                     maxLength={800}
-                    className="flex-1 block text-sm outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3 resize-none"
+                    className="flex-1 block text-sm border-2 border-gray-200 focus:border-blue-500 px-3 resize-none"
                     placeholder="정답"
                     value={answer}
                     onChange={(e) => setAnswer(e.target.value)}
