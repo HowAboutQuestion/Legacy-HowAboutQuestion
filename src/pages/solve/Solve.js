@@ -185,7 +185,6 @@ function Solve() {
         <div className="p-4 flex justify-between border-b">
           <div>
             <h1 className="text-2xl font-semibold">
-              {passedTags.length == 0 && "문제 풀이"}
               {passedTags.map((tag, idx) => (
                 <span key={idx}>{tag} </span>
               ))}

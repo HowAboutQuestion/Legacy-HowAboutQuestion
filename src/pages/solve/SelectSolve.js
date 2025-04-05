@@ -258,7 +258,7 @@ function SelectSolve() {
             {/* 타이머 입력 필드 */}
             <div 
               className={`ml-4 flex gap-1 overflow-hidden transition-all duration-500 ${
-                timerOn ? "max-w-[100px] opacity-100" : "max-w-0 opacity-0"
+                timerOn ? "max-w-[100px] opacity-100 mr-4" : "max-w-0 opacity-0"
               }`}
             >
               <input
@@ -282,7 +282,7 @@ function SelectSolve() {
             </div>
 
             {/* 선택지 셔플 토글 */}
-            <span className="text-xs font-semibold mx-4 ">선택지 셔플</span>
+            <span className="text-xs font-semibold mr-4 ">선택지 셔플</span>
             <div 
               className={`relative w-12 h-6 flex items-center rounded-full transition-all cursor-pointer ${
                 choiceShuffleOption ? "bg-blue-500" : "bg-gray-300"
@@ -346,7 +346,7 @@ function SelectSolve() {
 
           </div>
         ) : (
-          <div className="bg-white shadow m-10 p-10  items-center justify-center flex-col gap-5 rounded-xl">
+          <div className="bg-white shadow m-10 p-10  items-center justify-center flex-col gap-5 rounded-xl min-w-[500px]">
             <div className="w-full h-40 mx-auto mb-4 relative">
               <img
                 src="./images/no-problems.png"
@@ -354,8 +354,8 @@ function SelectSolve() {
                 className="object-contain w-full h-full"
               />
             </div>
-            <div className="">현재 풀이 가능한 문제가 없습니다</div>
-            <div className="flex">
+            <div className="text-center">현재 풀이 가능한 문제가 없습니다</div>
+            <div className="flex justify-center mt-5">
               <div
                 onClick={goToQuestions}
                 className="bg-blue-500 whitespace-nowrap rounded-xl w-30 text-white font-semibold text- py-3 px-3 text-center hover:scale-105 transition cursor-pointer"
