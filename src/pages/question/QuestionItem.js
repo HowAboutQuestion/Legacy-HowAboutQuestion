@@ -3,7 +3,8 @@ import { appPathAtom } from "state/data";
 import { useRecoilValue } from "recoil";
 import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
-import { markdownComponents } from "utils/markdownUtil"
+import { markdownComponents } from 'utils/markdownUtil';
+
 
 
 function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
@@ -48,6 +49,30 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
     );
   };
 
+  const UpdateIconWithTooltip = () => (
+    <div className="flex items-center">
+      <div
+        onClick={(e) => updateClick(e)}
+        className="cursor-pointer rounded-xl hover:font-bold hover:bg-gray-100 w-max text-xs text-blue-600 p-2"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth="1.5"
+          stroke="currentColor"
+          className="size-4"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
+          />
+        </svg>
+      </div>
+    </div>
+  );
+
   if (question.type === '주관식') {
     return (
       <>
@@ -77,25 +102,17 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
             <div className="font-medium text-sm whitespace-nowrap">{question.type}</div>
           </td>
           <td className="px-3 py-2 align-top">
-            <div
-              onClick={(e) => updateClick(e)}
-
-              className="cursor-pointer rounded-xl hover:font-bold hover:bg-gray-100 w-max text-xs cursor-pointer text-blue-600 p-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="size-4"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
-                />
-              </svg>
-            </div>
+            <UpdateIconWithTooltip />
+          </td>
+          <td className="px-3 py-2 align-top">
+            {question.description && (
+              <div className="relative group ml-1">
+                <span className="cursor-default select-none">?</span>
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block bg-black text-white text-xs rounded py-1 px-2 max-w-xs break-words opacity-50% z-20">
+                  {question.description}
+                </div>
+              </div>
+            )}
           </td>
         </tr>
         <tr className={` hover:shadow transition-all duration-500 ${isCollapsed ? "border-b" : ""}`}>
@@ -108,7 +125,7 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
               <div className="flex-1 font-normal text-sm text-gray-500 flex flex-col px-6 pb-3 gap-2 max-h-60 overflow-y-auto">
                 <div className="border bg-white rounded-lg p-2.5 px-4">
                   <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkBreaks]}>
-                  {question.answer}
+                    {question.answer}
                   </ReactMarkdown>
                 </div>
 
@@ -168,25 +185,20 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
           <div className="font-medium text-sm whitespace-nowrap">{question.type}</div>
         </td>
         <td className="px-3 py-2 align-top">
-          <div
-            onClick={(e) => updateClick(e)}
-            className="cursor-pointer rounded-xl hover:font-bold hover:bg-gray-100 w-max text-xs cursor-pointer text-blue-600 p-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="size-4"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
-              />
-            </svg>
+          <div>
+            <UpdateIconWithTooltip />
           </div>
         </td>
+        <td className="px-3 py-2 align-top">
+            {question.description && (
+              <div className="relative group ml-1">
+                <span className="cursor-default select-none">?</span>
+                <div className="absolute top-full right-0 mr-[-60px] transform -translate-x-1/2 mt-2 hidden group-hover:block bg-black text-white text-xs rounded py-1 px-2 max-w-xs break-words opacity-50 z-20">
+                  {question.description}
+                </div>
+              </div>
+            )}
+          </td>
       </tr>
       <tr className={` hover:shadow transition-all duration-500 ${isCollapsed ? "border-b" : ""}`}>
         <td></td>
