@@ -109,7 +109,7 @@ function MultipleResult({ question, index }) {
           }`}>
           <img src="./images/light_icon.png" 
             onClick={() => setShowDescription(false)}
-            className="w-5 h-5 cursor-pointer hover:scale-110 transition-all text"/>
+            className="w-5 h-5 cursor-pointer hover:scale-110 transition-all text hover:scale-110 mr-1"/>
             {question.description}
         </div>
         {!showDescription && (
