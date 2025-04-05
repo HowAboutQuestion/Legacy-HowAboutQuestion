@@ -18,7 +18,7 @@ function InsertModal({ setInsertModal, expanded }) {
   const [answer, setAnswer] = useState("");
   const [tag, setTag] = useState("");
   const [date, setDate] = useState(getTodayDate());
-  const [description, setDescription] = useState(""); // 설명
+  const [description, setDescription] = useState("");
   const questions = useRecoilValue(questionsAtom);
   const setQuestions = useSetRecoilState(questionsAtom);
   const setAlltag = useSetRecoilState(allTagAtom);
@@ -184,6 +184,7 @@ function InsertModal({ setInsertModal, expanded }) {
     setSelect3("");
     setSelect4("");
     setAnswer("");
+    setDescription("")
     setThumbnail(null);
     // setTag(""); // 태그 초기화
 
