@@ -361,7 +361,8 @@ function InsertModal({ setInsertModal, expanded }) {
                       rows="5"
                       maxLength={500}
                       placeholder="설명"
-                      className="w-2/3 border-2 border-gray-200 px-2 py-1 rounded-md focus:border-blue-500 outline-none resize-none"
+                      className="w-2/3 border-2 text-sm 
+                      outline-none                       border-gray-200 px-2 py-1 rounded-md focus:border-blue-500 resize-none"
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                     ></textarea>
@@ -384,7 +385,10 @@ function InsertModal({ setInsertModal, expanded }) {
                   <textarea
                     rows="5"
                     maxLength={500}
-                    className="block text-sm border-2 rounded-md border-gray-200 focus:border-blue-500 px-2 py-1 resize-none"
+                    className="block text-sm border-2 rounded-md border-gray-200 
+                    outline-none
+                    focus:border-blue-500 px-2 py-1 
+                    resize-none"
                     placeholder="설명"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}

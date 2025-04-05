@@ -376,7 +376,7 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
                     rows="5"
                     maxLength={500}
                     placeholder="설명"
-                    className="w-2/3 border-2 border-gray-200 px-2 py-1 rounded-md focus:border-blue-500 resize-none"
+                    className="w-2/3 border-2 outline-none text-sm border-gray-200 px-2 py-1 rounded-md focus:border-blue-500 resize-none"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                   ></textarea>
@@ -400,7 +400,7 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
                     rows="5"
                     maxLength={500}
                     placeholder="설명을 입력해주세요"
-                    className="block text-sm border-2 rounded-md px-2 py-1 border-gray-200 focus:border-blue-500 resize-none"
+                    className="block text-sm border-2 rounded-md outline-none px-2 py-1 border-gray-200 focus:border-blue-500 resize-none"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                   ></textarea>
