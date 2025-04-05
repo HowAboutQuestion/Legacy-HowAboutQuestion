@@ -47,7 +47,7 @@ function MultipleResult({ question, index }) {
 
       <div className="flex gap-3 flex-col w-full">
 
-      {/* 문제 이미지지 */}      
+      {/* 문제 이미지 */}      
       {question.img && (
         <div>
           <img

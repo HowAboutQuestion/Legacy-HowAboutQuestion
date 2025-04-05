@@ -3,17 +3,12 @@
 @tailwind utilities;
 
 
-pre {
-  background: white !important;
-  width: 0 !important;
-  padding: 10px !important;
+pre, code {
+  white-space: pre-wrap !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
 }
 
-code > * {
-  width: 100%;
-  white-space: pre-wrap;
-  overflow-wrap: break-word;
-}
 
 @font-face {
   font-family: "Pretendard";
