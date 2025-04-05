@@ -227,7 +227,7 @@ function SelectSolve() {
       <div className="p-4 flex justify-between border-b bg-white sticky top-0 z-10">
         {/* 좌측 */}
         <div>
-          <div className="text-2xl font-bold">문제집 선택</div>
+          <div className="text-2xl font-semibold">문제집 선택</div>
           <h1 className="text-md font-normal text-gray-400">
             총 {filterQuestions.length}문제
           </h1>
@@ -324,7 +324,7 @@ function SelectSolve() {
         </div>
       </div>
       
-      <div className="flex flex-col justify-center  items-center">
+      <div className="flex flex-col justify-center  items-center bg-gray-50">
         {allQuestions.length > 0 ? (
           <div className="flex flex-col gap-3 p-10 items-center justify-center rounded-xl w-full max-w-[960px]">
             <div className="space-y-4 w-full">

@@ -176,6 +176,7 @@ function SolveResult() {
         <div className="p-4 flex justify-between items-center border-b w-full">
           <div>
             <h1 className="text-2xl font-semibold overflow-hidden text-ellipsis">
+            {tags.length == 0 && "문제 풀이 결과"}
               {tags.map((tag) => `${tag} `)}
             </h1>
             <h1 className="text-md font-normal text-gray-400">
