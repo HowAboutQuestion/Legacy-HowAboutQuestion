@@ -185,6 +185,7 @@ function Solve() {
         <div className="p-4 flex justify-between border-b">
           <div>
             <h1 className="text-2xl font-semibold">
+              {passedTags.length == 0 && "문제 풀이"}
               {passedTags.map((tag, idx) => (
                 <span key={idx}>{tag} </span>
               ))}
@@ -209,7 +210,7 @@ function Solve() {
             </div>
             <div
               onClick={submit}
-              className={`cursor-pointer ${allAnswered ? 'bg-blue-500' : 'bg-gray-500'} hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2 transition`}
+              className={`cursor-pointer ${allAnswered ? 'bg-blue-500' : 'bg-gray-400'} hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2 transition`}
             >
               제출
             </div>
@@ -234,7 +235,7 @@ function Solve() {
       <div className="fixed z-40 bottom-5 right-5 flex gap-2">
         <div
           onClick={beforeQuestion}
-          className={`rounded-full p-2 text-white ${isFirstQuestion ? 'bg-gray-500' : 'bg-blue-500'} hover:scale-105 transition shadow`}
+          className={`rounded-full p-2 text-white ${isFirstQuestion ? 'bg-gray-400' : 'bg-blue-500'} hover:scale-105 transition shadow`}
         >
           {/* 이전 아이콘 */}
           <svg
@@ -255,7 +256,7 @@ function Solve() {
 
         <div
           onClick={nextQuestion}
-          className={`rounded-full p-2 text-white ${isLastQuestion ? 'bg-gray-500' : 'bg-blue-500'} hover:scale-105 transition shadow cursor-pointer`}
+          className={`rounded-full p-2 text-white ${isLastQuestion ? 'bg-gray-400' : 'bg-blue-500'} hover:scale-105 transition shadow cursor-pointer`}
         >
           {/* 다음 아이콘 */}
           <svg
