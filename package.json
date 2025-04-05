@@ -20,6 +20,7 @@
     "electron-squirrel-startup": "^1.0.1",
     "extract-zip": "^2.0.1",
     "fs": "^0.0.1-security",
+    "jspdf": "^3.0.1",
     "os": "^0.1.2",
     "papaparse": "^5.4.1",
     "react": "^18.2.0",
@@ -37,7 +38,7 @@
   "scripts": {
     "start:react": "react-scripts start",
     "start:electron": "electron-forge start",
-    "start": "npm-run-all start:react",
+    "start": "npm-run-all start:electron",
     "clean": "rimraf dist && rimraf build",
     "build": "react-scripts build",
     "electron": "electron .",
