@@ -42,7 +42,7 @@ function Multiple({ question, index, onAnswerChange }) {
         </div>
       )}
 
-{isModalOpen && (
+    {isModalOpen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75"
           onClick={handleCloseModal}
@@ -57,7 +57,7 @@ function Multiple({ question, index, onAnswerChange }) {
         </div>
       )}
 
-      <form className="font-normal text-sm flex flex-col gap-2 w-max">
+      <form className="font-normal text-sm flex flex-col gap-2 w-max max-w-[800px]">
         {question.select1 && (
         <div className="flex border rounded-lg p-3 pr-10">
          
