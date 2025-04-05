@@ -10,6 +10,12 @@ function SelectSolve() {
   // Recoil에서 모든 문제와 태그 가져오기
   const allQuestions = useRecoilValue(questionsAtom);
   const allTag = useRecoilValue(allTagAtom);
+  const [tagGroups, setTagGroups] = useState({});
+
+  useEffect(() => {
+    setTagGroups(groupTagsByCategory(allTag));
+  }, [allTag]);
+
   const location = useLocation();
   const {
     selectedTags: initialSelectedTags = [],
@@ -18,7 +24,6 @@ function SelectSolve() {
 
   const [selectedTags, setSelectedTags] = useState(initialSelectedTags);
   const [selectedQuestions, setSelectedQuestions] = useState(initialSelectedQuestions);
-  const [showSettings, setShowSettings] = useState(false);
 
   // =====================Timer=================================
   const [timerOn, setTimerOn] = useState(false);
@@ -45,37 +50,6 @@ function SelectSolve() {
         ? prev.filter((tag) => tag !== tagName) // 이미 선택된 경우 제거
         : [...prev, tagName] // 새로 선택된 경우 추가
     );
-  };
-
-  /**
-   * 선택된 태그 또는 전체 태그 표시
-   */
-  const tagItemsToDisplay = () => {
-    if (selectedTags.length > 0) {
-      // 리코일에 선택된 태그가 있는 경우
-      return selectedTags.map((tag, index) => (
-        <span
-          key={index}
-          className="cursor-pointer whitespace-nowrap py-1 px-2 rounded-xl text-xs font-semibold bg-blue-500 text-white"
-        >
-          {tag}
-        </span>
-      ));
-    }
-    // 선택된 태그가 없는 경우 모든 태그 표시
-    return allTag.map((tagName, index) => {
-      const isSelected = selectedTag.includes(tagName); // 선택 여부 확인
-      return (
-        <span
-          onClick={() => handleTagClick(tagName)}
-          key={index}
-          className={`cursor-pointer whitespace-nowrap hover:scale-105 transition py-1 px-2 rounded-xl text-xs font-semibold border-none ${isSelected ? "bg-blue-500 text-white" : "bg-gray-300 text-black"
-            }`}
-        >
-          {tagName}
-        </span>
-      );
-    });
   };
 
   /**
@@ -197,112 +171,182 @@ function SelectSolve() {
     navigate("/questions", { state: { openModal: true } });
   };
 
+
+    
+  /**
+   * 태그를 사전순으로 그룹화하는 함수
+   */
+  const groupTagsByCategory = (tags) => {
+    const categories = {};
+
+    tags.forEach(tag => {
+      let firstChar = tag.charAt(0).toLowerCase();
+      
+      if (/[a-z]/.test(firstChar)) {
+        // 영문 태그 그룹화
+        categories[firstChar] = categories[firstChar] || [];
+        categories[firstChar].push(tag);
+      } else if (/[ㄱ-ㅎ가-힣]/.test(firstChar)) {
+        // 한글 초성 추출
+        const initialSound = getKoreanInitialSound(firstChar);
+        categories[initialSound] = categories[initialSound] || [];
+        categories[initialSound].push(tag);
+      } else {
+        // 숫자나 기타 특수문자는 etc 그룹
+        categories["etc"] = categories["etc"] || [];
+        categories["etc"].push(tag);
+      }
+    });
+
+    // 각 그룹을 사전순 정렬
+    Object.keys(categories).forEach(key => {
+      categories[key].sort();
+    });
+
+    return categories;
+  };
+
+  /**
+   * 한글 초성을 반환하는 함수
+   */
+  const getKoreanInitialSound = (char) => {
+    const initialConsonants = [
+      "ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"
+    ];
+    
+    const charCode = char.charCodeAt(0) - 44032;
+    if (charCode >= 0 && charCode <= 11171) {
+      return initialConsonants[Math.floor(charCode / 588)];
+    }
+    return char;
+  };
+
   return (
-    <main className="bg-gray-50 ml-20 flex items-center h-screen justify-center">
-      <div className="bg-white shadow flex m-10 p-10 items-center justify-center flex-col gap-5 rounded-xl">
-        <div className="text-lg font-bold">문제집 선택</div>
+    <main className="bg-gray-50 ml-20 items-center h-screen justify-center">
+      {/* 헤더 */}
+      <div className="p-4 flex justify-between border-b bg-white sticky top-0 z-10">
+        {/* 좌측 */}
+        <div>
+          <div className="text-2xl font-bold">문제집 선택</div>
+          <h1 className="text-md font-normal text-gray-400">
+            총 {filterQuestions.length}문제
+          </h1>
+        </div>
 
+        
+
+        {/* 우측 */}
+        <div className="text-right items-center flex gap-2">
+          
+          {/* 옵션 버튼 */}
+          <div className="flex items-center mr-3">
+            {/* 타이머 토글 */}
+            <span className="text-xs font-semibold mr-4">타이머</span>
+            <div 
+              className={`relative w-12 h-6 flex items-center rounded-full transition-all cursor-pointer ${
+                timerOn ? "bg-blue-500" : "bg-gray-300"
+              }`}
+              onClick={() => setTimerOn(prev => !prev)}
+            >
+              <div 
+                className={`absolute w-4 h-4 bg-white rounded-full shadow-md transform transition-all duration-300 ${
+                  timerOn ? "translate-x-7" : "translate-x-1"
+                }`}
+              ></div>
+            </div>
+
+            {/* 타이머 입력 필드 */}
+            <div 
+              className={`ml-4 flex gap-1 overflow-hidden transition-all duration-500 ${
+                timerOn ? "max-w-[100px] opacity-100" : "max-w-0 opacity-0"
+              }`}
+            >
+              <input
+                type="number"
+                min="0"
+                className="w-10 text-center border rounded text-sm bg-white transition-all duration-300"
+                value={timerMinutes}
+                onChange={(e) => setTimerMinutes(e.target.value)}
+                placeholder="분"
+              />
+              <span className="transition-opacity duration-300">:</span>
+              <input
+                type="number"
+                min="0"
+                max="59"
+                className="w-10 text-center border rounded text-sm bg-white transition-all duration-300"
+                value={timerSeconds}
+                onChange={(e) => setTimerSeconds(e.target.value)}
+                placeholder="초"
+              />
+            </div>
+
+            {/* 선택지 셔플 토글 */}
+            <span className="text-xs font-semibold mx-4 ">선택지 셔플</span>
+            <div 
+              className={`relative w-12 h-6 flex items-center rounded-full transition-all cursor-pointer ${
+                choiceShuffleOption ? "bg-blue-500" : "bg-gray-300"
+              }`}
+              onClick={() => setChoiceShuffleOption(prev => !prev)}
+            >
+              <div 
+                className={`absolute w-4 h-4 bg-white rounded-full shadow-md transform transition-all duration-300 ${
+                  choiceShuffleOption ? "translate-x-7" : "translate-x-1"
+                }`}
+              ></div>
+            </div>
+
+            {/* 문제 셔플 토글 */}
+            <span className="text-xs font-semibold mx-4 ">문제 셔플</span>
+            <div 
+              className={`relative w-12 h-6 flex items-center rounded-full transition-all cursor-pointer ${
+                questionShuffleOption ? "bg-blue-500" : "bg-gray-300"
+              }`}
+              onClick={() => setQuestionShuffleOption(prev => !prev)}
+            >
+              <div 
+                className={`absolute w-4 h-4 bg-white rounded-full shadow-md transform transition-all duration-300 ${
+                  questionShuffleOption ? "translate-x-7" : "translate-x-1"
+                }`}
+              ></div>
+            </div>
+          </div>
+
+          <div onClick={goCard}
+              className={`cursor-pointer bg-blue-500 hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-20 inline-flex items-center justify-center me-2 mb-2 transition`}> 
+            카드
+          </div>
+
+          <div onClick={goSolve}
+              className={`cursor-pointer bg-blue-500 hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-20 inline-flex items-center justify-center me-2 mb-2 transition`}>
+              시험
+          </div>
+        </div>
+      </div>
+      
+      <div className="flex flex-col justify-center  items-center">
         {allQuestions.length > 0 ? (
-          <>
-            <div className="flex gap-3 flex-wrap">{tagItemsToDisplay()}</div>
-            <div className="text-sm font-bold text-gray-500">
-              총 {selectedQuestions.length > 0 ? selectedQuestions.length : filterQuestions.length} 문제
-            </div>
+          <div className="flex flex-col gap-3 p-10 items-center justify-center rounded-xl w-full max-w-[960px]">
+            <div className="space-y-4 w-full">
+                    {Object.keys(tagGroups).sort().map(category => (
+                      <div key={category} className="rounded-xl bg-white shadow p-5">
+                        <h3 className="text-md font-semibold mb-2">{category.toUpperCase()}</h3>
+                        <div className="flex flex-wrap gap-2">
+                          {tagGroups[category].map((tag, index) => (
+                            <span key={index} 
+                            onClick={() => handleTagClick(tag)}
+                            className={`px-3 py-1 rounded-full font-semibold cursor-pointer whitespace-nowrap hover:scale-105 text-xs ${selectedTag.includes(tag) ? "bg-blue-500 text-white" : "bg-gray-300 text-black"}`}>
+                              {tag} 
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+            </div>     
 
-            <div className="flex items-center gap-2">
-
-              <button
-                className="relative w-[200px] h-[40px] rounded-[20px] cursor-default transition-colors focus:outline-none focus:ring-0 focus:border-blue-500 duration-300 ease bg-[#eceeef]"
-                aria-pressed={timerOn}
-              >
-                {/* 타이머 텍스트: 항상 표시, 상태에 따라 스타일 변경 */}
-                <div className="absolute left-2 top-1/2 transform -translate-y-1/2 pointer-events-none z-20">
-                  <span className={`text-sm ${timerOn ? "font-bold text-black" : "font-bold text-gray-500"}`}>
-                    타이머
-                  </span>
-                </div>
-                {/* 오른쪽 영역: timerOn일 때 시간 입력 필드 표시 */}
-                {timerOn && (
-                  <div
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <div className="flex items-center gap-1">
-                      <input
-                        type="number"
-                        min="0"
-                        className="w-12 border border-gray-300 rounded px-1 py-0.5 text-sm focus:outline-none focus:ring-0 focus:border-blue-500 pointer-events-auto"
-                        value={timerMinutes}
-                        onChange={(e) => setTimerMinutes(e.target.value)}
-                        placeholder="분"
-                        onClick={(e) => e.stopPropagation()}
-                      />
-                      <span className="text-sm font-medium text-gray-800">:</span>
-                      <input
-                        type="number"
-                        min="0"
-                        max="59"
-                        className="w-12 border border-gray-300 rounded px-1 py-0.5 text-sm focus:outline-none focus:ring-0 focus:border-blue-500 pointer-events-auto"
-                        value={timerSeconds}
-                        onChange={(e) => setTimerSeconds(e.target.value)}
-                        placeholder="초"
-                        onClick={(e) => e.stopPropagation()}
-                      />
-                    </div>
-                  </div>
-                )}
-                {/* 토글 핸들: 이 영역만 클릭 시 on/off 상태 변경 */}
-                <div
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setTimerOn((prev) => !prev);
-                  }}
-                  className={`absolute top-[0px] w-12  h-[40px] rounded-[20px] bg-white shadow transition-all duration-300 ease ${timerOn ? "left-[0px]" : "left-[154px]"
-                    } z-10`}
-                ></div>
-              </button>
-
-              {/* </div> */}
-
-              {/* 타이머 On일 때만 숫자 설정 영역 보이기 */}
-
-              <div
-                onClick={() => setChoiceShuffleOption(prev => !prev)}
-                className="cursor-pointer py-1 px-3 bg-transparent border-0"
-              >
-                <span className={choiceShuffleOption ? "text-sm font-bold text-black" : "text-sm font-bold text-gray-500"}>
-                  선택지 셔플
-                </span>
-              </div>
-
-              <div
-                onClick={() => setQuestionShuffleOption(prev => !prev)}
-                className="cursor-pointer py-1 px-3 bg-transparent border-0 "
-              >
-                <span className={questionShuffleOption ? "text-sm font-bold text-black" : "text-sm font-bold text-gray-500"}>
-                  문제 셔플
-                </span>
-              </div>
-            </div>
-
-
-            <div className="flex gap-5">
-              <div
-                onClick={goSolve}
-                className="bg-blue-500 rounded-xl text-white font-semibold text-xs w-20 py-3 text-center hover:scale-105 transition cursor-pointer"
-              >
-                시험
-              </div>
-              <div
-                onClick={goCard}
-                className="bg-blue-500 rounded-xl text-white font-semibold text-xs w-20 py-3 text-center hover:scale-105 transition cursor-pointer"
-              >
-                카드
-              </div>
-            </div>
-          </>
+          </div>
         ) : (
-          <>
+          <div className="bg-white shadow m-10 p-10  items-center justify-center flex-col gap-5 rounded-xl">
             <div className="w-full h-40 mx-auto mb-4 relative">
               <img
                 src="./images/no-problems.png"
@@ -319,9 +363,11 @@ function SelectSolve() {
                 문제 생성
               </div>
             </div>
-          </>
+          </div>
         )}
+
       </div>
+        
     </main>
   );
 

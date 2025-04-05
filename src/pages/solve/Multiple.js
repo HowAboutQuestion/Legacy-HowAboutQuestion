@@ -58,7 +58,8 @@ function Multiple({ question, index, onAnswerChange }) {
       )}
 
       <form className="font-normal text-sm flex flex-col gap-2 w-max">
-        {question.select1 && (<label className="border rounded-lg p-3 pr-10">
+        {question.select1 && (
+        <div className="flex border rounded-lg p-3 pr-10">
          
          <input
            type="radio"
@@ -68,10 +69,10 @@ function Multiple({ question, index, onAnswerChange }) {
            onChange={handleAnswerChange}
            className="mx-1 bg-gray-50 border-gray-300"
          />
-                  <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkBreaks]}>{question.select1}</ReactMarkdown>
-       </label>)}
+          <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkBreaks]}>{question.select1}</ReactMarkdown>
+       </div>)}
 
-        {question.select2 && (<label className="border rounded-lg p-3 pr-10">
+        {question.select2 && (<div className="flex border rounded-lg p-3 pr-10">
           <input
             type="radio"
             name={`choice-${index}`}
@@ -80,10 +81,10 @@ function Multiple({ question, index, onAnswerChange }) {
             onChange={handleAnswerChange}
             className="mx-1 bg-gray-50 border-gray-300"
           />
-                  <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkBreaks]}>{question.select2}</ReactMarkdown>
-        </label>)}
+            <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkBreaks]}>{question.select2}</ReactMarkdown>
+        </div>)}
         
-        {question.select3 && (<label className="border rounded-lg p-3 pr-10">
+        {question.select3 && (<div className="flex border rounded-lg p-3 pr-10">
           <input
             type="radio"
             name={`choice-${index}`}
@@ -93,9 +94,9 @@ function Multiple({ question, index, onAnswerChange }) {
             className="mx-1 bg-gray-50 border-gray-300"
           />
                   <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkBreaks]}>{question.select3}</ReactMarkdown>
-        </label>)}
+        </div>)}
         
-        {question.select4 && (<label className="border rounded-lg p-3 pr-10">
+        {question.select4 && (<div className="flex border rounded-lg p-3 pr-10">
           <input
             type="radio"
             name={`choice-${index}`}
@@ -105,7 +106,7 @@ function Multiple({ question, index, onAnswerChange }) {
             className="mx-1 bg-gray-50 border-gray-300"
           />
                   <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkBreaks]}>{question.select4}</ReactMarkdown>
-        </label>)}
+        </div>)}
         
       </form>
     </div>
