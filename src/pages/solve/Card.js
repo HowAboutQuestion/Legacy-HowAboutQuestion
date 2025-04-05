@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSetRecoilState, useRecoilValue } from "recoil";
 import { questionsAtom, appPathAtom } from "state/data";
-import { addDays, format } from 'date-fns'; // date-fns 함수 추가
+import { addDays, format } from 'date-fns'; 
+import ReactMarkdown from 'react-markdown';
+import remarkBreaks from 'remark-breaks';
+import { markdownComponents } from "utils/markdownUtil"
 
 function Card() {
   const appPath = useRecoilValue(appPathAtom);
@@ -184,14 +187,20 @@ function Card() {
             <div className="w-3/4 h-[300px] bg-white rounded-2xl">
               <div
                 style={{
-                  fontSize: "clamp(0.8rem, 2vw, 1.3rem)", // 글자 크기를 동적으로 조정
+                  fontSize: "clamp(0.8rem, 2vw, 1.3rem)", 
                 }}
                 className="w-full text-center text-lg font-bold mt-10 px-3">
                 {questions[questionIndex].title}
               </div>
 
               <div className="w-full text-md whitespace-nowrap font-semibold mt-5 text-gray-500 flex justify-center items-center">
-                {showAnswer && <div>{questions[questionIndex].answer}</div>}
+                {showAnswer && <div>
+                  <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkBreaks]}>
+                   {questions[questionIndex].answer}
+                  </ReactMarkdown>
+                </div>
+               
+                }
               </div>
             </div>
           )}

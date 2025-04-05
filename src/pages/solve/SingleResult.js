@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { appPathAtom } from "state/data";
 import { useRecoilValue } from "recoil";
-import { addDays, format } from 'date-fns'; // date-fns 함수 추가
+import { addDays, format } from 'date-fns'; 
 import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
 import { markdownComponents } from "utils/markdownUtil"
