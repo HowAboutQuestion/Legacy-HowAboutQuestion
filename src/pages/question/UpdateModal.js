@@ -20,6 +20,8 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
   const [answer, setAnswer] = useState(question.answer || "");
   const [tag, setTag] = useState(question.tag.join(", ") || "");
   const [date, setDate] = useState(question.date || "");
+  const [description, setDescription] = useState(question.description || "");
+
 
   // thumbnail 상태를 설정할 때, 경로를 보정하는 헬퍼 함수 추가
   const getProperImageUrl = (path) => {
@@ -117,6 +119,14 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
       return;
     }
 
+    // 객관식일 경우 답안이 없으면 메시지 출력
+    if (type === "객관식" && answer === "") {
+      if (!toast.isActive("update-multi")) {
+        toast.error("객관식 답안을 설정해주세요", { toastId: "update-multi" });
+      }
+      return;
+    }
+
     const tags = tag ? [...new Set(tag.split(",").map((item) => item.trim()))] : [];
     const updatedQuestion = {
       ...question,
@@ -127,6 +137,7 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
       select3,
       select4,
       answer,
+      description,
       img: question.img,
       date,
       tag: tags,
@@ -200,6 +211,7 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
     setAnswer(question.answer || "");
     setTag(question.tag.join(", ") || "");
     setDate(question.date || "");
+    setDescription(question.description || "");
     setThumbnail(getProperImageUrl((question.img ? appPath + question.img : null)));
   }, [question]);
 
@@ -212,7 +224,7 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
   //x 버튼 공통 이미지 업로드 컴포넌트
   const renderImageUpload = () => (
     <div
-      className={`relative bg-gray-50 flex rounded w-full ${expanded ? "h-64" : "h-full"}`}
+      className={`relative bg-gray-50 min-h-[150px] flex rounded h-full`}
       style={{
         backgroundImage: thumbnail
           ? `url("${thumbnail}")`
@@ -312,17 +324,17 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
             />
             {type === "객관식" ? (
               // 객관식 입력폼
-              <div className="flex flex-col gap-3">
+              <div className="mt-3 flex flex-col gap-3">
                 <div className="flex gap-3">
                   <input type="radio" name="answer" checked={answer === select1} onChange={() => setAnswer(select1)} />
                   <textarea
                     rows="3"
                     maxLength={300}
-                    className="flex-1 block text-sm leading-6 border-2 rounded-md border-gray-200 focus:border-blue-500 focus:outline-none px-3 resize-none"
+                    className="flex-1 block text-sm leading-6 border-2 rounded-md border-gray-200 focus:border-blue-500 focus:outline-none px-2 py-1 resize-none"
                     placeholder="선택지1"
                     value={select1}
                     onChange={(e) => setSelect1(e.target.value)}
-                    
+
                   />
                 </div>
                 <div className="flex gap-3">
@@ -330,7 +342,7 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
                   <textarea
                     rows="3"
                     maxLength={300}
-                    className="flex-1 block text-sm leading-6 border-2 rounded-md border-gray-200 focus:border-blue-500 focus:outline-none px-3 resize-none"
+                    className="flex-1 block text-sm leading-6 border-2 rounded-md border-gray-200 focus:border-blue-500 focus:outline-none px-2 py-1 resize-none"
                     placeholder="선택지2"
                     value={select2}
                     onChange={(e) => setSelect2(e.target.value)}
@@ -341,7 +353,7 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
                   <textarea
                     rows="3"
                     maxLength={300}
-                    className="flex-1 block text-sm leading-6 border-2 rounded-md border-gray-200 focus:border-blue-500 focus:outline-none px-3 resize-none"
+                    className="flex-1 block text-sm leading-6 border-2 rounded-md border-gray-200 focus:border-blue-500 focus:outline-none px-2 py-1 resize-none"
                     placeholder="선택지3"
                     value={select3}
                     onChange={(e) => setSelect3(e.target.value)}
@@ -352,30 +364,49 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
                   <textarea
                     rows="3"
                     maxLength={300}
-                    className="flex-1 block text-sm leading-6 border-2 rounded-md border-gray-200 focus:border-blue-500 focus:outline-none px-3 resize-none"
+                    className="flex-1 block text-sm leading-6 border-2 rounded-md border-gray-200 focus:border-blue-500 focus:outline-none px-2 py-1 resize-none"
                     placeholder="선택지4"
                     value={select4}
                     onChange={(e) => setSelect4(e.target.value)}
                   />
                 </div>
-                <div className="mt-4 transform transition duration-300 hover:scale-105 w-1/2 mx-auto">
-                  {renderImageUpload()}
+                {/* 여기서 "설명" 입력 영역과 이미지 업로드 영역을 나란히 배치 */}
+                <div className="flex flex-1 gap-4">
+                  <textarea
+                    rows="5"
+                    maxLength={500}
+                    placeholder="설명"
+                    className="w-2/3 border-2 border-gray-200 px-2 py-1 rounded-md focus:border-blue-500 resize-none"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                  ></textarea>
+                  <div className="w-1/3 h-full transform transition duration-300 hover:scale-105">
+                    {renderImageUpload()}
+                  </div>
                 </div>
               </div>
             ) : (
               // 주관식 입력폼
-              <div className="flex flex-col gap-3">
+              <div className="mt-3 flex flex-col gap-3">
                 <textarea
                   rows="9"
                   maxLength={800}
-                  className="flex-1 block text-sm border-2 rounded-md border-gray-200 focus:border-blue-500 focus:outline-none px-3 resize-none"
+                  className="flex-1 block text-sm border-2 px-2 py-1 rounded-md border-gray-200 focus:border-blue-500 focus:outline-none resize-none"
                   placeholder="정답"
                   value={answer}
                   onChange={(e) => setAnswer(e.target.value)}
                 />
-                <div className="mt-4 transform transition duration-300 hover:scale-105 w-1/2 mx-auto">
-                  {renderImageUpload()}
-                </div>
+                  <textarea
+                    rows="5"
+                    maxLength={500}
+                    placeholder="설명을 입력해주세요"
+                    className="block text-sm border-2 rounded-md px-2 py-1 border-gray-200 focus:border-blue-500 resize-none"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                  ></textarea>
+                  <div className="flex-1 mx-auto mt-4 transform transition duration-300 hover:scale-105">
+                    {renderImageUpload()}
+                  </div>
               </div>
             )}
           </div>
@@ -571,7 +602,7 @@ function UpdateModal({ setUpdateModal, question, setUpdateQuestion, isCollapsed,
                   </div>
                 )}
               </div>
-              <div className="flex-1 mt-4 transform transition duration-300 hover:scale-105">
+              <div className="flex flex-1 mt-4 transform justify-center transition duration-300 hover:scale-105">
                 {renderImageUpload()}
               </div>
             </div>

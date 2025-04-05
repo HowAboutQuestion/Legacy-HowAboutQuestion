@@ -64,6 +64,7 @@ function readQuestionsCSV() {
       skipEmptyLines: true, // 빈 줄 무시
       complete: (result) => {
         questions = result.data.map((item, index) => {
+          item.description = item.description || "";
           if (item.tag) item.tag = (item.tag).split(",").map((t) => t.trim());
           else item.tag = [];
 

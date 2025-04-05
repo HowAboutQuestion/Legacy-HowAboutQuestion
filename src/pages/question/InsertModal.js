@@ -7,7 +7,6 @@ import { getTodayDate } from "utils/formatDate";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
 function InsertModal({ setInsertModal, expanded }) {
   //문제추가폼
   const [title, setTitle] = useState("");
@@ -19,7 +18,7 @@ function InsertModal({ setInsertModal, expanded }) {
   const [answer, setAnswer] = useState("");
   const [tag, setTag] = useState("");
   const [date, setDate] = useState(getTodayDate());
-
+  const [description, setDescription] = useState(""); // 설명
   const questions = useRecoilValue(questionsAtom);
   const setQuestions = useSetRecoilState(questionsAtom);
   const setAlltag = useSetRecoilState(allTagAtom);
@@ -123,7 +122,8 @@ function InsertModal({ setInsertModal, expanded }) {
       select3,
       select4,
       answer,
-      img: null, // 초기 이미지는 null
+      description,
+      img: null, 
       level: 0,
       date,
       update: date,
@@ -188,7 +188,7 @@ function InsertModal({ setInsertModal, expanded }) {
     // setTag(""); // 태그 초기화
 
     setQuestions((prevQuestions) => [question, ...prevQuestions]);
-    
+
     if (titleInputRef.current) {
       titleInputRef.current.focus();
     }
@@ -200,7 +200,7 @@ function InsertModal({ setInsertModal, expanded }) {
 
   const renderImageUpload = () => (
     <div
-      className={`relative bg-gray-50 flex rounded w-full ${expanded ? "h-64" : "h-full"}`}
+      className={`relative bg-gray-50 min-h-[150px] flex rounded h-full`}
       style={{
         backgroundImage: thumbnail
           ? `url("${thumbnail}")`
@@ -284,7 +284,7 @@ function InsertModal({ setInsertModal, expanded }) {
             <div className="flex flex-col gap-2">
               <div className="flex gap-3">
                 <input
-                ref={titleInputRef}
+                  ref={titleInputRef}
                   type="text"
                   className="block min-w-[50%] outline-none border-b-2 border-gray-200 focus:border-blue-500 text-sm px-2 py-1 h-10"
                   placeholder="문제를 입력해주세요"
@@ -310,16 +310,16 @@ function InsertModal({ setInsertModal, expanded }) {
               />
               {type === "객관식" ? (
                 // 객관식 입력
-                <div className="flex flex-col gap-3">
+                <div className="mt-3 flex flex-col gap-3">
                   <div className="flex gap-3">
                     <input type="radio" name="answer" value={select1} onChange={() => { }} />
                     <textarea
                       rows="3"
                       maxLength={300}
-                      className="flex-1 block text-sm leading-6 border-2 rounded-md border-gray-200 focus:border-blue-500 px-3 resize-none"
+                      className="flex-1 block text-sm leading-6 border-2 rounded-md border-gray-200 focus:border-blue-500 px-2 py-1 resize-none"
                       placeholder="선택지1"
                       value={select1}
-                      
+
                       onChange={(e) => setSelect1(e.target.value)}
                     />
                   </div>
@@ -328,7 +328,7 @@ function InsertModal({ setInsertModal, expanded }) {
                     <textarea
                       rows="3"
                       maxLength={300}
-                      className="flex-1 block text-sm leading-6 border-2 rounded-md border-gray-200 focus:border-blue-500 px-3 resize-none"
+                      className="flex-1 block text-sm leading-6 border-2 rounded-md border-gray-200 focus:border-blue-500 px-2 py-1 resize-none"
                       placeholder="선택지2"
                       value={select2}
                       onChange={(e) => setSelect2(e.target.value)}
@@ -339,7 +339,7 @@ function InsertModal({ setInsertModal, expanded }) {
                     <textarea
                       rows="3"
                       maxLength={300}
-                      className="flex-1 block text-sm leading-6 border-2 rounded-md border-gray-200 focus:border-blue-500 px-3 resize-none"
+                      className="flex-1 block text-sm leading-6 border-2 rounded-md border-gray-200 focus:border-blue-500 px-2 py-1 resize-none"
                       placeholder="선택지3"
                       value={select3}
                       onChange={(e) => setSelect3(e.target.value)}
@@ -350,15 +350,24 @@ function InsertModal({ setInsertModal, expanded }) {
                     <textarea
                       rows="3"
                       maxLength={300}
-                      className="flex-1 block text-sm leading-6 border-2 rounded-md border-gray-200 focus:border-blue-500 px-3 resize-none"
+                      className="flex-1 block text-sm leading-6 border-2 rounded-md border-gray-200 focus:border-blue-500 px-2 py-1 resize-none"
                       placeholder="선택지4"
                       value={select4}
                       onChange={(e) => setSelect4(e.target.value)}
                     />
                   </div>
-                  {/* 이미지 업로드 영역은 선택지 아래 중앙에 위치 */}
-                  <div className="mt-4 transform transition duration-300 hover:scale-105 w-1/2 mx-auto">
-                    {renderImageUpload()}
+                  <div className="flex gap-4">
+                    <textarea
+                      rows="5"
+                      maxLength={500}
+                      placeholder="설명"
+                      className="w-2/3 border-2 border-gray-200 px-2 py-1 rounded-md focus:border-blue-500 outline-none resize-none"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                    ></textarea>
+                    <div className="w-1/3 h-full transform transition duration-300 hover:scale-105">
+                      {renderImageUpload()}
+                    </div>
                   </div>
                 </div>
               ) : (
@@ -367,13 +376,21 @@ function InsertModal({ setInsertModal, expanded }) {
                   <textarea
                     rows="9"
                     maxLength={800}
-                    className="flex-1 block text-sm border-2 rounded-md border-gray-200 focus:border-blue-500 px-3 resize-none"
+                    className="flex-1 block text-sm border-2 rounded-md border-gray-200 focus:border-blue-500 px-2 py-1 resize-none"
                     placeholder="정답"
                     value={answer}
                     onChange={(e) => setAnswer(e.target.value)}
                   />
+                  <textarea
+                    rows="5"
+                    maxLength={500}
+                    className="block text-sm border-2 rounded-md border-gray-200 focus:border-blue-500 px-2 py-1 resize-none"
+                    placeholder="설명"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                  ></textarea>
                   {/* 주관식인 경우에도 이미지 업로드 영역이 입력창 아래에 표시됨 */}
-                  <div className="mt-4 transform transition duration-300 hover:scale-105 w-1/2 mx-auto">
+                  <div className="flex-1 mx-auto mt-4 transform transition duration-300 hover:scale-105">
                     {renderImageUpload()}
                   </div>
                 </div>
@@ -381,9 +398,7 @@ function InsertModal({ setInsertModal, expanded }) {
             </div>
           </div>
         </div>
-
       ) : (
-
         <div className="flex gap-2">
           <div className="flex-[2]">
             <div className="flex justify-between">
@@ -412,12 +427,12 @@ function InsertModal({ setInsertModal, expanded }) {
                 </div>
               </div>
             </div>
-            
+
             <div className="flex gap-2">
               <div className="flex-[2]">
                 <div className="flex gap-3">
                   <input
-                  ref={titleInputRef}
+                    ref={titleInputRef}
                     type="text"
                     className="block min-w-[50%] outline-none border-b-2 border-gray-200 focus:border-blue-500 text-sm px-2 py-1 h-10"
                     placeholder="문제를 입력해주세요"
@@ -453,7 +468,7 @@ function InsertModal({ setInsertModal, expanded }) {
                         <textarea
                           rows="1"
                           maxLength={300}
-                          className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                          className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-2 py-1"
                           style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
                           placeholder="선택지1"
                           value={select1}
@@ -480,7 +495,7 @@ function InsertModal({ setInsertModal, expanded }) {
                         <textarea
                           rows="1"
                           maxLength={300}
-                          className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                          className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-2 py-1"
                           style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
                           placeholder="선택지2"
                           value={select2}
@@ -510,7 +525,7 @@ function InsertModal({ setInsertModal, expanded }) {
                         <textarea
                           rows="1"
                           maxLength={300}
-                          className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                          className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-2 py-1"
                           style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
                           placeholder="선택지3"
                           value={select3}
@@ -537,7 +552,7 @@ function InsertModal({ setInsertModal, expanded }) {
                         <textarea
                           rows="1"
                           maxLength={300}
-                          className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3"
+                          className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-2 py-1"
                           style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
                           placeholder="선택지4"
                           value={select4}
@@ -563,7 +578,7 @@ function InsertModal({ setInsertModal, expanded }) {
                     <textarea
                       rows="4"
                       maxLength={800}
-                      className="flex-1 block text-sm outline-none border-b-2 border-gray-200 focus:border-blue-500 px-3 resize-none"
+                      className="flex-1 block text-sm outline-none border-b-2 border-gray-200 focus:border-blue-500 px-2 py-1 resize-none"
                       placeholder="정답"
                       value={answer}
                       onChange={(e) => setAnswer(e.target.value)}
