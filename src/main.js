@@ -537,6 +537,7 @@ ipcMain.handle('extract-zip', async (event, { fileName, content }) => {
           date: today,
           recommenddate: today,
           update: today,
+          description: item.description || '',
           solveddate: null,
           tag: tags,
           id: generateUniqueId()
