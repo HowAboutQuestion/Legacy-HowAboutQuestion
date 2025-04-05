@@ -148,8 +148,23 @@ const Helper = ({ closeHelper }) => {
                 <p className="font-bold">
                     이제, 문제를 풀면서 실력을 키워보세요!
                 </p>
+                </div>
+                
+                {/* 푸터 */}
+                <footer className="mt-8 text-center text-sm text-gray-500 border-t pt-4 flex justify-center">
+                        <img src="./images/help/github.svg" className="w-5 h-5 mr-1" />
+                        GitHub에서 확인하기:{" "}
+                        <a href="https://github.com/haerim-kweon/HowAboutQuestion" 
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:underline"
+                        >
+                            https://github.com/haerim-kweon/HowAboutQuestion
+                        </a>
+                </footer>
             </div>
-        </div>
+
+
         </div >
     );
 };
