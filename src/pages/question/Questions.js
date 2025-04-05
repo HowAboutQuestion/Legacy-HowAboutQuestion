@@ -404,27 +404,7 @@ function Questions() {
     }
   };
 
-  const handleDragMouseDown = (e) => {
-    const startY = e.clientY;
-    const startHeight = modalHeight;
-    const MIN_HEIGHT = 300;
-    const MAX_HEIGHT = window.innerHeight; // 현재 창의 최대 높이로 설정
-
-  const onMouseMove = (e) => {
-    const diff = startY - e.clientY; // 위로 드래그하면 양수가 됨
-    const newHeight = startHeight + diff;
-    setModalHeight(Math.min(MAX_HEIGHT, Math.max(MIN_HEIGHT, newHeight)));
-  };
-
-  const onMouseUp = () => {
-    window.removeEventListener("mousemove", onMouseMove);
-    window.removeEventListener("mouseup", onMouseUp);
-  };
-
-  window.addEventListener("mousemove", onMouseMove);
-  window.addEventListener("mouseup", onMouseUp);
-
-};
+  
 
   return (
 
@@ -582,10 +562,6 @@ function Questions() {
           </tbody>
         </table>
       </div>
-
-
-
-
       {/* 모달 컨테이너 */}
       <div
         className={`transition-all duration-500 width-fill-available shadow-[10px_0px_10px_10px_rgba(0,0,0,0.1)] rounded-t-2xl fixed bottom-0 bg-white ${
@@ -595,7 +571,6 @@ function Questions() {
       >
         {/* 드래그 핸들 (모달 상단 중앙에 위치) */}
         <div
-          onMouseDown={handleDragMouseDown}
           onClick={toggleModalHeight}
           style={{
             height: '8px',
@@ -603,7 +578,7 @@ function Questions() {
             margin: '0 auto',
             backgroundColor: '#ccc',
             borderRadius: '4px',
-            cursor: 'ns-resize'
+            cursor: 'pointer' 
           }}
         />
         {insertModal && <InsertModal
@@ -620,20 +595,8 @@ function Questions() {
             expanded={expanded}
           />
         }
-
-
-
-
       </div>
-
-
-
-
-
-
     </main>
-
-
   );
 
 }
