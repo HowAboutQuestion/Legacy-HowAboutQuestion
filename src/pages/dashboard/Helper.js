@@ -106,7 +106,7 @@ const Helper = ({ closeHelper }) => {
                         <br />
                         이미지를 첨부하여 보다 직관적인 문제를 만들 수도 있습니다.
                     </p>
-                
+
                     <hr className="my-4" />
 
                     {/* 문제 선택 및 풀이 섹션 */}
@@ -123,45 +123,74 @@ const Helper = ({ closeHelper }) => {
                         </svg>
                         <p1 className="text-2xl font-bold mb-2"> 문제 선택 및 풀이</p1>
                     </div>
-                <h2 className="text-xl font-bold mb-2">📝 문제 풀기</h2>
-                <ul className="list-disc list-inside mb-4">
-                    <li>객관식 & 주관식, 카드 문제 풀이 가능</li>
-                    <li>우측 상단에서 문제 번호 확인 & 클릭 시 해당 문제로 이동</li>
-                    <li>제출 버튼을 누르면 결과 페이지로 이동</li>
-                </ul>
+                    <h2 className="text-xl font-bold mb-2">📝 문제 풀기</h2>
+                    <ul className="list-disc list-inside mb-4">
+                        <li>객관식 & 주관식, 카드 문제 풀이 가능</li>
+                        <li>우측 상단에서 문제 번호 확인 & 클릭 시 해당 문제로 이동</li>
+                        <li>제출 버튼을 누르면 결과 페이지로 이동</li>
+                    </ul>
 
-                <h2 className="text-xl font-bold mb-2">📊 결과 페이지</h2>
-                <div>
+                    <h2 className="text-xl font-bold mb-2">📊 결과 페이지</h2>
+                    <div>
                         <img
                             src="./images/help/result.png"
                             alt="문제 결과"
                             className="w-full mb-4 rounded-lg"
                         />
                     </div>
-                <ul className="list-disc list-inside mb-4">
-                    <li>정답 & 오답 확인 가능</li>
-                    <li>
-                        <strong>차트 제공</strong>: 내가 푼 문제의 성과를 시각적으로 분석할 수 있습니다.
-                    </li>
-                </ul>
+                    <ul className="list-disc list-inside mb-4">
+                        <li>정답 & 오답 확인 가능</li>
+                        <li>
+                            <strong>차트 제공</strong>: 내가 푼 문제의 성과를 시각적으로 분석할 수 있습니다.
+                        </li>
+                    </ul>
 
-                <p className="font-bold">
-                    이제, 문제를 풀면서 실력을 키워보세요!
-                </p>
+                    <p className="font-bold">
+                        이제, 문제를 풀면서 실력을 키워보세요!
+                    </p>
                 </div>
-                
+
                 {/* 푸터 */}
-                <footer className="mt-8 text-center text-sm text-gray-500 border-t pt-4 flex justify-center">
-                        <img src="./images/help/github.svg" className="w-5 h-5 mr-1" />
-                        GitHub에서 확인하기:{" "}
-                        <a href="https://github.com/haerim-kweon/HowAboutQuestion" 
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-600 hover:underline"
-                        >
-                            https://github.com/haerim-kweon/HowAboutQuestion
+                <footer className="mt-16  text-gray-600 text-sm transition-colors duration-300 border-t pt-5">
+                    <div className="max-w-screen-md mx-auto text-center">
+
+                        {/* 프로젝트 이름 */}
+                        <a 
+                            href="https://github.com/haerim-kweon/HowAboutQuestion/issues"
+                            target="_blank" rel="noopener noreferrer"
+                            className="text-lg font-bold text-gray-800 dark:text-white mb-2 hover:underline">
+                            HowAboutQuestion
                         </a>
+                        <p className="text-xs mb-6 text-gray-500">
+                            A simple quiz platform powered by React and creativity.
+                        </p>
+
+                        {/* 개발자 정보 */}
+                        <div className="flex justify-center gap-6 flex-wrap items-center mb-6">
+                            {/* 개발자 1 */}
+                            <div className="flex items-center gap-2 group">
+                                <img src="./images/help/github.svg" alt="GitHub Icon" className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                                <a href="https://github.com/haerim-kweon" target="_blank" rel="noopener noreferrer" className="font-semibold hover:underline">
+                                    khaelim1311
+                                </a>
+                            </div>
+                            <span className="text-gray-400">|</span>
+                            {/* 개발자 2 */}
+                            <div className="flex items-center gap-2 group">
+                                <img src="./images/help/github.svg" alt="GitHub Icon" className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                                <a href="https://github.com/cod0216" target="_blank" rel="noopener noreferrer" className="font-semibold hover:underline">
+                                    cod0216
+                                </a>
+                            </div>
+                        </div>
+
+                        {/* 저작권 */}
+                        <p className="italic text-xs text-gray-400">
+                            © {new Date().getFullYear()} khaelim1311, cod0216. All rights reserved.
+                        </p>
+                    </div>
                 </footer>
+
             </div>
 
 
