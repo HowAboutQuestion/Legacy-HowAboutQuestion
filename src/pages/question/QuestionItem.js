@@ -1,21 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { appPathAtom } from "state/data";
 import { useRecoilValue } from "recoil";
-import ReactMarkdown from 'react-markdown';
-import remarkBreaks from 'remark-breaks';
-import { markdownComponents } from 'utils/markdownUtil';
-
-
+import ReactMarkdown from "react-markdown";
+import remarkBreaks from "remark-breaks";
+import { markdownComponents } from "utils/markdownUtil";
 
 function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
   const appPath = useRecoilValue(appPathAtom);
   const tags = question.tag || [];
   const tag = tags.map((tagName, index) => (
-    <span key={index} className="font-medium text-xs whitespace-nowrap bg-gray-200 rounded-xl py-1 px-2">{tagName}</span>
+    <span
+      key={index}
+      className="font-medium text-xs whitespace-nowrap bg-gray-200 rounded-xl py-1 px-2"
+    >
+      {tagName}
+    </span>
   ));
 
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const toggle = () => { setIsCollapsed((state) => !(state)) }
+  const toggle = () => {
+    setIsCollapsed((state) => !state);
+  };
 
   const [isChecked, setIsChecked] = useState(question.checked || false); // 기본값 설정
   useEffect(() => {
@@ -73,16 +78,21 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
     </div>
   );
 
-  if (question.type === '주관식') {
+  if (question.type === "주관식") {
     return (
       <>
-        <tr onClick={toggle} className={`${!isCollapsed && "border-b hover:shadow"} transition-all cursor-pointer`}>
+        <tr
+          onClick={toggle}
+          className={`${
+            !isCollapsed && "border-b hover:shadow"
+          } transition-all cursor-pointer`}
+        >
           <td className="w-4 p-4 align-top py-4 px-8">
             <div className="flex items-center ">
               <input
                 id="checkbox-table-search-1"
                 type="checkbox"
-                checked={!!isChecked} // boolean 
+                checked={!!isChecked} // boolean
                 onChange={handleCheckboxChange}
                 onClick={(e) => e.stopPropagation()}
                 className="w-4 h-4 text-blue-600 cursor-pointer bg-gray-100 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
@@ -99,7 +109,9 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
             <div className="flex gap-1">{tag}</div>
           </td>
           <td className="px-6 py-4 align-top ">
-            <div className="font-medium text-sm whitespace-nowrap">{question.type}</div>
+            <div className="font-medium text-sm whitespace-nowrap">
+              {question.type}
+            </div>
           </td>
           <td className="px-3 py-2 align-top">
             <UpdateIconWithTooltip />
@@ -108,37 +120,43 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
             {question.description && (
               <div className="relative group ml-1">
                 <span className="cursor-default select-none">?</span>
-                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block bg-black text-white text-xs rounded py-1 px-2 max-w-xs break-words opacity-50% z-20">
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block bg-black text-white text-xs rounded py-1 px-2 max-w-xs break-words opacity-50 z-20">
                   {question.description}
                 </div>
               </div>
             )}
           </td>
         </tr>
-        <tr className={` hover:shadow transition-all duration-500 ${isCollapsed ? "border-b" : ""}`}>
+        <tr
+          className={` hover:shadow transition-all duration-500 ${
+            isCollapsed ? "border-b" : ""
+          }`}
+        >
           <td></td>
           <td className="overflow-hidden">
             <div
-              className={`flex transition-all duration-500 ease-in-out ${isCollapsed ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
-                }`}
+              className={`flex transition-all duration-500 ease-in-out ${
+                isCollapsed ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+              }`}
             >
               <div className="flex-1 font-normal text-sm text-gray-500 flex flex-col px-6 pb-3 gap-2 max-h-60 overflow-y-auto">
                 <div className="border bg-white rounded-lg p-2.5 px-4">
-                  <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkBreaks]}>
+                  <ReactMarkdown
+                    components={markdownComponents}
+                    remarkPlugins={[remarkBreaks]}
+                  >
                     {question.answer}
                   </ReactMarkdown>
                 </div>
-
               </div>
-
             </div>
           </td>
           <td colSpan={2} className="overflow-hidden">
             <div
-              className={`flex transition-all duration-500 ease-in-out ${isCollapsed ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
-                }`}
+              className={`flex transition-all duration-500 ease-in-out ${
+                isCollapsed ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+              }`}
             >
-
               {question.img && (
                 <div className="p-5 px-6">
                   <img
@@ -152,14 +170,19 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
             </div>
           </td>
         </tr>
-        {showModal && <Modal imgSrc={appPath + question.img} onClose={closeModal} />}
+        {showModal && (
+          <Modal imgSrc={appPath + question.img} onClose={closeModal} />
+        )}
       </>
     );
   }
 
   return (
     <>
-      <tr onClick={toggle} className={`${!isCollapsed && "border-b hover:shadow"} transition-all `}>
+      <tr
+        onClick={toggle}
+        className={`${!isCollapsed && "border-b hover:shadow"} transition-all `}
+      >
         <td className="w-4 p-4 align-top py-4 px-8">
           <div className="flex items-center ">
             <input
@@ -182,7 +205,9 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
           <div className="flex gap-1">{tag}</div>
         </td>
         <td className="px-6 py-4 align-top ">
-          <div className="font-medium text-sm whitespace-nowrap">{question.type}</div>
+          <div className="font-medium text-sm whitespace-nowrap">
+            {question.type}
+          </div>
         </td>
         <td className="px-3 py-2 align-top">
           <div>
@@ -190,42 +215,91 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
           </div>
         </td>
         <td className="px-3 py-2 align-top">
-            {question.description && (
-              <div className="relative group ml-1">
-                <span className="cursor-default select-none">?</span>
-                <div className="absolute top-full right-0 mr-[-60px] transform -translate-x-1/2 mt-2 hidden group-hover:block bg-black text-white text-xs rounded py-1 px-2 max-w-xs break-words opacity-50 z-20">
-                  {question.description}
-                </div>
+          {question.description && (
+            <div className="relative group ml-1">
+              <span className="cursor-default select-none">?</span>
+              <div className="absolute top-full right-0 mr-[-60px] transform -translate-x-1/2 mt-2 hidden group-hover:block bg-black text-white text-xs rounded py-1 px-2 max-w-xs break-words opacity-50 z-20">
+                {question.description}
               </div>
-            )}
-          </td>
+            </div>
+          )}
+        </td>
       </tr>
-      <tr className={` hover:shadow transition-all duration-500 ${isCollapsed ? "border-b" : ""}`}>
+      <tr
+        className={` hover:shadow transition-all duration-500 ${
+          isCollapsed ? "border-b" : ""
+        }`}
+      >
         <td></td>
         <td className="overflow-hidden">
           <div
-            className={`flex transition-all duration-500 ease-in-out ${isCollapsed ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
-              }`}
+            className={`flex transition-all duration-500 ease-in-out ${
+              isCollapsed ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+            }`}
           >
             <div className="flex-1 font-normal text-sm text-gray-500 flex flex-col px-6 pb-3 gap-2 max-h-60 overflow-y-auto">
               {question.select1 && (
-                <div className={`border bg-white rounded-lg p-2.5 px-4 whitespace-pre-wrap ${question.select1 === question.answer ? "font-bold text-blue-500" : ""}`}>
-                  <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkBreaks]}>{question.select1}</ReactMarkdown>
+                <div
+                  className={`border bg-white rounded-lg p-2.5 px-4 whitespace-pre-wrap ${
+                    question.select1 === question.answer
+                      ? "font-bold text-blue-500"
+                      : ""
+                  }`}
+                >
+                  <ReactMarkdown
+                    components={markdownComponents}
+                    remarkPlugins={[remarkBreaks]}
+                  >
+                    {question.select1}
+                  </ReactMarkdown>
                 </div>
               )}
               {question.select2 && (
-                <div className={`border bg-white rounded-lg p-2.5 px-4 whitespace-pre-wrap ${question.select2 === question.answer ? "font-bold text-blue-500" : ""}`}>
-                  <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkBreaks]}>{question.select2}</ReactMarkdown>
+                <div
+                  className={`border bg-white rounded-lg p-2.5 px-4 whitespace-pre-wrap ${
+                    question.select2 === question.answer
+                      ? "font-bold text-blue-500"
+                      : ""
+                  }`}
+                >
+                  <ReactMarkdown
+                    components={markdownComponents}
+                    remarkPlugins={[remarkBreaks]}
+                  >
+                    {question.select2}
+                  </ReactMarkdown>
                 </div>
               )}
               {question.select3 && (
-                <div className={`border bg-white rounded-lg p-2.5 px-4 whitespace-pre-wrap ${question.select3 === question.answer ? "font-bold text-blue-500" : ""}`}>
-                  <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkBreaks]}>{question.select3}</ReactMarkdown>
+                <div
+                  className={`border bg-white rounded-lg p-2.5 px-4 whitespace-pre-wrap ${
+                    question.select3 === question.answer
+                      ? "font-bold text-blue-500"
+                      : ""
+                  }`}
+                >
+                  <ReactMarkdown
+                    components={markdownComponents}
+                    remarkPlugins={[remarkBreaks]}
+                  >
+                    {question.select3}
+                  </ReactMarkdown>
                 </div>
               )}
               {question.select4 && (
-                <div className={`border bg-white rounded-lg p-2.5 px-4 whitespace-pre-wrap ${question.select4 === question.answer ? "font-bold text-blue-500" : ""}`}>
-                  <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkBreaks]}>{question.select4}</ReactMarkdown>
+                <div
+                  className={`border bg-white rounded-lg p-2.5 px-4 whitespace-pre-wrap ${
+                    question.select4 === question.answer
+                      ? "font-bold text-blue-500"
+                      : ""
+                  }`}
+                >
+                  <ReactMarkdown
+                    components={markdownComponents}
+                    remarkPlugins={[remarkBreaks]}
+                  >
+                    {question.select4}
+                  </ReactMarkdown>
                 </div>
               )}
             </div>
@@ -233,10 +307,10 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
         </td>
         <td colSpan={2} className="overflow-hidden">
           <div
-            className={`flex transition-all duration-500 ease-in-out ${isCollapsed ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
-              }`}
+            className={`flex transition-all duration-500 ease-in-out ${
+              isCollapsed ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+            }`}
           >
-
             {question.img && (
               <div className="p-5 px-6">
                 <img
@@ -250,7 +324,9 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
           </div>
         </td>
       </tr>
-      {showModal && <Modal imgSrc={appPath + question.img} onClose={closeModal} />}
+      {showModal && (
+        <Modal imgSrc={appPath + question.img} onClose={closeModal} />
+      )}
     </>
   );
 }
