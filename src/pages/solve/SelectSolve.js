@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { questionsAtom, allTagAtom, selectedTagsAtom, selectedQuestionsAtom } from "state/data";
+import {
+  questionsAtom,
+  allTagAtom,
+  selectedTagsAtom,
+  selectedQuestionsAtom,
+} from "state/data";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function SelectSolve() {
   // Recoil에서 모든 문제와 태그 가져오기
@@ -23,14 +27,15 @@ function SelectSolve() {
   } = location.state || {};
 
   const [selectedTags, setSelectedTags] = useState(initialSelectedTags);
-  const [selectedQuestions, setSelectedQuestions] = useState(initialSelectedQuestions);
+  const [selectedQuestions, setSelectedQuestions] = useState(
+    initialSelectedQuestions
+  );
 
   // =====================Timer=================================
   const [timerOn, setTimerOn] = useState(false);
   const [timerMinutes, setTimerMinutes] = useState("");
   const [timerSeconds, setTimerSeconds] = useState("");
   // ===========================================================
-
 
   // =====================shuffle===============================
   const [choiceShuffleOption, setChoiceShuffleOption] = useState(false);
@@ -45,10 +50,11 @@ function SelectSolve() {
    * 태그 선택/해제 핸들러
    */
   const handleTagClick = (tagName) => {
-    setSelectedTag((prev) =>
-      prev.includes(tagName)
-        ? prev.filter((tag) => tag !== tagName) // 이미 선택된 경우 제거
-        : [...prev, tagName] // 새로 선택된 경우 추가
+    setSelectedTag(
+      (prev) =>
+        prev.includes(tagName)
+          ? prev.filter((tag) => tag !== tagName) // 이미 선택된 경우 제거
+          : [...prev, tagName] // 새로 선택된 경우 추가
     );
   };
 
@@ -82,7 +88,9 @@ function SelectSolve() {
 
     // Recoil에 선택된 문제가 있다면 해당 문제들만 필터링
     if (selectedQuestions.length > 0) {
-      const intersection = filtered.filter(q => selectedQuestions.includes(q));
+      const intersection = filtered.filter((q) =>
+        selectedQuestions.includes(q)
+      );
       setFilterQuestions(intersection);
     } else {
       setFilterQuestions(filtered);
@@ -100,10 +108,10 @@ function SelectSolve() {
   };
   // ======================================================================
 
-
   // 시험/카드 클릭 시, 옵션에 따라 셔플 적용한 질문 배열 준비
   const prepareQuestions = () => {
-    let questionsToNavigate = selectedQuestions.length > 0 ? selectedQuestions : filterQuestions;
+    let questionsToNavigate =
+      selectedQuestions.length > 0 ? selectedQuestions : filterQuestions;
     if (questionShuffleOption) {
       questionsToNavigate = shuffleArray(questionsToNavigate);
     }
@@ -128,16 +136,18 @@ function SelectSolve() {
     return questionsToNavigate;
   };
 
-
-  // "시험" 버튼 클릭 시 Solve로 이동 
+  // "시험" 버튼 클릭 시 Solve로 이동
   const goSolve = () => {
     const questionsToNavigate = prepareQuestions();
     if (questionsToNavigate.length < 0) {
-      toast.error("현재 풀이 가능한 문제가 없습니다! 문제를 생성해주세요", { toastId: "no-question-error" });
+      toast.error("현재 풀이 가능한 문제가 없습니다! 문제를 생성해주세요", {
+        toastId: "no-question-error",
+      });
       goToQuestions();
       return;
     }
-    const tagsToNavigate = selectedQuestions.length > 0 ? selectedTags : selectedTag;
+    const tagsToNavigate =
+      selectedQuestions.length > 0 ? selectedTags : selectedTag;
     navigate("/solve", {
       state: {
         questions: questionsToNavigate,
@@ -150,10 +160,13 @@ function SelectSolve() {
 
   // "카드" 버튼 클릭 시 Card로 이동
   const goCard = () => {
-    const tagsToNavigate = selectedQuestions.length > 0 ? selectedTags : selectedTag;
+    const tagsToNavigate =
+      selectedQuestions.length > 0 ? selectedTags : selectedTag;
     const questionsToNavigate = prepareQuestions();
     if (questionsToNavigate.length < 0) {
-      toast.error("현재 풀이 가능한 문제가 없습니다! 문제를 생성해주세요", { toastId: "no-question-error2" });
+      toast.error("현재 풀이 가능한 문제가 없습니다! 문제를 생성해주세요", {
+        toastId: "no-question-error2",
+      });
       goToQuestions();
       return;
     }
@@ -171,17 +184,15 @@ function SelectSolve() {
     navigate("/questions", { state: { openModal: true } });
   };
 
-
-    
   /**
    * 태그를 사전순으로 그룹화하는 함수
    */
   const groupTagsByCategory = (tags) => {
     const categories = {};
 
-    tags.forEach(tag => {
+    tags.forEach((tag) => {
       let firstChar = tag.charAt(0).toLowerCase();
-      
+
       if (/[a-z]/.test(firstChar)) {
         // 영문 태그 그룹화
         categories[firstChar] = categories[firstChar] || [];
@@ -199,7 +210,7 @@ function SelectSolve() {
     });
 
     // 각 그룹을 사전순 정렬
-    Object.keys(categories).forEach(key => {
+    Object.keys(categories).forEach((key) => {
       categories[key].sort();
     });
 
@@ -211,9 +222,27 @@ function SelectSolve() {
    */
   const getKoreanInitialSound = (char) => {
     const initialConsonants = [
-      "ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"
+      "ㄱ",
+      "ㄲ",
+      "ㄴ",
+      "ㄷ",
+      "ㄸ",
+      "ㄹ",
+      "ㅁ",
+      "ㅂ",
+      "ㅃ",
+      "ㅅ",
+      "ㅆ",
+      "ㅇ",
+      "ㅈ",
+      "ㅉ",
+      "ㅊ",
+      "ㅋ",
+      "ㅌ",
+      "ㅍ",
+      "ㅎ",
     ];
-    
+
     const charCode = char.charCodeAt(0) - 44032;
     if (charCode >= 0 && charCode <= 11171) {
       return initialConsonants[Math.floor(charCode / 588)];
@@ -233,22 +262,19 @@ function SelectSolve() {
           </h1>
         </div>
 
-        
-
         {/* 우측 */}
         <div className="text-right items-center flex gap-2">
-          
           {/* 옵션 버튼 */}
           <div className="flex items-center mr-3">
             {/* 타이머 토글 */}
             <span className="text-xs font-semibold mr-4">타이머</span>
-            <div 
+            <div
               className={`relative w-12 h-6 flex items-center rounded-full transition-all cursor-pointer ${
                 timerOn ? "bg-blue-500" : "bg-gray-300"
               }`}
-              onClick={() => setTimerOn(prev => !prev)}
+              onClick={() => setTimerOn((prev) => !prev)}
             >
-              <div 
+              <div
                 className={`absolute w-4 h-4 bg-white rounded-full shadow-md transform transition-all duration-300 ${
                   timerOn ? "translate-x-7" : "translate-x-1"
                 }`}
@@ -256,7 +282,7 @@ function SelectSolve() {
             </div>
 
             {/* 타이머 입력 필드 */}
-            <div 
+            <div
               className={`ml-4 flex gap-1 overflow-hidden transition-all duration-500 ${
                 timerOn ? "max-w-[100px] opacity-100 mr-4" : "max-w-0 opacity-0"
               }`}
@@ -264,7 +290,7 @@ function SelectSolve() {
               <input
                 type="number"
                 min="0"
-                className="w-10 text-center border rounded text-sm bg-white transition-all duration-300"
+                className="w-10 text-center border rounded text-sm bg-white transition-all duration-300 focus:border-blue-500 focus:outline-none"
                 value={timerMinutes}
                 onChange={(e) => setTimerMinutes(e.target.value)}
                 placeholder="분"
@@ -274,7 +300,7 @@ function SelectSolve() {
                 type="number"
                 min="0"
                 max="59"
-                className="w-10 text-center border rounded text-sm bg-white transition-all duration-300"
+                className="w-10 text-center border rounded text-sm bg-white transition-all duration-300 focus:border-blue-500 focus:outline-none"
                 value={timerSeconds}
                 onChange={(e) => setTimerSeconds(e.target.value)}
                 placeholder="초"
@@ -283,13 +309,13 @@ function SelectSolve() {
 
             {/* 선택지 셔플 토글 */}
             <span className="text-xs font-semibold mr-4 ">선택지 셔플</span>
-            <div 
+            <div
               className={`relative w-12 h-6 flex items-center rounded-full transition-all cursor-pointer ${
                 choiceShuffleOption ? "bg-blue-500" : "bg-gray-300"
               }`}
-              onClick={() => setChoiceShuffleOption(prev => !prev)}
+              onClick={() => setChoiceShuffleOption((prev) => !prev)}
             >
-              <div 
+              <div
                 className={`absolute w-4 h-4 bg-white rounded-full shadow-md transform transition-all duration-300 ${
                   choiceShuffleOption ? "translate-x-7" : "translate-x-1"
                 }`}
@@ -298,13 +324,13 @@ function SelectSolve() {
 
             {/* 문제 셔플 토글 */}
             <span className="text-xs font-semibold mx-4 ">문제 셔플</span>
-            <div 
+            <div
               className={`relative w-12 h-6 flex items-center rounded-full transition-all cursor-pointer ${
                 questionShuffleOption ? "bg-blue-500" : "bg-gray-300"
               }`}
-              onClick={() => setQuestionShuffleOption(prev => !prev)}
+              onClick={() => setQuestionShuffleOption((prev) => !prev)}
             >
-              <div 
+              <div
                 className={`absolute w-4 h-4 bg-white rounded-full shadow-md transform transition-all duration-300 ${
                   questionShuffleOption ? "translate-x-7" : "translate-x-1"
                 }`}
@@ -312,38 +338,54 @@ function SelectSolve() {
             </div>
           </div>
 
-          <div onClick={goCard}
-              className={`cursor-pointer bg-blue-500 hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-20 inline-flex items-center justify-center me-2 mb-2 transition`}> 
+          <div
+            onClick={goCard}
+            className={`cursor-pointer bg-blue-500 hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-20 inline-flex items-center justify-center me-2 mb-2 transition`}
+          >
             카드
           </div>
 
-          <div onClick={goSolve}
-              className={`cursor-pointer bg-blue-500 hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-20 inline-flex items-center justify-center me-2 mb-2 transition`}>
-              시험
+          <div
+            onClick={goSolve}
+            className={`cursor-pointer bg-blue-500 hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-20 inline-flex items-center justify-center me-2 mb-2 transition`}
+          >
+            시험
           </div>
         </div>
       </div>
-      
+
       <div className="flex flex-col justify-center  items-center bg-gray-50">
         {allQuestions.length > 0 ? (
           <div className="flex flex-col gap-3 p-10 items-center justify-center rounded-xl w-full max-w-[960px]">
             <div className="space-y-4 w-full">
-                    {Object.keys(tagGroups).sort().map(category => (
-                      <div key={category} className="rounded-xl bg-white shadow p-5">
-                        <h3 className="text-md font-semibold mb-2">{category.toUpperCase()}</h3>
-                        <div className="flex flex-wrap gap-2">
-                          {tagGroups[category].map((tag, index) => (
-                            <span key={index} 
-                            onClick={() => handleTagClick(tag)}
-                            className={`px-3 py-1 rounded-full font-semibold cursor-pointer whitespace-nowrap hover:scale-105 text-xs ${selectedTag.includes(tag) ? "bg-blue-500 text-white" : "bg-gray-300 text-black"}`}>
-                              {tag} 
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-            </div>     
-
+              {Object.keys(tagGroups)
+                .sort()
+                .map((category) => (
+                  <div
+                    key={category}
+                    className="rounded-xl bg-white shadow p-5"
+                  >
+                    <h3 className="text-md font-semibold mb-2">
+                      {category.toUpperCase()}
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {tagGroups[category].map((tag, index) => (
+                        <span
+                          key={index}
+                          onClick={() => handleTagClick(tag)}
+                          className={`px-3 py-1 rounded-full font-semibold cursor-pointer whitespace-nowrap hover:scale-105 text-xs ${
+                            selectedTag.includes(tag)
+                              ? "bg-blue-500 text-white"
+                              : "bg-gray-300 text-black"
+                          }`}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+            </div>
           </div>
         ) : (
           <div className="bg-white shadow m-10 p-10  items-center justify-center flex-col gap-5 rounded-xl min-w-[500px]">
@@ -365,12 +407,9 @@ function SelectSolve() {
             </div>
           </div>
         )}
-
       </div>
-        
     </main>
   );
-
 }
 
 export default SelectSolve;
