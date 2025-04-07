@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { questionsAtom, allTagAtom } from "state/data";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import QuestionItem from 'pages/question/QuestionItem';
-import UpdateModal from 'pages/question/UpdateModal';
+import QuestionItem from "pages/question/QuestionItem";
+import UpdateModal from "pages/question/UpdateModal";
 import { useLocation } from "react-router-dom";
-import InsertModal from './InsertModal';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
-
+import InsertModal from "./InsertModal";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Questions() {
   const location = useLocation();
@@ -18,7 +16,6 @@ function Questions() {
   //const setAlltag = useSetRecoilState(allTagAtom);
 
   const [filterQuestions, setFilterQuestions] = useState([]);
-
 
   //존재하는 중복 없는 모든 태그
   const allTag = useRecoilValue(allTagAtom);
@@ -32,10 +29,11 @@ function Questions() {
 
   // 태그 선택/해제 핸들러
   const handleTagClick = (tagName) => {
-    setSelectedTag((prev) =>
-      prev.includes(tagName)
-        ? prev.filter((tag) => tag !== tagName) // 이미 선택된 경우 제거
-        : [...prev, tagName] // 새로 선택된 경우 추가
+    setSelectedTag(
+      (prev) =>
+        prev.includes(tagName)
+          ? prev.filter((tag) => tag !== tagName) // 이미 선택된 경우 제거
+          : [...prev, tagName] // 새로 선택된 경우 추가
     );
   };
 
@@ -46,8 +44,9 @@ function Questions() {
       <div
         onClick={() => handleTagClick(tagName)}
         key={index}
-        className={`cursor-pointer transition-transform transform hover:scale-105 whitespace-nowrap py-1 px-2 rounded-xl text-xs font-semibold border-none ${isSelected ? "bg-blue-500 text-white" : "bg-gray-300 text-black"
-          }`}
+        className={`cursor-pointer transition-transform transform hover:scale-105 whitespace-nowrap py-1 px-2 rounded-xl text-xs font-semibold border-none ${
+          isSelected ? "bg-blue-500 text-white" : "bg-gray-300 text-black"
+        }`}
       >
         {tagName}
       </div>
@@ -57,7 +56,9 @@ function Questions() {
   //태그 필터링 이벤트트
   useEffect(() => {
     if (selectedTag.length === 0) {
-      setFilterQuestions(questions.map((question, index) => ({ question, index })));
+      setFilterQuestions(
+        questions.map((question, index) => ({ question, index }))
+      );
       return;
     }
 
@@ -68,7 +69,6 @@ function Questions() {
       );
     setFilterQuestions(filtered);
   }, [questions, selectedTag]); // 의존성 배열에 `selectedTag`와 `questions` 추가
-
 
   //csv 파일 업로드 이벤트
   // const insertCSV = async (file) => {
@@ -136,7 +136,7 @@ function Questions() {
   //   }
   // };
 
-  //.zip 업로드 핸들러 
+  //.zip 업로드 핸들러
   const handleZipUpload = async (event) => {
     const file = event.target.files[0]; // 사용자가 업로드한 파일
     if (file) {
@@ -153,14 +153,13 @@ function Questions() {
     }
   };
 
-
   //.csv 만 다운로드
   // const handleDownload = () => {
   //   const downloadQuestions = filterQuestions.some(({index, question}) => question.checked)
   //     ? filterQuestions
   //         .filter(({index, question}) => question.checked)  // question.checked가 true인 것만 필터링
   //         .map(({index, question}) => {
-  //             const { checked, ...rest } = question; 
+  //             const { checked, ...rest } = question;
   //             return rest;
   //           })
   //     : filterQuestions
@@ -169,16 +168,13 @@ function Questions() {
   //           return rest;
   //         });
 
-
-
   //   const csv = Papa.unparse(downloadQuestions, {
   //     header: true, // 첫 번째 줄에 헤더 포함
   //     columns: [
-  //       "title", "type", "select1", "select2", "select3", "select4", "answer", 
+  //       "title", "type", "select1", "select2", "select3", "select4", "answer",
   //       "img", "level", "date", "update", "recommenddate", "solveddate", "tag"
   //     ], // 원하는 헤더 순서 설정
   //   });
-
 
   //   // Blob을 사용하여 CSV 데이터를 파일로 변환
   //   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
@@ -198,16 +194,17 @@ function Questions() {
 
   // .zip 다운로드
   const handleDownloadToZip = async () => {
-    const downloadQuestions = filterQuestions.some(({ index, question }) => question.checked)
+    const downloadQuestions = filterQuestions.some(
+      ({ index, question }) => question.checked
+    )
       ? filterQuestions
-        .filter(({ index, question }) => question.checked)  // question.checked가 true인 것만 필터링
-        .map(({ index, question }) => {
-          const { checked, id, ...rest } = question;
-          return rest;
-        })
-      : filterQuestions
-        .map(({ index, question }) => {
-          const { checked, id, ...rest } = question;  // checked 제외한 데이터만 추출
+          .filter(({ index, question }) => question.checked) // question.checked가 true인 것만 필터링
+          .map(({ index, question }) => {
+            const { checked, id, ...rest } = question;
+            return rest;
+          })
+      : filterQuestions.map(({ index, question }) => {
+          const { checked, id, ...rest } = question; // checked 제외한 데이터만 추출
           return rest;
         });
 
@@ -215,11 +212,15 @@ function Questions() {
 
     if (result.success) {
       if (!toast.isActive("export-success")) {
-        toast.success(`문제 내보내기가 완료됐습니다. ${result.path}`, { toastId: "export-success" });
+        toast.success(`문제 내보내기가 완료됐습니다. ${result.path}`, {
+          toastId: "export-success",
+        });
       }
     } else {
       if (!toast.isActive("export-error")) {
-        toast.error(`문제 내보내기 중 문제가 발생했습니다. ${result.message}`, { toastId: "export-error" });
+        toast.error(`문제 내보내기 중 문제가 발생했습니다. ${result.message}`, {
+          toastId: "export-error",
+        });
       }
     }
   };
@@ -265,7 +266,6 @@ function Questions() {
       );
     });
   };
-
 
   // 2. deleteQuestionsAll 함수 수정
   const deleteQuestionsAll = async () => {
@@ -316,9 +316,6 @@ function Questions() {
     });
   };
 
-
-
-
   //좌측 사이드바 토글
   const [isCollapsed, setIsCollapsed] = useState(true);
   //문제 추가 모달 토글
@@ -326,7 +323,7 @@ function Questions() {
   const insertButtonClick = () => {
     setUpdateModal(false);
     setInsertModal(true);
-  }
+  };
 
   //문제 업데이트 모달 토글
   const [updateModal, setUpdateModal] = useState(false);
@@ -362,22 +359,25 @@ function Questions() {
   // 개별 체크박스 상태 변경
   const handleCheckboxChange = (index) => {
     setFilterQuestions((prevQuestions) => {
-      const updatedQuestions = prevQuestions.map(({ question, index: idx }) => ({
-        question: {
-          ...question,
-          checked: idx === index ? !question.checked : question.checked, // 해당 index만 변경
-        },
-        index: idx,
-      }));
+      const updatedQuestions = prevQuestions.map(
+        ({ question, index: idx }) => ({
+          question: {
+            ...question,
+            checked: idx === index ? !question.checked : question.checked, // 해당 index만 변경
+          },
+          index: idx,
+        })
+      );
 
       // 전체 체크박스 상태 업데이트
-      const allChecked = updatedQuestions.every(({ question }) => question.checked);
+      const allChecked = updatedQuestions.every(
+        ({ question }) => question.checked
+      );
       setIsAllChecked(allChecked);
 
       return updatedQuestions;
     });
   };
-
 
   // 테이블 데이터 랜더링
   const questionsItems = filterQuestions.map(({ question, index }) => (
@@ -404,17 +404,34 @@ function Questions() {
     }
   };
 
-  
+  const handleDragMouseDown = (e) => {
+    const startY = e.clientY;
+    const startHeight = modalHeight;
+    const MIN_HEIGHT = 300;
+    const MAX_HEIGHT = window.innerHeight; // 현재 창의 최대 높이로 설정
+
+    const onMouseMove = (e) => {
+      const diff = startY - e.clientY; // 위로 드래그하면 양수가 됨
+      const newHeight = startHeight + diff;
+      setModalHeight(Math.min(MAX_HEIGHT, Math.max(MIN_HEIGHT, newHeight)));
+    };
+
+    const onMouseUp = () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+  };
 
   return (
-
     <main className="ml-20 flex">
-
       <div
-        className={`fixed h-full ${isCollapsed ? "border-r" : "w-80"
-          } rounded-r-xl  flex flex-col items-center shadow bg-gray-100 transition-all duration-500`}
+        className={`fixed h-full ${
+          isCollapsed ? "border-r" : "w-80"
+        } rounded-r-xl  flex flex-col items-center shadow bg-gray-100 transition-all duration-500`}
       >
-
         <div
           className="cursor-pointer text-gray-400 w-full text-right p-2"
           onClick={() => setIsCollapsed(!isCollapsed)}
@@ -433,7 +450,6 @@ function Questions() {
               d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
             />
           </svg>
-
         </div>
 
         <div className="hidden w-full p-5 ">
@@ -447,35 +463,34 @@ function Questions() {
         </div>
 
         {!isCollapsed && (
-          <div
-            className="w-full p-5 h-max overflow-auto css-tag-scroll">
-            <div
-              className="font-bold">문제집 선택</div>
+          <div className="w-full p-5 h-max overflow-auto css-tag-scroll">
+            <div className="font-bold">문제집 선택</div>
             <div className="flex gap-2 py-2 w-full flex-wrap">
               {allTagItems}
-
             </div>
           </div>
         )}
       </div>
-
-
-      <div className={`mb-[300px] transition-all duration-500 flex-1 sm:rounded-lg ${isCollapsed ? "ml-10" : "ml-80"
-        }`}>
-
+      <div
+        className={`mb-[300px] transition-all duration-500 flex-1 sm:rounded-lg ${
+          isCollapsed ? "ml-10" : "ml-80"
+        }`}
+      >
         <div className="px-8 py-4 flex justify-between border-b">
           <div>
             <h1 className="text-2xl font-semibold">문제 관리</h1>
-            <h1 className="text-md font-normal text-gray-400">총 {filterQuestions.length} 문제</h1>
+            <h1 className="text-md font-normal text-gray-400">
+              총 {filterQuestions.length} 문제
+            </h1>
           </div>
           <div className="bg-white items-center flex">
             <div
               onClick={() => insertButtonClick()}
-              className="cursor-pointer bg-blue-500 hover:scale-105 transition text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2">
+              className="cursor-pointer bg-blue-500 hover:scale-105 transition text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2"
+            >
               문제추가
             </div>
-            <div
-              className="bg-blue-500 hover:scale-105 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center transition justify-center me-2 mb-2">
+            <div className="bg-blue-500 hover:scale-105 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center transition justify-center me-2 mb-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -491,13 +506,17 @@ function Questions() {
 
               <input
                 onChange={handleZipUpload}
-                type='file' accept='.zip' className='opacity-0 h-full w-full'></input>
-
+                type="file"
+                accept=".zip"
+                className="opacity-0 h-full w-full"
+              ></input>
             </div>
             <div
               onClick={handleDownloadToZip}
-              className="cursor-pointer bg-blue-500 hover:scale-105 transition text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2 mb-2">
-              <svg xmlns="http://www.w3.org/2000/svg"
+              className="cursor-pointer bg-blue-500 hover:scale-105 transition text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2 mb-2"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="currentColor"
                 className="size-4 absolute"
@@ -512,7 +531,7 @@ function Questions() {
           </div>
         </div>
 
-        <table className="text-left rtl:text-right text-gray-500 m-5 rounded-xl bg-gray-50 " >
+        <table className="text-left rtl:text-right text-gray-500 m-5 rounded-xl bg-gray-50 ">
           <thead className="text-sm font-bold text-gray-700 uppercase border-b">
             <tr className="px-10 bg-gray-100">
               <th scope="col" className="py-4 px-8 rounded-tl-xl">
@@ -533,7 +552,7 @@ function Questions() {
                 유형
               </th>
               <th scope="col" className="px-3 py-3"></th>
-              <th scope='col' className='px-5 py-3 rounded-tr-xl'>
+              <th scope="col" className="px-5 py-3 rounded-tr-xl">
                 <svg
                   onClick={deleteQuestionsAll}
                   xmlns="http://www.w3.org/2000/svg"
@@ -555,50 +574,57 @@ function Questions() {
           <tbody>
             {questionsItems}
             <tr>
-              <td
-                className='rounded-b-xl h-10 bg-gray-50'
-                colSpan={4}></td>
+              <td className="rounded-b-xl h-10 bg-gray-50" colSpan={4}></td>
             </tr>
           </tbody>
         </table>
       </div>
-      {/* 모달 컨테이너 */}
+      {/* 오버레이는 모달이 열려있을 때만 렌더링 */}
+      {(insertModal || updateModal) && (
+        <div
+          className="fixed inset-0 z-40"
+          onClick={() => {
+            setInsertModal(false);
+            setUpdateModal(false);
+          }}
+        ></div>
+      )}
+      {/* 모달 컨테이너는 항상 렌더링, 높이는 상태에 따라 변경 */}
       <div
         className={`transition-all duration-500 width-fill-available shadow-[10px_0px_10px_10px_rgba(0,0,0,0.1)] rounded-t-2xl fixed bottom-0 bg-white ${
           isCollapsed ? "ml-10" : "ml-80"
-        }`}
-        style={{ height: (insertModal || updateModal) ? modalHeight : 0 }}
+        } z-50`}
+        style={{ height: insertModal || updateModal ? modalHeight : 0 }}
       >
         {/* 드래그 핸들 (모달 상단 중앙에 위치) */}
         <div
+          onMouseDown={handleDragMouseDown}
           onClick={toggleModalHeight}
           style={{
-            height: '8px',
-            width: '50px',
-            margin: '0 auto',
-            backgroundColor: '#ccc',
-            borderRadius: '4px',
-            cursor: 'pointer' 
+            height: "8px",
+            width: "50px",
+            margin: "0 auto",
+            backgroundColor: "#ccc",
+            borderRadius: "4px",
+            cursor: "ns-resize",
           }}
         />
-        {insertModal && <InsertModal
-          setInsertModal={setInsertModal} expanded={expanded}>
-        </InsertModal>}
-
-        {updateModal &&
+        {insertModal && (
+          <InsertModal setInsertModal={setInsertModal} expanded={expanded} />
+        )}
+        {updateModal && (
           <UpdateModal
             setUpdateModal={setUpdateModal}
-            question={updateQuestion} // 수정할 질문 객체 전달
+            question={updateQuestion}
             setUpdateQuestion={setUpdateQuestion}
             isCollapsed={isCollapsed}
             index={updateIndex}
             expanded={expanded}
           />
-        }
+        )}
       </div>
     </main>
   );
-
 }
 
 export default Questions;
