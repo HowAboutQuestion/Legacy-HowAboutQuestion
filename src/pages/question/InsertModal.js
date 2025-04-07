@@ -1,11 +1,10 @@
-
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef } from "react";
 import { questionsAtom, allTagAtom } from "state/data";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { generateUniqueId } from "utils/util"
+import { generateUniqueId } from "utils/util";
 import { getTodayDate } from "utils/formatDate";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function InsertModal({ setInsertModal, expanded }) {
   //문제추가폼
@@ -23,7 +22,6 @@ function InsertModal({ setInsertModal, expanded }) {
   const setQuestions = useSetRecoilState(questionsAtom);
   const setAlltag = useSetRecoilState(allTagAtom);
   //console.log(questions)
-
 
   //이미지 업로드
   const [thumbnail, setThumbnail] = useState(null);
@@ -83,7 +81,7 @@ function InsertModal({ setInsertModal, expanded }) {
         setThumbnail(reader.result);
       };
       reader.readAsDataURL(file);
-      setImageFile(file); // set으로 파일 업데이트 
+      setImageFile(file); // set으로 파일 업데이트
     }
   };
 
@@ -105,13 +103,16 @@ function InsertModal({ setInsertModal, expanded }) {
   const insertEvent = async () => {
     if (!title) {
       if (!toast.isActive("insert-title-error")) {
-        toast.error("제목은 필수 입력 항목입니다", { toastId: "insert-title-error" });
+        toast.error("제목은 필수 입력 항목입니다", {
+          toastId: "insert-title-error",
+        });
       }
       return;
     }
 
-
-    const tags = tag ? [...new Set(tag.split(",").map((item) => item.trim()))] : [];
+    const tags = tag
+      ? [...new Set(tag.split(",").map((item) => item.trim()))]
+      : [];
 
     // 초기 question 데이터 생성
     const question = {
@@ -123,7 +124,7 @@ function InsertModal({ setInsertModal, expanded }) {
       select4,
       answer,
       description,
-      img: null, 
+      img: null,
       level: 0,
       date,
       update: date,
@@ -148,13 +149,12 @@ function InsertModal({ setInsertModal, expanded }) {
       question.answer = selectedAnswer.value;
     }
 
-
     // 이미지가 있는 경우 처리
     if (imageFile) {
       try {
         const result = await handleSave(
           question.id, // 질문의 id를 파일명으로 사용
-          imageFile, // 파일 내용
+          imageFile // 파일 내용
         );
 
         if (result.success) {
@@ -162,20 +162,20 @@ function InsertModal({ setInsertModal, expanded }) {
         } else {
           console.error("이미지 저장 실패:", result.error);
           if (!toast.isActive("image-false")) {
-            toast.error("이미지 저장에 실패했습니다..", { toastId: "image-false" });
+            toast.error("이미지 저장에 실패했습니다..", {
+              toastId: "image-false",
+            });
           }
         }
       } catch (error) {
         console.error("이미지 저장 중 오류 발생:", error);
         if (!toast.isActive("image-error")) {
-          toast.error("이미지 저장 중 오류가 발생했습니다.", { toastId: "image-error" });
+          toast.error("이미지 저장 중 오류가 발생했습니다.", {
+            toastId: "image-error",
+          });
         }
       }
     }
-
-
-
-
 
     // 상태 초기화 (항상 빈 문자열 사용)
     setTitle("");
@@ -184,7 +184,7 @@ function InsertModal({ setInsertModal, expanded }) {
     setSelect3("");
     setSelect4("");
     setAnswer("");
-    setDescription("")
+    setDescription("");
     setThumbnail(null);
     // setTag(""); // 태그 초기화
 
@@ -194,7 +194,6 @@ function InsertModal({ setInsertModal, expanded }) {
       titleInputRef.current.focus();
     }
   };
-
 
   const placeholderImage = "./images/insertImg.png"; // 경로를 어떻게 해야 되나 배포 시 고민 해야 될 부분
   const uploadImage = "./images/uploadImg.png";
@@ -222,12 +221,11 @@ function InsertModal({ setInsertModal, expanded }) {
       <input
         type="file"
         accept=".jpg, .jpeg, .png"
-        className="w-full h-full text-xs opacity-0"
+        className="w-full h-full text-xs opacity-0 bg-blue-500 "
         onChange={handleFileChange}
       />
     </div>
   );
-
 
   return (
     <div
@@ -247,7 +245,9 @@ function InsertModal({ setInsertModal, expanded }) {
             backgroundPosition: "center",
           }}
         >
-          <span className="text-white text-xl">파일을 놓으면 이미지가 업로드 됩니다</span>
+          <span className="text-white text-xl">
+            파일을 놓으면 이미지가 업로드 됩니다
+          </span>
         </div>
       )}
 
@@ -277,7 +277,11 @@ function InsertModal({ setInsertModal, expanded }) {
                     stroke="currentColor"
                     className="size-4"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18 18 6M6 6l12 12"
+                    />
                   </svg>
                 </div>
               </div>
@@ -312,46 +316,69 @@ function InsertModal({ setInsertModal, expanded }) {
               {type === "객관식" ? (
                 // 객관식 입력
                 <div className="mt-3 flex flex-col gap-3">
-                  <div className="flex gap-3">
-                    <input type="radio" name="answer" value={select1} onChange={() => { }} />
+                  <div className="flex gap-3 outline-none focus:border-blue-500 ">
+                    <input
+                      className="focus:outline-blue-500"
+                      type="radio"
+                      name="answer"
+                      value={select1}
+                      onChange={() => {}}
+                    />
                     <textarea
                       rows="3"
                       maxLength={300}
-                      className="flex-1 block text-sm leading-6 border-2 rounded-md border-gray-200 focus:border-blue-500 px-2 py-1 resize-none"
+                      className="flex-1 block text-sm leading-6 border-2 outline-none rounded-md border-gray-200 focus:border-blue-500 px-2 py-1 resize-none"
                       placeholder="선택지1"
                       value={select1}
-
                       onChange={(e) => setSelect1(e.target.value)}
                     />
                   </div>
                   <div className="flex gap-3">
-                    <input type="radio" name="answer" value={select2} onChange={() => { }} />
+                    <input
+                      className="focus:outline-blue-500"
+                      type="radio"
+                      name="answer"
+                      value={select2}
+                      onChange={() => {}}
+                    />
                     <textarea
                       rows="3"
                       maxLength={300}
-                      className="flex-1 block text-sm leading-6 border-2 rounded-md border-gray-200 focus:border-blue-500 px-2 py-1 resize-none"
+                      className="flex-1 block text-sm leading-6 border-2 rounded-md outline-none border-gray-200 focus:border-blue-500 px-2 py-1 resize-none"
                       placeholder="선택지2"
                       value={select2}
                       onChange={(e) => setSelect2(e.target.value)}
                     />
                   </div>
                   <div className="flex gap-3">
-                    <input type="radio" name="answer" value={select3} onChange={() => { }} />
+                    <input
+                      className="focus:outline-blue-500"
+                      type="radio"
+                      name="answer"
+                      value={select3}
+                      onChange={() => {}}
+                    />
                     <textarea
                       rows="3"
                       maxLength={300}
-                      className="flex-1 block text-sm leading-6 border-2 rounded-md border-gray-200 focus:border-blue-500 px-2 py-1 resize-none"
+                      className="flex-1 block text-sm leading-6 border-2 rounded-md outline-none border-gray-200 focus:border-blue-500 px-2 py-1 resize-none"
                       placeholder="선택지3"
                       value={select3}
                       onChange={(e) => setSelect3(e.target.value)}
                     />
                   </div>
                   <div className="flex gap-3">
-                    <input type="radio" name="answer" value={select4} onChange={() => { }} />
+                    <input
+                      className="focus:outline-blue-500"
+                      type="radio"
+                      name="answer"
+                      value={select4}
+                      onChange={() => {}}
+                    />
                     <textarea
                       rows="3"
                       maxLength={300}
-                      className="flex-1 block text-sm leading-6 border-2 rounded-md border-gray-200 focus:border-blue-500 px-2 py-1 resize-none"
+                      className="flex-1 block text-sm leading-6 border-2 rounded-md outline-none border-gray-200 focus:border-blue-500 px-2 py-1 resize-none"
                       placeholder="선택지4"
                       value={select4}
                       onChange={(e) => setSelect4(e.target.value)}
@@ -360,10 +387,10 @@ function InsertModal({ setInsertModal, expanded }) {
                   <div className="flex gap-4">
                     <textarea
                       rows="5"
-                      maxLength={500}
+                      maxLength={300}
                       placeholder="설명"
                       className="w-2/3 border-2 text-sm 
-                      outline-none                       border-gray-200 px-2 py-1 rounded-md focus:border-blue-500 resize-none"
+                      outline-none border-gray-200 px-2 py-1 rounded-md outline-none focus:border-blue-500 resize-none"
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                     ></textarea>
@@ -378,14 +405,14 @@ function InsertModal({ setInsertModal, expanded }) {
                   <textarea
                     rows="9"
                     maxLength={800}
-                    className="flex-1 block text-sm border-2 rounded-md border-gray-200 focus:border-blue-500 px-2 py-1 resize-none"
+                    className="flex-1 block text-sm border-2 rounded-md outline-none border-gray-200 focus:border-blue-500 px-2 py-1 resize-none"
                     placeholder="정답"
                     value={answer}
                     onChange={(e) => setAnswer(e.target.value)}
                   />
                   <textarea
                     rows="5"
-                    maxLength={500}
+                    maxLength={300}
                     className="block text-sm border-2 rounded-md border-gray-200 
                     outline-none
                     focus:border-blue-500 px-2 py-1 
@@ -427,7 +454,11 @@ function InsertModal({ setInsertModal, expanded }) {
                     stroke="currentColor"
                     className="size-4"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18 18 6M6 6l12 12"
+                    />
                   </svg>
                 </div>
               </div>
@@ -466,6 +497,7 @@ function InsertModal({ setInsertModal, expanded }) {
                     <div className="flex flex-1 flex-col gap-2">
                       <div className="flex gap-3">
                         <input
+                          className="focus:outline-blue-500"
                           type="radio"
                           name="answer"
                           value={select1}
@@ -474,16 +506,20 @@ function InsertModal({ setInsertModal, expanded }) {
                           rows="1"
                           maxLength={300}
                           className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-2 py-1"
-                          style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
+                          style={{
+                            resize: "none",
+                            overflow: "hidden",
+                            whiteSpace: "nowrap",
+                          }}
                           placeholder="선택지1"
                           value={select1}
                           onChange={(e) => setSelect1(e.target.value)}
                           onKeyDown={(e) => {
                             if (
                               !expanded &&
-                              e.key === 'Enter' &&
+                              e.key === "Enter" &&
                               !e.shiftKey &&
-                              e.target.value.split('\n').length === 1
+                              e.target.value.split("\n").length === 1
                             ) {
                               e.preventDefault();
                               insertEvent();
@@ -493,6 +529,7 @@ function InsertModal({ setInsertModal, expanded }) {
                       </div>
                       <div className="flex gap-3">
                         <input
+                          className="focus:outline-blue-500"
                           type="radio"
                           name="answer"
                           value={select2}
@@ -501,16 +538,20 @@ function InsertModal({ setInsertModal, expanded }) {
                           rows="1"
                           maxLength={300}
                           className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-2 py-1"
-                          style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
+                          style={{
+                            resize: "none",
+                            overflow: "hidden",
+                            whiteSpace: "nowrap",
+                          }}
                           placeholder="선택지2"
                           value={select2}
                           onChange={(e) => setSelect2(e.target.value)}
                           onKeyDown={(e) => {
                             if (
                               !expanded &&
-                              e.key === 'Enter' &&
+                              e.key === "Enter" &&
                               !e.shiftKey &&
-                              e.target.value.split('\n').length === 1
+                              e.target.value.split("\n").length === 1
                             ) {
                               e.preventDefault();
                               insertEvent();
@@ -522,25 +563,29 @@ function InsertModal({ setInsertModal, expanded }) {
                     <div className="flex flex-1 flex-col gap-2">
                       <div className="flex gap-3">
                         <input
+                          className="focus:outline-blue-500"
                           type="radio"
                           name="answer"
                           value={select3}
-
                         />
                         <textarea
                           rows="1"
                           maxLength={300}
                           className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-2 py-1"
-                          style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
+                          style={{
+                            resize: "none",
+                            overflow: "hidden",
+                            whiteSpace: "nowrap",
+                          }}
                           placeholder="선택지3"
                           value={select3}
                           onChange={(e) => setSelect3(e.target.value)}
                           onKeyDown={(e) => {
                             if (
                               !expanded &&
-                              e.key === 'Enter' &&
+                              e.key === "Enter" &&
                               !e.shiftKey &&
-                              e.target.value.split('\n').length === 1
+                              e.target.value.split("\n").length === 1
                             ) {
                               e.preventDefault();
                               insertEvent();
@@ -550,6 +595,7 @@ function InsertModal({ setInsertModal, expanded }) {
                       </div>
                       <div className="flex gap-3">
                         <input
+                          className="focus:outline-blue-500"
                           type="radio"
                           name="answer"
                           value={select4}
@@ -557,17 +603,21 @@ function InsertModal({ setInsertModal, expanded }) {
                         <textarea
                           rows="1"
                           maxLength={300}
-                          className="flex-1 block text-sm h-10 leading-10 outline-none border-b-2 border-gray-200 focus:border-blue-500 px-2 py-1"
-                          style={{ resize: 'none', overflow: 'hidden', whiteSpace: 'nowrap' }}
+                          className="flex-1 outline-none block text-sm h-10 leading-10 border-b-2 border-gray-200 focus:border-blue-500 px-2 py-1"
+                          style={{
+                            resize: "none",
+                            overflow: "hidden",
+                            whiteSpace: "nowrap",
+                          }}
                           placeholder="선택지4"
                           value={select4}
                           onChange={(e) => setSelect4(e.target.value)}
                           onKeyDown={(e) => {
                             if (
                               !expanded &&
-                              e.key === 'Enter' &&
+                              e.key === "Enter" &&
                               !e.shiftKey &&
-                              e.target.value.split('\n').length === 1
+                              e.target.value.split("\n").length === 1
                             ) {
                               e.preventDefault();
                               insertEvent();
@@ -577,7 +627,6 @@ function InsertModal({ setInsertModal, expanded }) {
                       </div>
                     </div>
                   </div>
-
                 ) : (
                   <div className="flex gap-3 flex-1 mt-[6px]">
                     <textarea
