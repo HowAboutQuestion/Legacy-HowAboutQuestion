@@ -42,16 +42,16 @@ function UpdateModal({
   );
 
   // thumbnail 상태를 설정할 때, 경로를 보정하는 헬퍼 함수 추가
-  const getProperImageUrl = (path) => {
-    if (!path) return placeholderImage;
-    // Windows의 역슬래시를 슬래시로 변경
-    let normalizedPath = path.replace(/\\/g, "/");
-    // 이미 "file://"로 시작하지 않는다면 file:/// 접두어 추가
-    if (!normalizedPath.startsWith("file://")) {
-      normalizedPath = `file:///${normalizedPath}`;
-    }
-    return normalizedPath;
-  };
+  // const getProperImageUrl = (path) => {
+  //   if (!path) return placeholderImage;
+  //   // Windows의 역슬래시를 슬래시로 변경
+  //   let normalizedPath = path.replace(/\\/g, "/");
+  //   // 이미 "file://"로 시작하지 않는다면 file:/// 접두어 추가
+  //   if (!normalizedPath.startsWith("file://")) {
+  //     normalizedPath = `file:///${normalizedPath}`;
+  //   }
+  //   return normalizedPath;
+  // };
 
   const [thumbnail, setThumbnail] = useState(question.img || placeholderImage);
   const [imageFile, setImageFile] = useState(null);
@@ -269,9 +269,7 @@ function UpdateModal({
     setTag(question.tag.join(", ") || "");
     setDate(question.date || "");
     setDescription(question.description || "");
-    setThumbnail(
-      getProperImageUrl(question.img ? appPath + question.img : null)
-    );
+    setThumbnail(question.img || null);
 
     // 객관식일 경우, 기존 정답 문자열에서 인덱스를 재설정
     if (question.type === "객관식") {
@@ -297,7 +295,7 @@ function UpdateModal({
       className={`relative bg-gray-50 min-h-[150px] flex rounded h-full`}
       style={{
         backgroundImage: thumbnail
-          ? `url("${thumbnail}")`
+          ? `url("${appPath + thumbnail}")`
           : `url(${placeholderImage})`,
         backgroundSize: "100% 100%", // 여기서 100% 비율로 맞춤
         backgroundPosition: "center",
