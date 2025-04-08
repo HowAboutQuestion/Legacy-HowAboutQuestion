@@ -28,6 +28,18 @@ function UpdateModal({
   const [tag, setTag] = useState(question.tag.join(", ") || "");
   const [date, setDate] = useState(question.date || "");
   const [description, setDescription] = useState(question.description || "");
+  const getInitialOptionIndex = () => {
+    const options = [
+      question.select1,
+      question.select2,
+      question.select3,
+      question.select4,
+    ];
+    return options.findIndex((opt) => opt === question.answer);
+  };
+  const [selectedOptionIndex, setSelectedOptionIndex] = useState(
+    type === "객관식" ? getInitialOptionIndex() : -1
+  );
 
   // thumbnail 상태를 설정할 때, 경로를 보정하는 헬퍼 함수 추가
   const getProperImageUrl = (path) => {
@@ -126,17 +138,46 @@ function UpdateModal({
       return;
     }
 
-    // 객관식일 경우 답안이 없으면 메시지 출력
-    if (type === "객관식" && answer === "") {
+    if (type === "객관식") {
+      // 선택된 옵션이 없을 경우
+      if (selectedOptionIndex === -1) {
+        if (!toast.isActive("update-multi")) {
+          toast.error("객관식 답안을 설정해주세요", {
+            toastId: "update-multi",
+          });
+        }
+        return;
+      }
+      // 선택된 옵션의 텍스트가 비어있을 경우
+      const options = [select1, select2, select3, select4];
+      if (
+        !options[selectedOptionIndex] ||
+        options[selectedOptionIndex].trim() === ""
+      ) {
+        if (!toast.isActive("update-multi-empty")) {
+          toast.error("선택된 객관식 답안이 비어있습니다", {
+            toastId: "update-multi-empty",
+          });
+        }
+        return;
+      }
+    }
+
+    if (type === "주관식" && answer.trim() === "") {
       if (!toast.isActive("update-multi")) {
-        toast.error("객관식 답안을 설정해주세요", { toastId: "update-multi" });
+        toast.error("정답을 입력해주세요", { toastId: "update-multi" });
       }
       return;
     }
-
     const tags = tag
       ? [...new Set(tag.split(",").map((item) => item.trim()))]
       : [];
+
+    const finalAnswer =
+      type === "객관식"
+        ? [select1, select2, select3, select4][selectedOptionIndex]
+        : answer;
+
     const updatedQuestion = {
       ...question,
       title,
@@ -145,7 +186,7 @@ function UpdateModal({
       select2,
       select3,
       select4,
-      answer,
+      answer: finalAnswer,
       description,
       img: question.img,
       date,
@@ -196,8 +237,7 @@ function UpdateModal({
         return;
       }
     } else {
-      // 새 이미지 파일이 없는 경우, 현재 썸네일 상태 반영 (플레이스홀더면 null)
-      updatedQuestion.img = thumbnail === placeholderImage ? null : thumbnail;
+      updatedQuestion.img = question.img;
     }
 
     // 질문 업데이트
@@ -223,14 +263,28 @@ function UpdateModal({
     setSelect2(question.select2 || "");
     setSelect3(question.select3 || "");
     setSelect4(question.select4 || "");
-    setAnswer(question.answer || "");
+    if (question.type === "주관식") {
+      setAnswer(question.answer || "");
+    }
     setTag(question.tag.join(", ") || "");
     setDate(question.date || "");
     setDescription(question.description || "");
     setThumbnail(
       getProperImageUrl(question.img ? appPath + question.img : null)
     );
-  }, [question]);
+
+    // 객관식일 경우, 기존 정답 문자열에서 인덱스를 재설정
+    if (question.type === "객관식") {
+      const options = [
+        question.select1,
+        question.select2,
+        question.select3,
+        question.select4,
+      ];
+      const idx = options.findIndex((opt) => opt === question.answer);
+      setSelectedOptionIndex(idx);
+    }
+  }, [question, appPath]);
 
   const updateCancelEvent = () => {
     setUpdateQuestion(null);
@@ -358,8 +412,8 @@ function UpdateModal({
                     className="focus:outline-blue-500"
                     type="radio"
                     name="answer"
-                    checked={answer === select1}
-                    onChange={() => setAnswer(select1)}
+                    checked={selectedOptionIndex === 0}
+                    onChange={() => setSelectedOptionIndex(0)}
                   />
                   <textarea
                     rows="3"
@@ -375,8 +429,8 @@ function UpdateModal({
                     className="focus:outline-blue-500"
                     type="radio"
                     name="answer"
-                    checked={answer === select2}
-                    onChange={() => setAnswer(select2)}
+                    checked={selectedOptionIndex === 1}
+                    onChange={() => setSelectedOptionIndex(1)}
                   />
                   <textarea
                     rows="3"
@@ -392,8 +446,8 @@ function UpdateModal({
                     className="focus:outline-blue-500"
                     type="radio"
                     name="answer"
-                    checked={answer === select3}
-                    onChange={() => setAnswer(select3)}
+                    checked={selectedOptionIndex === 2}
+                    onChange={() => setSelectedOptionIndex(2)}
                   />
                   <textarea
                     rows="3"
@@ -409,8 +463,8 @@ function UpdateModal({
                     className="focus:outline-blue-500"
                     type="radio"
                     name="answer"
-                    checked={answer === select4}
-                    onChange={() => setAnswer(select4)}
+                    checked={selectedOptionIndex === 3}
+                    onChange={() => setSelectedOptionIndex(3)}
                   />
                   <textarea
                     rows="3"
@@ -532,8 +586,8 @@ function UpdateModal({
                           className="focus:outline-blue-500"
                           type="radio"
                           name="answer"
-                          onChange={() => setAnswer(select1)}
-                          checked={answer === select1}
+                          checked={selectedOptionIndex === 0}
+                          onChange={() => setSelectedOptionIndex(0)}
                         />
                         <textarea
                           rows="1"
@@ -565,8 +619,8 @@ function UpdateModal({
                           className="focus:outline-blue-500"
                           type="radio"
                           name="answer"
-                          checked={answer === select2}
-                          onChange={() => setAnswer(select2)}
+                          checked={selectedOptionIndex === 1}
+                          onChange={() => setSelectedOptionIndex(1)}
                         />
                         <textarea
                           rows="1"
@@ -600,8 +654,8 @@ function UpdateModal({
                           className="focus:outline-blue-500"
                           type="radio"
                           name="answer"
-                          checked={answer === select3}
-                          onChange={() => setAnswer(select3)}
+                          checked={selectedOptionIndex === 2}
+                          onChange={() => setSelectedOptionIndex(2)}
                         />
                         <textarea
                           rows="1"
@@ -633,8 +687,8 @@ function UpdateModal({
                           className="focus:outline-blue-500"
                           type="radio"
                           name="answer"
-                          checked={answer === select4}
-                          onChange={() => setAnswer(select4)}
+                          checked={selectedOptionIndex === 3}
+                          onChange={() => setSelectedOptionIndex(3)}
                         />
                         <textarea
                           rows="1"
