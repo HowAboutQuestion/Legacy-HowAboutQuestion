@@ -598,7 +598,6 @@ function Questions() {
       >
         {/* 드래그 핸들 (모달 상단 중앙에 위치) */}
         <div
-          onMouseDown={handleDragMouseDown}
           onClick={toggleModalHeight}
           style={{
             height: "8px",
@@ -606,7 +605,7 @@ function Questions() {
             margin: "0 auto",
             backgroundColor: "#ccc",
             borderRadius: "4px",
-            cursor: "ns-resize",
+            cursor: "pointer",
           }}
         />
         {insertModal && (
