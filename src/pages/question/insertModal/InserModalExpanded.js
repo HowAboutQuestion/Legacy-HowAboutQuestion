@@ -21,6 +21,8 @@ function InsertModalExpanded({
   insertEvent,
   titleInputRef,
   setInsertModal,
+  selectedOptionIndex,
+  setSelectedOptionIndex,
 }) {
   return (
     <div className="flex flex-col gap-4">
@@ -90,7 +92,8 @@ function InsertModalExpanded({
                   type="radio"
                   name="answer"
                   value={select1}
-                  onChange={() => {}}
+                  checked={selectedOptionIndex === 0}
+                  onChange={() => setSelectedOptionIndex(0)}
                 />
                 <textarea
                   rows="3"
@@ -107,7 +110,8 @@ function InsertModalExpanded({
                   type="radio"
                   name="answer"
                   value={select2}
-                  onChange={() => {}}
+                  checked={selectedOptionIndex === 1}
+                  onChange={() => setSelectedOptionIndex(1)}
                 />
                 <textarea
                   rows="3"
@@ -124,7 +128,8 @@ function InsertModalExpanded({
                   type="radio"
                   name="answer"
                   value={select3}
-                  onChange={() => {}}
+                  checked={selectedOptionIndex === 2}
+                  onChange={() => setSelectedOptionIndex(2)}
                 />
                 <textarea
                   rows="3"
@@ -140,8 +145,8 @@ function InsertModalExpanded({
                   className="focus:outline-blue-500"
                   type="radio"
                   name="answer"
-                  value={select4}
-                  onChange={() => {}}
+                  checked={selectedOptionIndex === 3}
+                  onChange={() => setSelectedOptionIndex(3)}
                 />
                 <textarea
                   rows="3"

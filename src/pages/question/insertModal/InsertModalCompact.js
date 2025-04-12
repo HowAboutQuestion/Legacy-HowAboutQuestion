@@ -23,6 +23,8 @@ function InsertModalCompact({
   insertEvent,
   titleInputRef,
   setInsertModal,
+  selectedOptionIndex,
+  setSelectedOptionIndex,
 }) {
   return (
     <div className="flex gap-2">
@@ -95,6 +97,8 @@ function InsertModalCompact({
                       type="radio"
                       name="answer"
                       value={select1}
+                      checked={selectedOptionIndex === 0}
+                  onChange={() => setSelectedOptionIndex(0)}
                     />
                     <textarea
                       rows="1"
@@ -126,6 +130,8 @@ function InsertModalCompact({
                       type="radio"
                       name="answer"
                       value={select2}
+                      checked={selectedOptionIndex === 1}
+                  onChange={() => setSelectedOptionIndex(1)}
                     />
                     <textarea
                       rows="1"
@@ -159,6 +165,8 @@ function InsertModalCompact({
                       type="radio"
                       name="answer"
                       value={select3}
+                      checked={selectedOptionIndex === 2}
+                  onChange={() => setSelectedOptionIndex(2)}
                     />
                     <textarea
                       rows="1"
@@ -190,6 +198,8 @@ function InsertModalCompact({
                       type="radio"
                       name="answer"
                       value={select4}
+                      checked={selectedOptionIndex === 3}
+                  onChange={() => setSelectedOptionIndex(3)}
                     />
                     <textarea
                       rows="1"

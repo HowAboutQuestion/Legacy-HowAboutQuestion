@@ -35,6 +35,8 @@ function InsertModal({ setInsertModal, expanded }) {
   const placeholderImage = "./images/insertImg.png";
   const uploadImage = "./images/uploadImg.png";
 
+  const [selectedOptionIndex, setSelectedOptionIndex] = useState(null);
+
   const handleFileChange = (event) => {
     const image = event.target.files[0];
     if (image) {
@@ -138,14 +140,14 @@ function InsertModal({ setInsertModal, expanded }) {
     if (type === "객관식") {
       selectedAnswer = document.querySelector('input[name="answer"]:checked');
 
-      if (!selectedAnswer || selectedAnswer.value === "") {
+      if (selectedOptionIndex === null) {
         if (!toast.isActive("write-multi")) {
           toast.error("객관식 답안을 설정해주세요", { toastId: "write-multi" });
         }
         return;
       }
-
-      question.answer = selectedAnswer.value;
+      const options = [select1, select2, select3, select4];
+      question.answer = options[selectedOptionIndex];
     }
 
     // 이미지가 있는 경우 처리
@@ -185,6 +187,7 @@ function InsertModal({ setInsertModal, expanded }) {
     setAnswer("");
     setDescription("");
     setThumbnail(null);
+    setSelectedOptionIndex(null);
 
     setQuestions((prevQuestions) => [question, ...prevQuestions]);
 
@@ -247,6 +250,8 @@ function InsertModal({ setInsertModal, expanded }) {
     insertEvent,
     titleInputRef,
     setInsertModal,
+    selectedOptionIndex,
+    setSelectedOptionIndex,
   };
 
   return (
