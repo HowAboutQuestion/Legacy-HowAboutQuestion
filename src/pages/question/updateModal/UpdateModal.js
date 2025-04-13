@@ -5,8 +5,8 @@ import { generateUniqueId } from "utils/util";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { appPathAtom } from "state/data";
-import {UpdateModalExpanded} from "./UpdateModalExpanded";
-import {UpdateModalCompact} from "./UpdateModalCompact";
+import UpdateModalExpanded from "pages/question/updateModal/UpdateModalExpanded";
+import UpdateModalCompact from "pages/question/updateModal/UpdateModalCompact";
 
 function UpdateModal({
   setUpdateModal,
@@ -291,6 +291,66 @@ function UpdateModal({
     setUpdateModal(false);
   };
 
+  const commonProps = {
+    title,
+    setTitle,
+    type,
+    setType,
+    select1,
+    setSelect1,
+    select2,
+    setSelect2,
+    select3,
+    setSelect3,
+    select4,
+    setSelect4,
+    answer,
+    setAnswer,
+    tag,
+    setTag,
+    description,
+    setDescription,
+    date,
+    selectedOptionIndex,
+    setSelectedOptionIndex,
+    renderImageUpload: () => (
+      <div
+        className="relative bg-gray-50 min-h-[150px] flex rounded h-full"
+        style={{
+          backgroundImage: thumbnail
+            ? `url("${appPath + thumbnail}")`
+            : `url(${placeholderImage})`,
+          backgroundSize: "100% 100%",
+          backgroundPosition: "center",
+        }}
+      >
+        {thumbnail && thumbnail !== placeholderImage && (
+          <button
+            type="button"
+            onClick={handleRemoveImage}
+            className="absolute top-1 right-1 bg-blue-500 text-white rounded-full p-1 text-xs z-10 transform transition duration-300 hover:scale-105"
+          >
+            삭제
+          </button>
+        )}
+        <input
+          type="file"
+          accept=".jpg, .jpeg, .png"
+          className="w-full h-full text-xs opacity-0"
+          onChange={handleFileChange}
+        />
+      </div>
+    ),
+    updateEvent,
+    updateCancelEvent,
+    handleDragOver,
+    handleDragEnter,
+    handleDragLeave,
+    handleDrop,
+    isDragging,
+    uploadImage,
+  };
+
   //x 버튼 공통 이미지 업로드 컴포넌트
   const renderImageUpload = () => (
     <div
@@ -353,3 +413,5 @@ function UpdateModal({
     </div>
   );
 }
+
+export default UpdateModal;
