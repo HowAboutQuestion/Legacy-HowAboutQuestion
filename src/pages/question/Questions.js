@@ -7,15 +7,16 @@ import { useLocation } from "react-router-dom";
 import InsertModal from "./InsertModal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Sidebar from "./Sidebar";
 
 function Questions() {
   const location = useLocation();
   //모든 문제 전역에서 불러오기
   const questions = useRecoilValue(questionsAtom);
   const setQuestions = useSetRecoilState(questionsAtom);
-  //const setAlltag = useSetRecoilState(allTagAtom);
-
   const [filterQuestions, setFilterQuestions] = useState([]);
+  const [onToggle, setOnToggle] = useState(false);
+  // const [onTagClick, setOnTagClick] = useState(false);
 
   //존재하는 중복 없는 모든 태그
   const allTag = useRecoilValue(allTagAtom);
@@ -28,7 +29,7 @@ function Questions() {
   }, [location.state]);
 
   // 태그 선택/해제 핸들러
-  const handleTagClick = (tagName) => {
+  const onTagClick = (tagName) => {
     setSelectedTag(
       (prev) =>
         prev.includes(tagName)
@@ -42,7 +43,7 @@ function Questions() {
 
     return (
       <div
-        onClick={() => handleTagClick(tagName)}
+        onClick={() => onTagClick(tagName)}
         key={index}
         className={`cursor-pointer transition-transform transform hover:scale-105 whitespace-nowrap py-1 px-2 rounded-xl text-xs font-semibold border-none ${
           isSelected ? "bg-blue-500 text-white" : "bg-gray-300 text-black"
@@ -70,7 +71,6 @@ function Questions() {
     setFilterQuestions(filtered);
   }, [questions, selectedTag]); // 의존성 배열에 `selectedTag`와 `questions` 추가
 
-  //csv 파일 업로드 이벤트
   // const insertCSV = async (file) => {
   //   try {
   //     const response = await fetch(file);
@@ -153,46 +153,6 @@ function Questions() {
     }
   };
 
-  //.csv 만 다운로드
-  // const handleDownload = () => {
-  //   const downloadQuestions = filterQuestions.some(({index, question}) => question.checked)
-  //     ? filterQuestions
-  //         .filter(({index, question}) => question.checked)  // question.checked가 true인 것만 필터링
-  //         .map(({index, question}) => {
-  //             const { checked, ...rest } = question;
-  //             return rest;
-  //           })
-  //     : filterQuestions
-  //         .map(({index, question}) => {
-  //           const { checked, ...rest } = question;  // checked 제외한 데이터만 추출
-  //           return rest;
-  //         });
-
-  //   const csv = Papa.unparse(downloadQuestions, {
-  //     header: true, // 첫 번째 줄에 헤더 포함
-  //     columns: [
-  //       "title", "type", "select1", "select2", "select3", "select4", "answer",
-  //       "img", "level", "date", "update", "recommenddate", "solveddate", "tag"
-  //     ], // 원하는 헤더 순서 설정
-  //   });
-
-  //   // Blob을 사용하여 CSV 데이터를 파일로 변환
-  //   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-
-  //   // 다운로드 링크 생성
-  //   const link = document.createElement("a");
-  //   if (link.download !== undefined) {
-  //     const url = URL.createObjectURL(blob);
-  //     link.setAttribute("href", url);
-  //     link.setAttribute("download", "questions.csv"); // 다운로드할 파일 이름 설정
-  //     link.style.visibility = "hidden";
-  //     document.body.appendChild(link);
-  //     link.click(); // 다운로드 실행
-  //     document.body.removeChild(link); // 링크 제거
-  //   }
-  // };
-
-  // .zip 다운로드
   const handleDownloadToZip = async () => {
     const downloadQuestions = filterQuestions.some(
       ({ index, question }) => question.checked
@@ -427,6 +387,15 @@ function Questions() {
 
   return (
     <main className="ml-20 flex">
+      <Sidebar 
+        isCollapsed={isCollapsed}
+        onToggle={onToggle}
+        allTag={allTag}
+        selectedTag={selectedTag}
+        onTagClick={onTagClick}     
+        >
+      </Sidebar>
+
       <div
         className={`fixed h-full ${
           isCollapsed ? "border-r" : "w-80"
@@ -471,6 +440,7 @@ function Questions() {
           </div>
         )}
       </div>
+      
       <div
         className={`mb-[300px] transition-all duration-500 flex-1 sm:rounded-lg ${
           isCollapsed ? "ml-10" : "ml-80"
