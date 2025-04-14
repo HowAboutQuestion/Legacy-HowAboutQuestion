@@ -14,7 +14,6 @@ const exeDir = path.dirname(app.getPath('exe'));
 // questions.csv와 history.csv 파일 경로를 실행파일 위치 기준으로 설정
 const questionsCsvPath = path.join(exeDir, 'questions.csv');
 const historyCsvPath = path.join(exeDir, 'history.csv');
-
 // const questionsCsvPath = "./public/question.csv";
 // const historyCsvPath = "./public/history.csv";
 
@@ -187,81 +186,81 @@ function updateHistory(isCorrect) {
 
 
 
-function updateQuestion(title, type, isCorrect) {
-  try {
-    const csvPath = questionsCsvPath;
+// function updateQuestion(title, type, isCorrect) {
+//   try {
+//     const csvPath = questionsCsvPath;
 
-    if (!fs.existsSync(csvPath)) {
-      console.error(`CSV 파일을 찾을 수 없습니다: ${csvPath}`);
-      return { success: false, message: 'CSV 파일을 찾을 수 없습니다.' };
-    }
+//     if (!fs.existsSync(csvPath)) {
+//       console.error(`CSV 파일을 찾을 수 없습니다: ${csvPath}`);
+//       return { success: false, message: 'CSV 파일을 찾을 수 없습니다.' };
+//     }
 
-    const csvFile = fs.readFileSync(csvPath, 'utf-8');
-    const parsed = Papa.parse(csvFile, { header: true, skipEmptyLines: true });
-    const today = format(new Date(), 'yyyy-MM-dd');
+//     const csvFile = fs.readFileSync(csvPath, 'utf-8');
+//     const parsed = Papa.parse(csvFile, { header: true, skipEmptyLines: true });
+//     const today = format(new Date(), 'yyyy-MM-dd');
 
-    let updated = false;
+//     let updated = false;
 
-    const updatedData = parsed.data.map((row) => {
-      if (row.title === title && row.type === type) { // 제목과 유형으로 질문 식별
-        let level = parseInt(row.level, 10);
+//     const updatedData = parsed.data.map((row) => {
+//       if (row.title === title && row.type === type) { // 제목과 유형으로 질문 식별
+//         let level = parseInt(row.level, 10);
 
-        if (isCorrect) {
-          level = Math.min(level + 1, 3); // 레벨 증가 (최대 3)
-        } else {
-          level = Math.max(level - 1, 0); // 레벨 감소 (최소 0)
-        }
+//         if (isCorrect) {
+//           level = Math.min(level + 1, 3); // 레벨 증가 (최대 3)
+//         } else {
+//           level = Math.max(level - 1, 0); // 레벨 감소 (최소 0)
+//         }
 
-        // 레벨에 따른 날짜 계산
-        let daysToAdd;
-        switch (level) {
-          case 0:
-            daysToAdd = 1;
-            break;
-          case 1:
-            daysToAdd = 2;
-            break;
-          case 2:
-            daysToAdd = 3;
-            break;
-          case 3:
-          default:
-            daysToAdd = 4;
-            break;
-        }
+//         // 레벨에 따른 날짜 계산
+//         let daysToAdd;
+//         switch (level) {
+//           case 0:
+//             daysToAdd = 1;
+//             break;
+//           case 1:
+//             daysToAdd = 2;
+//             break;
+//           case 2:
+//             daysToAdd = 3;
+//             break;
+//           case 3:
+//           default:
+//             daysToAdd = 4;
+//             break;
+//         }
 
-        const newUpdateDate = format(addDays(new Date(), daysToAdd), 'yyyy-MM-dd');
+//         const newUpdateDate = format(addDays(new Date(), daysToAdd), 'yyyy-MM-dd');
 
-        return {
-          ...row,
-          level: level.toString(),
-          update: newUpdateDate,
-          solveddate: today,
-        };
-      }
-      return row;
-    });
+//         return {
+//           ...row,
+//           level: level.toString(),
+//           update: newUpdateDate,
+//           solveddate: today,
+//         };
+//       }
+//       return row;
+//     });
 
-    // 변경 사항이 있는지 확인
-    updated = parsed.data.some((row) => row.title === title && row.type === type);
+//     // 변경 사항이 있는지 확인
+//     updated = parsed.data.some((row) => row.title === title && row.type === type);
 
-    if (!updated) {
-      return { success: false, message: '해당 질문을 찾을 수 없습니다.' };
-    }
+//     if (!updated) {
+//       return { success: false, message: '해당 질문을 찾을 수 없습니다.' };
+//     }
 
-    // CSV 파일 업데이트
-    const newCsv = Papa.unparse(updatedData);
-    fs.writeFileSync(csvPath, newCsv, 'utf-8');
+//     // CSV 파일 업데이트
+//     const newCsv = Papa.unparse(updatedData);
+//     fs.writeFileSync(csvPath, newCsv, 'utf-8');
 
-    // updateHistory(isCorrect);
+//     // updateHistory(isCorrect);
 
-    console.log(`질문 '${title}'이(가) 성공적으로 업데이트되었습니다.`);
-    return { success: true, message: '질문이 성공적으로 업데이트되었습니다.' };
-  } catch (error) {
-    console.error('질문 업데이트 중 오류 발생:', error);
-    return { success: false, message: '질문 업데이트에 실패했습니다.' };
-  }
-}
+//     console.log(`질문 '${title}'이(가) 성공적으로 업데이트되었습니다.`);
+//     return { success: true, message: '질문이 성공적으로 업데이트되었습니다.' };
+//   } catch (error) {
+//     console.error('질문 업데이트 중 오류 발생:', error);
+//     return { success: false, message: '질문 업데이트에 실패했습니다.' };
+//   }
+// }
 
 // 메인 프로세스에서 CSV 파일만 수정
 ipcMain.handle('update-questions-file', async (event, questions) => {
@@ -378,8 +377,6 @@ ipcMain.handle('save-image', async (event, { fileName, content }) => {
     const filePath = path.join(imageDir, fileName); // 파일 경로 생성
     fs.writeFileSync(filePath, content); // 파일 저장
 
-    // =================================================================================
-    // 상대경로로
     return {
       success: true,
       path: "/images/" + fileName, // 경로
@@ -410,8 +407,11 @@ ipcMain.handle("export-questions", async (event, questions) => {
     const csvPath = path.join(tempDir, "questions.csv");
 
     if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });
+    const csvContent = Papa.unparse(questions.map(question => {
+      const { id, checked, ...rest } = question;
+      return rest;
+    })); // questions를 CSV 형식으로 변환
 
-    const csvContent = convertToCSV(questions);
     fs.writeFileSync(csvPath, csvContent, "utf-8");
 
     // Create ZIP file
@@ -427,7 +427,6 @@ ipcMain.handle("export-questions", async (event, questions) => {
     for (const question of questions) {
       if (question.img) {
         const imgPath = path.join(exeDir, question.img);
-        console.log("Checking image:", imgPath, fs.existsSync(imgPath));
 
         if (fs.existsSync(imgPath)) {
           archive.file(imgPath, { name: `images/${path.basename(imgPath)}` });
@@ -438,7 +437,7 @@ ipcMain.handle("export-questions", async (event, questions) => {
     }
 
     await archive.finalize();
-    fs.rmSync(tempDir, { recursive: true, force: true }); // Clean up temp files
+    fs.rmSync(tempDir, { recursive: true, force: true });
 
     return { success: true, path: savePath };
   } catch (error) {
@@ -446,15 +445,6 @@ ipcMain.handle("export-questions", async (event, questions) => {
     return { success: false, message: error.message };
   }
 });
-
-
-function convertToCSV(questions) {
-  const headers = Object.keys(questions[0]);
-  const rows = questions.map((q) =>
-    headers.map((header) => `"${q[header] || ""}"`).join(",")
-  );
-  return [headers.join(","), ...rows].join("\n");
-}
 
 //.zip 읽기
 ipcMain.handle('extract-zip', async (event, { fileName, content }) => {
@@ -549,30 +539,22 @@ ipcMain.handle('extract-zip', async (event, { fileName, content }) => {
       throw new Error('CSV 파일을 찾을 수 없습니다.');
     }
 
-    // fs.rmSync(tempDir, { recursive: true, force: true });
-
     // 결과 반환
     result = { success: true, questions, csvFile: csvFilePath };
 
   } catch (error) {
     result = { success: false, error: error.message };
   } finally {
-    if(fs.existsSync(tempDir)) {
-      fs.rmSync(tempDir,{ recursive: true, force: true });
+    if (fs.existsSync(tempDir)) {
+      fs.rmSync(tempDir, { recursive: true, force: true });
     }
   }
   return result;
 });
 
-
-
 ipcMain.handle('delete-image', async (event, { imgPath }) => {
-  console.log("delete-image imgPath: ", imgPath);
-
   try {
-    // exeDir와 images 폴더 그리고 imgPath를 결합하여 이미지 파일의 절대경로를 생성
     const imageFullPath = path.join(exeDir, imgPath);
-    console.log("delete-image imageFullPath: ", imageFullPath);
 
     if (fs.existsSync(imageFullPath)) {
       fs.unlinkSync(imageFullPath); // 파일 삭제
