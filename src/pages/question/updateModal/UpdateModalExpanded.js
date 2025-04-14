@@ -97,7 +97,7 @@ function UpdateModalExpanded({
               <textarea
                 rows="3"
                 maxLength={300}
-                className="flex-1 block text-sm leading-6 border-2 rounded-md border-gray-200 focus:border-blue-500 px-2 py-1 resize-none"
+                className="flex-1 block text-sm leading-6 border-2 rounded-md outline-none border-gray-200 focus:border-blue-500 px-2 py-1 resize-none"
                 placeholder="선택지1"
                 value={select1}
                 onChange={(e) => setSelect1(e.target.value)}
@@ -114,7 +114,7 @@ function UpdateModalExpanded({
               <textarea
                 rows="3"
                 maxLength={300}
-                className="flex-1 block text-sm leading-6 border-2 rounded-md border-gray-200 focus:border-blue-500 px-2 py-1 resize-none"
+                className="flex-1 block text-sm leading-6 border-2 rounded-md outline-none border-gray-200 focus:border-blue-500 px-2 py-1 resize-none"
                 placeholder="선택지2"
                 value={select2}
                 onChange={(e) => setSelect2(e.target.value)}
@@ -131,7 +131,7 @@ function UpdateModalExpanded({
               <textarea
                 rows="3"
                 maxLength={300}
-                className="flex-1 block text-sm leading-6 border-2 rounded-md border-gray-200 focus:border-blue-500 px-2 py-1 resize-none"
+                className="flex-1 block text-sm leading-6 border-2 rounded-md outline-none border-gray-200 focus:border-blue-500 px-2 py-1 resize-none"
                 placeholder="선택지3"
                 value={select3}
                 onChange={(e) => setSelect3(e.target.value)}
@@ -148,7 +148,7 @@ function UpdateModalExpanded({
               <textarea
                 rows="3"
                 maxLength={300}
-                className="flex-1 block text-sm leading-6 border-2 rounded-md border-gray-200 focus:border-blue-500 px-2 py-1 resize-none"
+                className="flex-1 block text-sm leading-6 border-2 rounded-md outline-none border-gray-200 focus:border-blue-500 px-2 py-1 resize-none"
                 placeholder="선택지4"
                 value={select4}
                 onChange={(e) => setSelect4(e.target.value)}
