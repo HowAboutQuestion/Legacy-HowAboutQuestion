@@ -13,11 +13,8 @@ import TagList from './TagList';
  */
 function Sidebar({ isCollapsed, onToggle, allTag, selectedTag, onTagClick }) {
   return (
-    <div
-      className={`fixed h-full ${
-        isCollapsed ? "border-r" : "w-80"
-      } rounded-r-xl flex flex-col items-center shadow bg-gray-100 transition-all duration-500`}
-    >
+
+    <>
       <div
         className="cursor-pointer text-gray-400 w-full text-right p-2"
         onClick={onToggle}
@@ -58,7 +55,7 @@ function Sidebar({ isCollapsed, onToggle, allTag, selectedTag, onTagClick }) {
           />
         </div>
       )}
-    </div>
+    </>
   );
 }
 
