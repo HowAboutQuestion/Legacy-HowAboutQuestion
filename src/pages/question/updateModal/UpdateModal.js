@@ -306,7 +306,7 @@ function UpdateModal({
         className="relative bg-gray-50 min-h-[150px] flex rounded h-full"
         style={{
           backgroundImage: thumbnail
-            ? `url("${appPath + thumbnail}")`
+            ? imageFile ? `url(${thumbnail}` :  `url("${appPath + thumbnail}")`
             : `url(${placeholderImage})`,
           backgroundSize: "100% 100%",
           backgroundPosition: "center",
