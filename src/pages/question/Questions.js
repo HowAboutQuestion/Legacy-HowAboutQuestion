@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { questionsAtom, allTagAtom } from "state/data";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import UpdateModal from "pages/question/UpdateModal";
 import { useLocation } from "react-router-dom";
-import InsertModal from "./InsertModal";
+import InsertModal from "pages/question/InsertModal";
 import "react-toastify/dist/ReactToastify.css";
-import Sidebar from "./Sidebar";
-import Header from "./Header";
-import QuestionsMain from "./QuestionsMain";
+import Sidebar from "pages/question/Sidebar";
+import QuestionsMain from "pages/question/QuestionsMain";
 
 function Questions() {
   const location = useLocation();
   //모든 문제 전역에서 불러오기
   const questions = useRecoilValue(questionsAtom);
   const [filterQuestions, setFilterQuestions] = useState([]);
-  const [onToggle, setOnToggle] = useState(false);
 
   //존재하는 중복 없는 모든 태그
   const allTag = useRecoilValue(allTagAtom);
@@ -36,20 +34,6 @@ function Questions() {
     );
   };
 
-  const allTagItems = allTag.map((tagName, index) => {
-    const isSelected = selectedTag.includes(tagName); // 선택 여부 확인
-
-    return (
-      <div
-        onClick={() => onTagClick(tagName)}
-        key={index}
-        className={`cursor-pointer transition-transform transform hover:scale-105 whitespace-nowrap py-1 px-2 rounded-xl text-xs font-semibold border-none ${isSelected ? "bg-blue-500 text-white" : "bg-gray-300 text-black"
-          }`}
-      >
-        {tagName}
-      </div>
-    );
-  });
 
   //태그 필터링 이벤트트
   useEffect(() => {
@@ -66,12 +50,11 @@ function Questions() {
         question.tag.some((tag) => selectedTag.includes(tag))
       );
     setFilterQuestions(filtered);
-  }, [questions, selectedTag]); // 의존성 배열에 `selectedTag`와 `questions` 추가
-
-
+  }, [questions, selectedTag]); 
 
   //좌측 사이드바 토글
   const [isCollapsed, setIsCollapsed] = useState(true);
+
   //문제 추가 모달 토글
   const [insertModal, setInsertModal] = useState(false);
   const insertButtonClick = () => {
@@ -106,8 +89,6 @@ function Questions() {
     }
   };
 
-
-
   const handleDragMouseDown = (e) => {
     const startY = e.clientY;
     const startHeight = modalHeight;
@@ -131,25 +112,12 @@ function Questions() {
 
   return (
     <main className="ml-20 flex">
-      <div
-        className={`fixed h-full ${isCollapsed ? "border-r" : "w-80"
-          } rounded-r-xl flex flex-col items-center shadow bg-gray-100 transition-all duration-500`}
-      >
-        <Sidebar
-          isCollapsed={isCollapsed}
-          onToggle={onToggle}
-          allTag={allTag}
-          selectedTag={selectedTag}
-          onTagClick={onTagClick}
-        >
-        </Sidebar>
-      </div>
-
-
-      <Header
+      <Sidebar
         isCollapsed={isCollapsed}
+        allTag={allTag}
+        selectedTag={selectedTag}
+        onTagClick={onTagClick}
         setIsCollapsed={setIsCollapsed}
-        allTagItems={allTagItems}
       />
 
       <QuestionsMain
