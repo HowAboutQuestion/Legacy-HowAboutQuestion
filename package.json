@@ -1,6 +1,6 @@
 {
   "name": "HowAboutQuestion",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "homepage": ".",
   "main": "src/main.js",
   "files": [
@@ -35,7 +35,8 @@
     "react-toastify": "^11.0.3",
     "recoil": "^0.7.7",
     "remark-breaks": "^4.0.0",
-    "web-vitals": "^4.2.4"
+    "web-vitals": "^4.2.4",
+    "electron-progressbar": "^2.2.1"
   },
   "scripts": {
     "start:react": "react-scripts start",
@@ -43,7 +44,6 @@
     "start": "npm-run-all start:electron",
     "clean": "rimraf dist && rimraf build",
     "build": "react-scripts build",
-    "deploy": "electron-builder build --win --publish always",
     "dist:win": "electron-builder --win",
     "electron": "electron .",
     "package": "electron-forge package",
@@ -76,6 +76,7 @@
     "@electron-forge/plugin-auto-unpack-natives": "^7.6.0",
     "@electron-forge/plugin-fuses": "^7.6.0",
     "@electron/fuses": "^1.8.0",
+    "cross-env": "^7.0.3",
     "electron": "^33.2.1",
     "electron-builder": "^25.1.8",
     "npm-run-all": "^4.1.5",
@@ -104,6 +105,14 @@
     "extraResources": [],
     "extraMetadata": {
       "main": "src/main.js"
-    }
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "haerim-kweon",
+        "repo": "HowAboutQuestion",
+        "releaseType": "release"
+      }
+    ]
   }
 }
