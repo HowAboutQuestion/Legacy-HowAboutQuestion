@@ -43,19 +43,7 @@ function UpdateModal({
     type === "객관식" ? getInitialOptionIndex() : -1
   );
 
-  // thumbnail 상태를 설정할 때, 경로를 보정하는 헬퍼 함수 추가
-  // const getProperImageUrl = (path) => {
-  //   if (!path) return placeholderImage;
-  //   // Windows의 역슬래시를 슬래시로 변경
-  //   let normalizedPath = path.replace(/\\/g, "/");
-  //   // 이미 "file://"로 시작하지 않는다면 file:/// 접두어 추가
-  //   if (!normalizedPath.startsWith("file://")) {
-  //     normalizedPath = `file:///${normalizedPath}`;
-  //   }
-  //   return normalizedPath;
-  // };
-
-  const [thumbnail, setThumbnail] = useState(question.img || placeholderImage);
+  const [thumbnail, setThumbnail] = useState(question.img || "");
   const [imageFile, setImageFile] = useState(null);
 
   const setQuestions = useSetRecoilState(questionsAtom);
@@ -116,7 +104,7 @@ function UpdateModal({
   };
 
   const handleRemoveImage = () => {
-    setThumbnail(placeholderImage);
+    setThumbnail("");
     setImageFile(null);
   };
 
@@ -190,7 +178,7 @@ function UpdateModal({
       select4,
       answer: finalAnswer,
       description,
-      img: question.img,
+      img: thumbnail,
       date,
       tag: tags,
     };
@@ -239,7 +227,7 @@ function UpdateModal({
         return;
       }
     } else {
-      updatedQuestion.img = question.img;
+      updatedQuestion.img = thumbnail
     }
 
     // 질문 업데이트
@@ -271,7 +259,7 @@ function UpdateModal({
     setTag(question.tag.join(", ") || "");
     setDate(question.date || "");
     setDescription(question.description || "");
-    setThumbnail(question.img || null);
+    setThumbnail(question.img || "");
 
     // 객관식일 경우, 기존 정답 문자열에서 인덱스를 재설정
     if (question.type === "객관식") {
