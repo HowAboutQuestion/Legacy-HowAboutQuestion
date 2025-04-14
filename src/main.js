@@ -8,14 +8,10 @@ const archiver = require("archiver");
 const os = require('os');
 const extract = require('extract-zip'); // 압축 해제 모듈
 
-// 실행 파일의 디렉토리 경로 (배포 후 실행파일 위치)
 const exeDir = path.dirname(app.getPath('exe'));
-
-// questions.csv와 history.csv 파일 경로를 실행파일 위치 기준으로 설정
-const questionsCsvPath = path.join(exeDir, 'questions.csv');
-const historyCsvPath = path.join(exeDir, 'history.csv');
-// const questionsCsvPath = "./public/question.csv";
-// const historyCsvPath = "./public/history.csv";
+const userDataPath = app.getPath('userData');
+const questionsCsvPath = path.join(userDataPath, 'questions.csv');
+const historyCsvPath = path.join(userDataPath, 'history.csv');
 
 
 console.log("questionsCsvPath:", questionsCsvPath);
@@ -279,7 +275,6 @@ function createWindow() {
   const updateResult = updateRecommendDates();
   if (!updateResult.success) {
     console.error(updateResult.message);
-    // 필요에 따라 사용자에게 알림을 보내거나 애플리케이션을 종료할 수 있습니다.
   }
 
   mainWindow = new BrowserWindow({
@@ -370,7 +365,7 @@ function readHistoryCSV() {
 
 ipcMain.handle('save-image', async (event, { fileName, content }) => {
   try {
-    const imageDir = path.join(exeDir, './images'); // 이미지 저장 디렉토리
+    const imageDir = path.join(userDataPath, 'images'); // 이미지 저장 디렉토리
     if (!fs.existsSync(imageDir)) {
       fs.mkdirSync(imageDir); // 디렉토리가 없으면 생성
     }
@@ -426,7 +421,7 @@ ipcMain.handle("export-questions", async (event, questions) => {
 
     for (const question of questions) {
       if (question.img) {
-        const imgPath = path.join(exeDir, question.img);
+        const imgPath = path.join(userDataPath, question.img);
 
         if (fs.existsSync(imgPath)) {
           archive.file(imgPath, { name: `images/${path.basename(imgPath)}` });
@@ -464,7 +459,7 @@ ipcMain.handle('extract-zip', async (event, { fileName, content }) => {
     await extract(zipFilePath, { dir: tempDir });
 
     // 이미지 저장 디렉토리 생성
-    const imageDir = path.join(exeDir, './images'); // 이미지 저장 디렉토리
+    const imageDir = path.join(userDataPath, 'images'); // 이미지 저장 디렉토리
 
     if (!fs.existsSync(imageDir)) {
       fs.mkdirSync(imageDir, { recursive: true });
@@ -554,7 +549,7 @@ ipcMain.handle('extract-zip', async (event, { fileName, content }) => {
 
 ipcMain.handle('delete-image', async (event, { imgPath }) => {
   try {
-    const imageFullPath = path.join(exeDir, imgPath);
+    const imageFullPath = path.join(userDataPath, imgPath);
 
     if (fs.existsSync(imageFullPath)) {
       fs.unlinkSync(imageFullPath); // 파일 삭제
@@ -571,5 +566,5 @@ ipcMain.handle('delete-image', async (event, { imgPath }) => {
 ipcMain.handle('read-questions-csv', () => readQuestionsCSV());
 ipcMain.handle('read-history-csv', () => readHistoryCSV());
 ipcMain.handle("read-app-path", () => {
-  return { appPath: exeDir };
+  return { appPath: userDataPath };
 });
