@@ -6,7 +6,7 @@ const fs = require("fs");
 const Papa = require("papaparse");
 const archiver = require("archiver");
 const os = require("os");
-const extract = require("extract-zip"); // 압축 해제 모듈
+const extract = require("extract-zip");
 const { autoUpdater } = require("electron-updater");
 const ProgressBar = require("electron-progressbar");
 
