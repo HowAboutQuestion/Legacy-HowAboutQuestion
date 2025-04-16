@@ -147,15 +147,8 @@ function Questions() {
       >
         {/* 드래그 핸들 (모달 상단 중앙에 위치) */}
         <div
+          className="h-1.5 w-12 mx-auto mt-3 bg-[#ccc] rounded-xl cursor-pointer"
           onClick={toggleModalHeight}
-          style={{
-            height: "8px",
-            width: "50px",
-            margin: "0 auto",
-            backgroundColor: "#ccc",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
         />
         {insertModal && (
           <InsertModal setInsertModal={setInsertModal} expanded={expanded} />
