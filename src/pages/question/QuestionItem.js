@@ -119,8 +119,11 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
           <td className="px-3 py-2 align-top">
             {question.description && (
               <div className="relative group ml-1">
-                <span className="cursor-default select-none">?</span>
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block bg-black text-white text-xs rounded py-1 px-2 max-w-xs break-words opacity-50 z-20">
+                <img
+                  src="./images/light_icon.png"
+                  className="w-5 h-5 cursor-pointer hover:scale-110 transition-all text hover:scale-110 mr-1"
+                />
+                <div className="absolute top-full left-0 transform -translate-x-1/2 mb-2 hidden group-hover:block bg-black text-white text-xs rounded py-1 px-2 w-[100px] max-h-[200px] overflow-y-auto text-wrap opacity-50 z-10">
                   {question.description}
                 </div>
               </div>
@@ -217,8 +220,11 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
         <td className="px-3 py-2 align-top">
           {question.description && (
             <div className="relative group ml-1">
-              <span className="cursor-default select-none">?</span>
-              <div className="absolute top-full right-0 mr-[-60px] transform -translate-x-1/2 mt-2 hidden group-hover:block bg-black text-white text-xs rounded py-1 px-2 max-w-xs break-words opacity-50 z-20">
+              <img
+                src="./images/light_icon.png"
+                className="w-5 h-5 cursor-pointer hover:scale-110 transition-all text hover:scale-110 mr-1"
+              />
+              <div className="absolute top-full left-0 transform -translate-x-1/2 mb-2 hidden group-hover:block bg-black text-white text-xs rounded py-1 px-2 w-[100px] max-h-[200px] overflow-y-auto text-wrap opacity-50 z-10">
                 {question.description}
               </div>
             </div>

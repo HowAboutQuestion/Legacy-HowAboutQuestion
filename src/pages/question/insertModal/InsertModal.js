@@ -219,7 +219,7 @@ function InsertModal({ setInsertModal, expanded }) {
       <input
         type="file"
         accept=".jpg, .jpeg, .png"
-        className="w-full h-full text-xs opacity-0 bg-blue-500"
+        className="w-full min-h-[150px] text-xs opacity-0 bg-blue-500"
         onChange={handleFileChange}
       />
     </div>

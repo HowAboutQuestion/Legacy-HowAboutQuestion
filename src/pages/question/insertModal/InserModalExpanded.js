@@ -13,6 +13,7 @@ function InsertModalExpanded({
   setSelect3,
   select4,
   setSelect4,
+  answer,
   description,
   setDescription,
   tag,
@@ -23,6 +24,7 @@ function InsertModalExpanded({
   setInsertModal,
   selectedOptionIndex,
   setSelectedOptionIndex,
+  setAnswer,
 }) {
   return (
     <div className="flex flex-col gap-4">
@@ -166,7 +168,7 @@ function InsertModalExpanded({
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                 ></textarea>
-                <div className="w-1/3 h-full transform transition duration-300 hover:scale-105">
+                <div className="w-1/3 transform transition duration-300 hover:scale-105">
                   {renderImageUpload()}
                 </div>
               </div>
@@ -178,8 +180,8 @@ function InsertModalExpanded({
                 maxLength={800}
                 className="flex-1 block text-sm border-2 rounded-md outline-none border-gray-200 focus:border-blue-500 px-2 py-1 resize-none"
                 placeholder="정답"
-                value={""} // 주관식은 answer 값을 직접 사용해도 되고 필요에 따라 추가하세요.
-                onChange={() => {}}
+                value={answer}
+                onChange={(e) => setAnswer(e.target.value)}
               />
               <textarea
                 rows="5"
