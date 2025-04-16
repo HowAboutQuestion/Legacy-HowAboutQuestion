@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import {
-  questionsAtom,
-  allTagAtom,
-  selectedTagsAtom,
-  selectedQuestionsAtom,
-} from "state/data";
+import { useRecoilValue } from "recoil";
+import { questionsAtom, allTagAtom } from "state/data";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function SelectSolve() {
@@ -25,11 +20,6 @@ function SelectSolve() {
     selectedTags: initialSelectedTags = [],
     selectedQuestions: initialSelectedQuestions = [],
   } = location.state || {};
-
-  const [selectedTags, setSelectedTags] = useState(initialSelectedTags);
-  const [selectedQuestions, setSelectedQuestions] = useState(
-    initialSelectedQuestions
-  );
 
   // =====================Timer=================================
   const [timerOn, setTimerOn] = useState(false);
@@ -50,6 +40,7 @@ function SelectSolve() {
    * 태그 선택/해제 핸들러
    */
   const handleTagClick = (tagName) => {
+    if (initialSelectedQuestions.length > 0) return;
     setSelectedTag(
       (prev) =>
         prev.includes(tagName)
@@ -59,23 +50,13 @@ function SelectSolve() {
   };
 
   /**
-   * 초기 선택된 태그를 Recoil 아톰에서 가져와 설정
-   */
-  useEffect(() => {
-    if (selectedTags.length > 0) {
-      setSelectedTag(selectedTags);
-      // setSelectedTags([]); // 선택된 태그 아톰 초기화 (원하는 경우)
-    }
-  }, [selectedTags, setSelectedTag, setSelectedTags]);
-
-  /**
    * 태그 변경 시 필터링 실행
    */
   useEffect(() => {
     if (selectedTag.length === 0) {
       // Recoil에 선택된 문제가 있다면 해당 문제들만 필터링
-      if (selectedQuestions.length > 0) {
-        setFilterQuestions([...selectedQuestions]);
+      if (initialSelectedQuestions.length > 0) {
+        setFilterQuestions([...initialSelectedQuestions]);
       } else {
         setFilterQuestions([...allQuestions]);
       }
@@ -87,17 +68,25 @@ function SelectSolve() {
     );
 
     // Recoil에 선택된 문제가 있다면 해당 문제들만 필터링
-    if (selectedQuestions.length > 0) {
+    if (initialSelectedQuestions.length > 0) {
       const intersection = filtered.filter((q) =>
-        selectedQuestions.includes(q)
+        initialSelectedQuestions.includes(q)
       );
       setFilterQuestions(intersection);
     } else {
       setFilterQuestions(filtered);
     }
-  }, [allQuestions, selectedTag, selectedQuestions]);
+  }, [allQuestions, selectedTag, initialSelectedQuestions]);
 
-  // =====================Fisher-Yates shuffle=============================
+  /**
+   * 초기 선택된 태그를 Recoil 아톰에서 가져와 설정
+   */
+  useEffect(() => {
+    if (initialSelectedTags.length > 0) {
+      setSelectedTag(initialSelectedTags);
+    }
+  }, [initialSelectedTags, setSelectedTag]);
+
   const shuffleArray = (array) => {
     const newArray = [...array];
     for (let i = newArray.length - 1; i > 0; i--) {
@@ -106,12 +95,13 @@ function SelectSolve() {
     }
     return newArray;
   };
-  // ======================================================================
 
   // 시험/카드 클릭 시, 옵션에 따라 셔플 적용한 질문 배열 준비
   const prepareQuestions = () => {
     let questionsToNavigate =
-      selectedQuestions.length > 0 ? selectedQuestions : filterQuestions;
+      initialSelectedQuestions.length > 0
+        ? initialSelectedQuestions
+        : filterQuestions;
     if (questionShuffleOption) {
       questionsToNavigate = shuffleArray(questionsToNavigate);
     }
@@ -147,7 +137,7 @@ function SelectSolve() {
       return;
     }
     const tagsToNavigate =
-      selectedQuestions.length > 0 ? selectedTags : selectedTag;
+      initialSelectedQuestions.length > 0 ? initialSelectedTags : selectedTag;
     navigate("/solve", {
       state: {
         questions: questionsToNavigate,
@@ -161,7 +151,7 @@ function SelectSolve() {
   // "카드" 버튼 클릭 시 Card로 이동
   const goCard = () => {
     const tagsToNavigate =
-      selectedQuestions.length > 0 ? selectedTags : selectedTag;
+      initialSelectedQuestions.length > 0 ? initialSelectedTags : selectedTag;
     const questionsToNavigate = prepareQuestions();
     if (questionsToNavigate.length < 0) {
       toast.error("현재 풀이 가능한 문제가 없습니다! 문제를 생성해주세요", {
@@ -258,7 +248,11 @@ function SelectSolve() {
         <div>
           <div className="text-2xl font-semibold">문제집 선택</div>
           <h1 className="text-md font-normal text-gray-400">
-            총 {filterQuestions.length}문제
+            총{" "}
+            {initialSelectedQuestions.length > 0
+              ? initialSelectedQuestions.length
+              : filterQuestions.length}
+            문제
           </h1>
         </div>
 
