@@ -353,7 +353,7 @@ autoUpdater.on("update-not-available", () => {
 autoUpdater.once("download-progress", () => {
   console.log("설치 중");
 
-  progressBar = new ProgressBar({
+  const progressBar = new ProgressBar({
     text: "Download 합니다.",
   });
 
