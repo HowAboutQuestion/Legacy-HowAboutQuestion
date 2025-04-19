@@ -3,7 +3,7 @@ import { appPathAtom } from "state/data";
 import { useRecoilValue } from "recoil";
 import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
-import { markdownComponents } from "utils/markdownUtil"
+import { markdownComponents } from "utils/markdownUtils"
 
 
 function MultipleResult({ question, index }) {

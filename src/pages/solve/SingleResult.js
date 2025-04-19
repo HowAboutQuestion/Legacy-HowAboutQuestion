@@ -4,7 +4,7 @@ import { useRecoilValue } from "recoil";
 import { addDays, format } from 'date-fns'; 
 import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
-import { markdownComponents } from "utils/markdownUtil"
+import { markdownComponents } from "utils/markdownUtils"
 
 function SingleResult({ question, index, setQuestions }) {
   const appPath = useRecoilValue(appPathAtom);

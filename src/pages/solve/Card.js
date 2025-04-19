@@ -5,7 +5,7 @@ import { questionsAtom, appPathAtom } from "state/data";
 import { addDays, format } from 'date-fns'; 
 import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
-import { markdownComponents } from "utils/markdownUtil"
+import { markdownComponents } from "utils/markdownUtils"
 
 function Card() {
   const appPath = useRecoilValue(appPathAtom);
