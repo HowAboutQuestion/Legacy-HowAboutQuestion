@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { questionsAtom, allTagAtom } from "state/data";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { generateUniqueId } from "utils/util";
-import { getTodayDate } from "utils/formatDate";
+import { getTodayDate } from "utils/dateUtil";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import InsertModalExpanded from "./InserModalExpanded";
