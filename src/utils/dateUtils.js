@@ -1,4 +1,3 @@
-import { format } from 'date-fns';
 const {
   parseISO,
   isValid,
@@ -8,10 +7,6 @@ const {
   startOfDay,
   addDays,
 } = require('date-fns');
-
-const formatDate = (date) => {
-  return format(date, 'yyyy-MM-dd');
-};
 
 // 오늘 날짜를 YYYY-MM-DD 형식으로 반환 (한국 시간)
 const getTodayDate = () => {
@@ -28,6 +23,5 @@ module.exports = {
   isAfter,
   format,
   startOfDay,
-  addDays,
-  formatDate
+  addDays
 };
