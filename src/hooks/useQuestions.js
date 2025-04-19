@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { questionsAtom, allTagAtom } from 'state/data';
 import { generateUniqueId } from 'utils/idUtils';
-import { getTodayDate } from 'utils/dateUtil';
+import { getTodayDate } from 'utils/dateUtils';
 import { toast } from 'react-toastify';
 
 /**
