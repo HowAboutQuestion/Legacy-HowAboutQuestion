@@ -9,15 +9,25 @@ const {
   addDays,
 } = require('date-fns');
 
-export const getTodayDate = () => {
-  const offset = 1000 * 60 * 60 * 9;
-  const koreaTime = new Date((new Date()).getTime() + offset).toISOString().split("T")[0];
-  
-  
-  return koreaTime;
-}
-
-export const formatDate = (date) => {
+const formatDate = (date) => {
   return format(date, 'yyyy-MM-dd');
 };
 
+// 오늘 날짜를 YYYY-MM-DD 형식으로 반환 (한국 시간)
+const getTodayDate = () => {
+  const offset = 1000 * 60 * 60 * 9; // 한국 시간대 (UTC+9)
+  return new Date(new Date().getTime() + offset).toISOString().split('T')[0];
+};
+
+// 날짜 관련 유틸리티 함수 모음
+module.exports = {
+  getTodayDate,
+  parseISO,
+  isValid,
+  isBefore,
+  isAfter,
+  format,
+  startOfDay,
+  addDays,
+  formatDate
+};

@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { questionsAtom, allTagAtom } from "state/data";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { generateUniqueId } from "utils/util";
+import { generateUniqueId } from "utils/idUtils";
 import { getTodayDate } from "utils/dateUtil";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

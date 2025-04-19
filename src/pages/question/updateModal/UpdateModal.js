@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { questionsAtom } from "state/data";
 import { useSetRecoilState, useRecoilValue } from "recoil";
-import { generateUniqueId } from "utils/util";
+import { generateUniqueId } from "utils/idUtils";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { appPathAtom } from "state/data";
