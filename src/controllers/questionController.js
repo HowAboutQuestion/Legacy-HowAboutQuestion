@@ -6,6 +6,8 @@ const { getTodayDate, parseISO, isValid, isBefore, isAfter, startOfDay, format, 
 
 // CSV 파일을 읽어서 데이터 처리하는 함수
 function readQuestionsCSV() {
+  console.log("readQuestionsCSV called!")
+
   try {
     if (!fs.existsSync(questionsCsvPath)) {
       console.error(`readQuestionsCSV CSV 파일을 찾을 수 없습니다: ${questionsCsvPath}`);
@@ -33,6 +35,8 @@ function readQuestionsCSV() {
         });
       },
     });
+
+    console.log(questions);
 
     return {
       success: true,
@@ -91,6 +95,7 @@ function updateRecommendDates() {
 
 // CSV 파일 업데이트
 function updateQuestionsFile(questions) {
+  console.log("updateQuestionsFile called!")
   try {
     const csvString = Papa.unparse(
       questions.map(question => {
