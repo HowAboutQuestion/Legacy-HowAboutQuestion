@@ -8,8 +8,8 @@ import Loading from "./Loading";
 import ProblemRecommendation from "./ProblemRecommendation";
 import DashboardStats from "./DashboardStats";
 import HistorySection from "./HistorySection";
-import { formatDate } from "utils/formatDate";
-import { getTodayDate } from "utils/formatDate"; // getTodayDate 함수 가져오기
+import { formatDate } from "utils/dateUtil";
+import { getTodayDate } from "utils/dateUtil"; // getTodayDate 함수 가져오기
 import LargeModal from "./LargeModal";
 import Helper from "./Helper";
 import "chartjs-adapter-date-fns"; 
