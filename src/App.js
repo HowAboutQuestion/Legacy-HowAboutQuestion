@@ -3,9 +3,8 @@ import { useRecoilState } from "recoil";
 import { allTagAtom, questionsAtom, appPathAtom } from "state/data";
 import Router from "Router";
 import Navbar from "pages/Navbar";
-import Papa from "papaparse";
-import { BrowserRouter, HashRouter } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+import { HashRouter } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
@@ -45,6 +44,7 @@ const App = () => {
         // 상태 업데이트 후 비동기적으로 questions를 처리
         const result = await window.electronAPI.updateQuestions(questions);
       } catch (error) {
+        console.error("[App.js] updateQuestionsAsync", error)
       }
     };
 
@@ -62,14 +62,14 @@ const App = () => {
         }
         console.log(result);
       } catch (error) {
-        console.error("앱 경로 읽기 실패:", error);
+        console.error("cannot read appPath :", error);
       }
     };
 
     readAppPath();
   }, []);
 
-  
+
 
 
   return (
@@ -81,12 +81,12 @@ const App = () => {
       <ToastContainer
         position="top-center"
         autoClose={1000}
-        hideProgressBar={true} 
-        closeOnClick 
-        pauseOnFocusLoss={false} 
-        draggable={false} 
+        hideProgressBar={true}
+        closeOnClick
+        pauseOnFocusLoss={false}
+        draggable={false}
         pauseOnHover={false}
-        theme="light" 
+        theme="light"
       />
     </div>
   );

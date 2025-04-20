@@ -14,6 +14,10 @@ const getTodayDate = () => {
   return new Date(new Date().getTime() + offset).toISOString().split('T')[0];
 };
 
+const formatDate = (date) => {
+  return format(date, 'yyyy-MM-dd');
+};
+
 // 날짜 관련 유틸리티 함수 모음
 module.exports = {
   getTodayDate,
@@ -23,5 +27,6 @@ module.exports = {
   isAfter,
   format,
   startOfDay,
-  addDays
+  addDays,
+  formatDate
 };

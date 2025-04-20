@@ -12,7 +12,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: true,
-      preload: path.join(__dirname, '../../preload.js'),
+      preload: path.join(__dirname, '../preload.js'),
     },
   });
 
@@ -28,6 +28,10 @@ function createWindow() {
     mainWindow = null;
   });
 
+  mainWindow.webContents.on('console-message', (_, level, message) => {
+    console.log('[Renderer]', message);
+  });
+  
   return mainWindow;
 }
 

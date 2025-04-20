@@ -10,7 +10,7 @@ function readQuestionsCSV() {
 
   try {
     if (!fs.existsSync(questionsCsvPath)) {
-      console.error(`readQuestionsCSV CSV 파일을 찾을 수 없습니다: ${questionsCsvPath}`);
+      console.error(`cannot find questions.csv file: ${questionsCsvPath}`);
       return { success: false, message: 'CSV 파일을 찾을 수 없습니다.' };
     }
 
@@ -36,7 +36,7 @@ function readQuestionsCSV() {
       },
     });
 
-    console.log(questions);
+    console.log("questions read success")
 
     return {
       success: true,
@@ -46,7 +46,7 @@ function readQuestionsCSV() {
     };
   } catch (error) {
     console.error(error);
-    return { success: false, message: 'questions 읽기 실패' };
+    return { success: false, message: 'questions read fail' };
   }
 }
 
@@ -85,7 +85,7 @@ function updateRecommendDates() {
     const newCsv = Papa.unparse(updatedData);
     fs.writeFileSync(questionsCsvPath, newCsv, 'utf-8');
 
-    console.log('recommenddate가 성공적으로 업데이트되었습니다.');
+    console.log('recommenddate update success');
     return { success: true, message: 'recommenddate가 성공적으로 업데이트되었습니다.' };
   } catch (error) {
     console.error('Error updating recommend dates:', error);
@@ -106,7 +106,7 @@ function updateQuestionsFile(questions) {
     fs.writeFileSync(questionsCsvPath, csvString, 'utf-8');
     return { success: true };
   } catch (error) {
-    console.error('CSV 파일 업데이트 중 오류 발생:', error);
+    console.error('CSV update error:', error);
     return { success: false, message: error.message };
   }
 }
@@ -114,6 +114,5 @@ function updateQuestionsFile(questions) {
 module.exports = {
   readQuestionsCSV,
   updateRecommendDates,
-  // updateQuestion,  // 주석 처리
   updateQuestionsFile
 };
