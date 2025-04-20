@@ -89,6 +89,7 @@ async function exportQuestions(questions, savePath) {
     await archive.finalize();
     fs.rmSync(tempDir, { recursive: true, force: true });
 
+    console.log("exportQuestions success");
     return { success: true, path: savePath };
   } catch (error) {
     console.error('Error exporting questions:', error);
@@ -185,6 +186,8 @@ async function extractZip(fileName, content) {
     } else {
       throw new Error('CSV 파일을 찾을 수 없습니다.');
     }
+
+    console.log("extractZip success");
 
     // 결과 반환
     result = { success: true, questions, csvFile: csvFilePath };

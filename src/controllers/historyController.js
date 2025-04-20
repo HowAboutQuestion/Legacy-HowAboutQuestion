@@ -77,6 +77,8 @@ function readHistoryCSV() {
       })
       .filter(row => row !== null);
 
+    console.log("history.csv read success")
+    console.log(historyData);
     return { success: true, historyData, message: 'history 읽기 성공' };
   } catch (error) {
     console.error(error);

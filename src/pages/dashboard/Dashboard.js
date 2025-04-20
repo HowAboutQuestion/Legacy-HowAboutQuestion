@@ -86,8 +86,7 @@ const Dashboard = () => {
   // 추천 문제 필터링 및 오늘 푼 문제 수 계산
   useEffect(() => {
     let solved = 0; // 오늘 푼 문제 카운트
-    const filtered = questions
-      .map((question) => {
+    const filtered = questionsz.map((question) => {
         const recommendDate = question.recommenddate;
         const solvedDate = question.solveddate ? question.solveddate : null;
         const isRecommendToday = isSameDay(recommendDate, today);
