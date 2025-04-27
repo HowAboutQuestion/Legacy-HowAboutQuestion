@@ -1,7 +1,7 @@
 import { BrowserWindow } from 'electron';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { fileURLToPath } from 'url';
 
 let mainWindow;
 
