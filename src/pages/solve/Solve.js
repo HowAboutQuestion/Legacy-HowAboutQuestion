@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import Single from './Single';
-import Multiple from './Multiple';
+import Single from 'pages/solve/Single.js';
+import Multiple from 'pages/solve/Multiple.js';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { questionsAtom } from 'state/data';
-import QuestionNav from 'pages/solve/QuestionNav';
+import { questionsAtom } from 'state/data.js';
+import QuestionNav from 'pages/solve/QuestionNav.js';
 import { addDays, format } from 'date-fns';
 
 function Solve() {

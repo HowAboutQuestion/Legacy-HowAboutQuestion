@@ -2,15 +2,16 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { isSameDay, isBefore, addDays } from "date-fns";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { historyDataAtom, questionsAtom } from "state/data";
-import Loading from "./Loading";
-import ProblemRecommendation from "./ProblemRecommendation";
-import DashboardStats from "./DashboardStats";
-import HistorySection from "./HistorySection";
-import { getTodayDate, formatDate } from "utils/dateUtils";
-import LargeModal from "./LargeModal";
-import Helper from "./Helper";
 import "chartjs-adapter-date-fns"; 
+import { historyDataAtom, questionsAtom } from "state/data.js";
+import Loading from "./Loading.js";
+import ProblemRecommendation from "./ProblemRecommendation.js";
+import DashboardStats from "./DashboardStats.js";
+import HistorySection from "./HistorySection.js";
+import { getTodayDate, formatDate } from "utils/dateUtils.js";
+import LargeModal from "./LargeModal.js";
+import Helper from "./Helper.js";
+
 
 import {
   Chart as ChartJS,
@@ -23,7 +24,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-// Chart.js 등록
+
 
 ChartJS.register(
   CategoryScale,

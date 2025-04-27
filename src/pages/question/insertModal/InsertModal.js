@@ -1,12 +1,12 @@
 import React, { useState, useRef } from "react";
-import { questionsAtom, allTagAtom } from "state/data";
+import { toast } from "react-toastify";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { generateUniqueId } from "utils/idUtils";
-import { getTodayDate } from "utils/dateUtils";
-import { ToastContainer, toast } from "react-toastify";
+import { generateUniqueId } from "utils/idUtils.js";
+import { getTodayDate } from "utils/dateUtils.js";
 import "react-toastify/dist/ReactToastify.css";
-import InsertModalExpanded from "./InserModalExpanded";
-import InsertModalCompact from "./InsertModalCompact";
+import InsertModalExpanded from "./InserModalExpanded.js";
+import InsertModalCompact from "./InsertModalCompact.js";
+import { questionsAtom, allTagAtom } from "state/data.js";
 
 function InsertModal({ setInsertModal, expanded }) {
   //문제추가폼

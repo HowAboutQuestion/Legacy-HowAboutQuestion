@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
-import { selectedTagsAtom, selectedQuestionsAtom } from 'state/data';
+import { selectedTagsAtom, selectedQuestionsAtom } from 'state/data.js';
 
 
 function Navbar() {

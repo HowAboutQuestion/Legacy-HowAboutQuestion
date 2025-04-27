@@ -8,6 +8,7 @@
     "src/**/*",
     "node_modules/**/*"
   ],
+  "type": "module",
   "private": true,
   "dependencies": {
     "adm-zip": "^0.5.16",

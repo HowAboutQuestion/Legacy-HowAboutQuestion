@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
-import { allTagAtom, questionsAtom, appPathAtom } from "state/data";
+import React, { useEffect } from "react";
 import Router from "Router";
-import Navbar from "pages/Navbar";
+import { useRecoilState } from "recoil";
 import { HashRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import { allTagAtom, questionsAtom, appPathAtom } from "state/data.js";
+import Navbar from "pages/Navbar.js";
 import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
@@ -68,9 +68,6 @@ const App = () => {
 
     readAppPath();
   }, []);
-
-
-
 
   return (
     <div>

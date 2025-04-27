@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import { questionsAtom } from "state/data";
 import { useSetRecoilState, useRecoilValue } from "recoil";
-import { generateUniqueId } from "utils/idUtils";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
+import UpdateModalExpanded from "pages/question/updateModal/UpdateModalExpanded.js";
+import UpdateModalCompact from "pages/question/updateModal/UpdateModalCompact.js";
 import "react-toastify/dist/ReactToastify.css";
-import { appPathAtom } from "state/data";
-import UpdateModalExpanded from "pages/question/updateModal/UpdateModalExpanded";
-import UpdateModalCompact from "pages/question/updateModal/UpdateModalCompact";
+import { appPathAtom } from "state/data.js";
+import { questionsAtom } from "state/data.js";
+import { generateUniqueId } from "utils/idUtils.js";
 
 function UpdateModal({
   setUpdateModal,
