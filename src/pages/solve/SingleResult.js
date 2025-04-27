@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { appPathAtom } from "state/data";
 import { useRecoilValue } from "recoil";
 import { addDays, format } from 'date-fns'; 
 import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
-import { markdownComponents } from "utils/markdownUtil"
+import { appPathAtom } from "state/data.js";
+import { markdownComponents } from "utils/markdownUtils.js"
 
 function SingleResult({ question, index, setQuestions }) {
   const appPath = useRecoilValue(appPathAtom);

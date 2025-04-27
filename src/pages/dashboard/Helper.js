@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import patchNotes from "./patchNotes";
+import patchNotes from "./patchNotes.js";
 
 const Helper = ({ closeHelper }) => {
   const [showPatch, setShowPatch] = useState(false);

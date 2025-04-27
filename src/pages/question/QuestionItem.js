@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { appPathAtom } from "state/data";
 import { useRecoilValue } from "recoil";
 import ReactMarkdown from "react-markdown";
 import remarkBreaks from "remark-breaks";
-import { markdownComponents } from "utils/markdownUtil";
+import { appPathAtom } from "state/data.js";
+import { markdownComponents } from "utils/markdownUtils.js";
 
 function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
   const appPath = useRecoilValue(appPathAtom);

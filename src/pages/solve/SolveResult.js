@@ -1,14 +1,14 @@
-import React, { useRef} from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import SingleResult from "pages/solve/SingleResult";
-import MultipleResult from "pages/solve/MultipleResult";
+import React, { useRef } from "react";
+import { useSetRecoilState } from "recoil";
 import { Doughnut, Bar } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from "chart.js";
 
 import { useNavigate, useLocation } from "react-router-dom";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { questionsAtom} from "state/data";
+import { questionsAtom }  from "state/data.js";
+import SingleResult from "pages/solve/SingleResult.js";
+import MultipleResult from "pages/solve/MultipleResult.js";
 
 
 ChartJS.register(ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale);

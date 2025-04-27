@@ -1,18 +1,17 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { isSameDay, isBefore, addDays } from "date-fns";
 import { useRecoilState, useRecoilValue } from "recoil";
-
-import { historyDataAtom, questionsAtom } from "state/data";
-import Loading from "./Loading";
-import ProblemRecommendation from "./ProblemRecommendation";
-import DashboardStats from "./DashboardStats";
-import HistorySection from "./HistorySection";
-import { formatDate } from "utils/formatDate";
-import { getTodayDate } from "utils/formatDate"; // getTodayDate 함수 가져오기
-import LargeModal from "./LargeModal";
-import Helper from "./Helper";
 import "chartjs-adapter-date-fns"; 
+import { historyDataAtom, questionsAtom } from "state/data.js";
+import Loading from "./Loading.js";
+import ProblemRecommendation from "./ProblemRecommendation.js";
+import DashboardStats from "./DashboardStats.js";
+import HistorySection from "./HistorySection.js";
+import { getTodayDate, formatDate } from "utils/dateUtils.js";
+import LargeModal from "./LargeModal.js";
+import Helper from "./Helper.js";
+
 
 import {
   Chart as ChartJS,
@@ -25,7 +24,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-// Chart.js 등록
+
 
 ChartJS.register(
   CategoryScale,
@@ -66,7 +65,6 @@ const Dashboard = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Read history data via IPC
         const historyResult = await window.electronAPI.readHistoryCSV();
         if (historyResult.success) {
           setHistoryData(historyResult.historyData);
@@ -86,8 +84,7 @@ const Dashboard = () => {
   // 추천 문제 필터링 및 오늘 푼 문제 수 계산
   useEffect(() => {
     let solved = 0; // 오늘 푼 문제 카운트
-    const filtered = questions
-      .map((question) => {
+    const filtered = questions.map((question) => {
         const recommendDate = question.recommenddate;
         const solvedDate = question.solveddate ? question.solveddate : null;
         const isRecommendToday = isSameDay(recommendDate, today);

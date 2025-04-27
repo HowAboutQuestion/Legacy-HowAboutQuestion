@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './Calendar.css';
-import { formatDate } from 'utils/formatDate';
+import { formatDate } from 'utils/dateUtils.js';
 import { isSameDay } from 'date-fns';
-import Modal from './Modal';
+import Modal from './Modal.js';
 
 const HistorySection = ({
   historyView,
