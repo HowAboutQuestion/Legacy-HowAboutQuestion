@@ -1,10 +1,22 @@
-const { ipcMain, dialog } = require('electron');
-const { getMainWindow } = require('../services/windowService');
-const { readQuestionsCSV, updateRecommendDates, updateQuestionsFile } = require('../controllers/questionController');
-const { updateHistory, readHistoryCSV } = require('../controllers/historyController');
-const { saveImage, deleteImage, exportQuestions, extractZip } = require('../controllers/fileController');
-const { userDataPath } = require('../config/paths');
+/**
+ * @fileoverview
+ * 이 모듈은 Electron의 `ipcMain`을 사용하여 애플리케이션의 다양한 요청을 처리하는 IPC 핸들러들을 설정합니다.
+ * - 파일 관련 입출력(IO) 작업을 처리
+ * - 애플리케이션의 경로 정보를 반환
+ */
 
+import { ipcMain, dialog } from 'electron';
+import { getMainWindow } from '../services/windowService';
+import { readQuestionsCSV, updateRecommendDates, updateQuestionsFile } from '../controllers/questionController';
+import { updateHistory, readHistoryCSV } from '../controllers/historyController';
+import { saveImage, deleteImage, exportQuestions, extractZip } from '../controllers/fileController';
+import { userDataPath } from '../config/paths';
+
+
+/**
+ * IPC 핸들러를 설정하는 함수
+ * 이 함수는 애플리케이션에서 사용자가 요청할 수 있는 여러 가지 작업을 처리하는 IPC 핸들러들을 설정합니다.
+ */
 function setupIpcHandlers() {
     console.log("setupIpcHandlers called!");
 
@@ -36,9 +48,6 @@ function setupIpcHandlers() {
 
     // 경로 정보 핸들러
     ipcMain.handle('read-app-path', () => ({ appPath: userDataPath }));
-
 }
 
-module.exports = {
-    setupIpcHandlers
-};
+export { setupIpcHandlers };
