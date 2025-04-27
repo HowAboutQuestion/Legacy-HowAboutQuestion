@@ -1,6 +1,6 @@
 
 // 마크다운 커스텀 하는 곳
-const markdownComponents = {
+export const markdownComponents = {
     //code 인라인이랑 블록
     code({ node, inline, className, children, ...props }) {
       if (inline) {
@@ -31,5 +31,3 @@ const markdownComponents = {
     li({ node, children }) { return <>{children}</>; },
     a({ node, children }) { return <>{children}</>; }
   };
-
-  export { markdownComponents }

@@ -14,8 +14,9 @@ import archiver from 'archiver';
 import extract from 'extract-zip';
 import os from 'os';
 import Papa from 'papaparse';
-import { imageDir, tempDir, userDataPath } from 'config/paths.js';
-import { generateUniqueId, getTodayDate } from 'utils';
+import { imageDir, tempDir, userDataPath } from '../config/paths.js';
+import { getTodayDate }  from '../utils/dateUtils.js';
+import { generateUniqueId }  from '../utils/idUtils.js';
 
 /**
  * 이미지를 저장하는 함수

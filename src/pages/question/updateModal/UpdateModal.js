@@ -4,8 +4,7 @@ import { toast } from "react-toastify";
 import UpdateModalExpanded from "pages/question/updateModal/UpdateModalExpanded.js";
 import UpdateModalCompact from "pages/question/updateModal/UpdateModalCompact.js";
 import "react-toastify/dist/ReactToastify.css";
-import { appPathAtom } from "state/data.js";
-import { questionsAtom } from "state/data.js";
+import { appPathAtom, questionsAtom } from "state/data.js";
 import { generateUniqueId } from "utils/idUtils.js";
 
 function UpdateModal({

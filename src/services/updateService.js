@@ -8,9 +8,10 @@
  * @module updateService
  */
 
-import { autoUpdater } from 'electron-updater';
 import ProgressBar from 'electron-progressbar';
 import { dialog } from 'electron';
+import pkg from 'electron-updater';
+const { autoUpdater } = pkg;
 
 let progressBar;
 
