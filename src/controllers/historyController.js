@@ -1,7 +1,7 @@
 const fs = require('fs');
 const Papa = require('papaparse');
 const { historyCsvPath } = require('../config/paths');
-const { getTodayDate, parseISO, isValid } = require('../utils/dateUtils');
+const { parseISO, isValid, getTodayDate } = require('../utils/dateUtils');
 
 // history.csv를 업데이트하는 함수
 function updateHistory(isCorrect) {
