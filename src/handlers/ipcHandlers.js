@@ -6,11 +6,11 @@
  */
 
 import { ipcMain, dialog } from 'electron';
-import { getMainWindow } from '../services/windowService';
-import { readQuestionsCSV, updateRecommendDates, updateQuestionsFile } from '../controllers/questionController';
-import { updateHistory, readHistoryCSV } from '../controllers/historyController';
-import { saveImage, deleteImage, exportQuestions, extractZip } from '../controllers/fileController';
-import { userDataPath } from '../config/paths';
+import { getMainWindow } from '../services/windowService.js';
+import { readQuestionsCSV, updateRecommendDates, updateQuestionsFile } from '../controllers/questionController.js';
+import { updateHistory, readHistoryCSV } from '../controllers/historyController.js';
+import { saveImage, deleteImage, exportQuestions, extractZip } from '../controllers/fileController.js';
+import { userDataPath } from '../config/paths.js';
 
 
 /**

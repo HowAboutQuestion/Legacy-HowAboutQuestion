@@ -7,8 +7,8 @@
 
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import Papa from 'papaparse';
-import { historyCsvPath } from 'config/paths.js';
-import { parseISO, isValid, getTodayDate } from 'utils';
+import { historyCsvPath } from '../config/paths.js';
+import { parseISO, isValid, getTodayDate } from '../utils/dateUtils.js';
 
 
 /**

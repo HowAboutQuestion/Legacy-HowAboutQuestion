@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { questionsAtom, allTagAtom } from 'state/data.js';
-import { getTodayDate, generateUniqueId } from 'utils';
+import { getTodayDate } from 'utils/dateUtils.js';
+import { generateUniqueId } from 'utils/idUtils.js';
 import { toast } from 'react-toastify';
 
 /**

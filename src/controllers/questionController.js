@@ -6,8 +6,9 @@
 
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import Papa from 'papaparse';
-import { questionsCsvPath } from 'config/paths.js';
-import { generateUniqueId, getTodayDate, parseISO, isValid, isBefore, isAfter, startOfDay, format } from 'utils';
+import { questionsCsvPath } from '../config/paths.js';
+import { getTodayDate, parseISO, isValid, isBefore, isAfter, startOfDay, format } from '../utils/dateUtils.js';
+import { generateUniqueId } from '../utils/idUtils.js';
 
 
 /**
