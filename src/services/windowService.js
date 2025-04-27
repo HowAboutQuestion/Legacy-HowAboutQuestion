@@ -1,11 +1,3 @@
-/**
- * 이 모듈은 Electron 애플리케이션의 브라우저 창을 생성하고 관리하는 기능을 제공합니다.
- * - 메인 창의 크기, 최소 크기, 메뉴바 제거 등을 설정합니다.
- * - 빌드 환경에서 `index.html`을 로드하고, 개발 환경에서는 URL을 로드할 수 있습니다.
- * 
- * @module windowService
- */
-
 import { BrowserWindow } from 'electron';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -24,7 +16,9 @@ const __dirname = dirname(__filename);
  * 
  * @returns {BrowserWindow} 생성된 BrowserWindow 인스턴스
  */
-export function createWindow() {
+export async function createWindow() {
+  const preloadPath = path.join(__dirname, '../preload.cjs');
+
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
@@ -33,7 +27,7 @@ export function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: true,
-      preload: path.join(__dirname, '../preload.js'),
+      preload: preloadPath,
     },
   });
 
