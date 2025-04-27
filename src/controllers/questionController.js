@@ -1,21 +1,31 @@
-const fs = require('fs');
-const Papa = require('papaparse');
-const { questionsCsvPath } = require('../config/paths');
-const { generateUniqueId } = require('../utils/idUtils');
-const { getTodayDate, parseISO, isValid, isBefore, isAfter, startOfDay, format, addDays } = require('../utils/dateUtils');
+/**
+ * @fileoverview
+ * 이 모듈은 questions CSV 파일을 읽고, 업데이트하고, 추천 날짜를 계산하는 함수들을 제공합니다. 
+ * 이 파일은 문제 목록을 처리하고, 각 문제에 대해 추천 날짜를 업데이트하며, 문제 목록을 새로 저장하는 기능을 제공합니다.
+ */
 
-// CSV 파일을 읽어서 데이터 처리하는 함수
-function readQuestionsCSV() {
-  console.log("readQuestionsCSV called!")
+import { readFileSync, writeFileSync, existsSync } from 'fs';
+import Papa from 'papaparse';
+import { questionsCsvPath } from 'config/paths.js';
+import { generateUniqueId, getTodayDate, parseISO, isValid, isBefore, isAfter, startOfDay, format } from 'utils';
+
+
+/**
+ * questions CSV 파일을 읽어 문제 목록과 모든 태그를 반환하는 함수입니다.
+ * 
+ * @returns {Object} - 성공 여부, 모든 태그 목록, 문제 목록 및 메시지를 포함한 객체.
+ */
+export function readQuestionsCSV() {
+  console.log("readQuestionsCSV called!");
 
   try {
-    if (!fs.existsSync(questionsCsvPath)) {
+    if (!existsSync(questionsCsvPath)) {
       console.error(`cannot find questions.csv file: ${questionsCsvPath}`);
       return { success: false, message: 'CSV 파일을 찾을 수 없습니다.' };
     }
 
-    const csvFile = fs.readFileSync(questionsCsvPath, 'utf-8');
-    var questions = [];
+    const csvFile = readFileSync(questionsCsvPath, 'utf-8');
+    let questions = [];
     const tagSet = new Set();
 
     Papa.parse(csvFile, {
@@ -36,7 +46,7 @@ function readQuestionsCSV() {
       },
     });
 
-    console.log("questions read success")
+    console.log("questions read success");
 
     return {
       success: true,
@@ -50,14 +60,20 @@ function readQuestionsCSV() {
   }
 }
 
-function updateRecommendDates() {
+/**
+ * questions CSV 파일에서 추천 날짜를 업데이트하는 함수입니다.
+ * 오늘 날짜를 기준으로 문제의 추천 날짜를 계산하여 업데이트합니다.
+ *
+ * @returns {Object} - 성공 여부와 메시지를 포함한 객체.
+ */
+export function updateRecommendDates() {
   try {
-    if (!fs.existsSync(questionsCsvPath)) {
+    if (!existsSync(questionsCsvPath)) {
       console.error(`CSV 파일을 찾을 수 없습니다: ${questionsCsvPath}`);
       return { success: false, message: 'CSV 파일을 찾을 수 없습니다.' };
     }
 
-    const csvFile = fs.readFileSync(questionsCsvPath, 'utf-8');
+    const csvFile = readFileSync(questionsCsvPath, 'utf-8');
     const parsed = Papa.parse(csvFile, { header: true, skipEmptyLines: true });
 
     const today = getTodayDate();
@@ -83,7 +99,7 @@ function updateRecommendDates() {
     });
 
     const newCsv = Papa.unparse(updatedData);
-    fs.writeFileSync(questionsCsvPath, newCsv, 'utf-8');
+    writeFileSync(questionsCsvPath, newCsv, 'utf-8');
 
     console.log('recommenddate update success');
     return { success: true, message: 'recommenddate가 성공적으로 업데이트되었습니다.' };
@@ -93,9 +109,15 @@ function updateRecommendDates() {
   }
 }
 
-// CSV 파일 업데이트
-function updateQuestionsFile(questions) {
-  console.log("updateQuestionsFile called!")
+/**
+ * 문제 목록을 기반으로 questions CSV 파일을 업데이트하는 함수입니다.
+ * 
+ * @param {Array} questions - 업데이트할 문제 목록.
+ * @returns {Object} - 성공 여부를 포함한 객체.
+ */
+export function updateQuestionsFile(questions) {
+  console.log("updateQuestionsFile called!");
+
   try {
     const csvString = Papa.unparse(
       questions.map(question => {
@@ -103,16 +125,10 @@ function updateQuestionsFile(questions) {
         return rest;
       })
     );
-    fs.writeFileSync(questionsCsvPath, csvString, 'utf-8');
+    writeFileSync(questionsCsvPath, csvString, 'utf-8');
     return { success: true };
   } catch (error) {
     console.error('CSV update error:', error);
     return { success: false, message: error.message };
   }
 }
-
-module.exports = {
-  readQuestionsCSV,
-  updateRecommendDates,
-  updateQuestionsFile
-};
