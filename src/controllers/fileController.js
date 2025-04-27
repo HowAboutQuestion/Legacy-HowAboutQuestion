@@ -1,15 +1,29 @@
-const fs = require('fs');
-const path = require('path');
-const archiver = require('archiver');
-const extract = require('extract-zip');
-const os = require('os');
-const Papa = require('papaparse');
-const { imageDir, tempDir, userDataPath } = require('../config/paths');
-const { generateUniqueId } = require('../utils/idUtils');
-const { getTodayDate } = require('../utils/dateUtils');
+/**
+ * @fileoverview 
+ * 이 모듈은 이미지 저장, 삭제 및 .zip 파일을 처리하는 기능을 제공합니다.
+ * - 이미지를 지정된 경로에 저장하고 삭제합니다.
+ * - 주어진 질문 데이터를 .zip 파일로 내보내고, 내보낸 파일을 압축해제하여 질문을 추출합니다.
+ * - .csv 파일을 파싱하고, 이미지 파일을 처리하는 로직을 포함하고 있습니다.
+ * 
+ * @module fileService
+ */
 
-// 이미지 저장
-async function saveImage(fileName, content) {
+import fs from 'fs';
+import path from 'path';
+import archiver from 'archiver';
+import extract from 'extract-zip';
+import os from 'os';
+import Papa from 'papaparse';
+import { imageDir, tempDir, userDataPath } from 'config/paths.js';
+import { generateUniqueId, getTodayDate } from 'utils';
+
+/**
+ * 이미지를 저장하는 함수
+ * @param {string} fileName - 저장할 이미지 파일의 이름
+ * @param {Buffer} content - 이미지 내용
+ * @returns {Object} 저장 성공 여부 및 파일 경로 정보
+ */
+export async function saveImage(fileName, content) {
   try {
     if (!fs.existsSync(imageDir)) {
       fs.mkdirSync(imageDir); // 디렉토리가 없으면 생성
@@ -30,8 +44,12 @@ async function saveImage(fileName, content) {
   }
 }
 
-// 이미지 삭제
-async function deleteImage(imgPath) {
+/**
+ * 이미지를 삭제하는 함수
+ * @param {string} imgPath - 삭제할 이미지 파일의 경로
+ * @returns {Object} 삭제 성공 여부 및 메시지
+ */
+export async function deleteImage(imgPath) {
   try {
     const imageFullPath = path.join(userDataPath, imgPath);
 
@@ -46,8 +64,13 @@ async function deleteImage(imgPath) {
   }
 }
 
-// .zip 내보내기
-async function exportQuestions(questions, savePath) {
+/**
+ * 질문 데이터를 .zip 파일로 내보내는 함수
+ * @param {Array} questions - 내보낼 질문 데이터 배열
+ * @param {string} savePath - 저장할 .zip 파일 경로
+ * @returns {Object} 내보내기 성공 여부 및 경로 정보
+ */
+export async function exportQuestions(questions, savePath) {
   if (!savePath) return { success: false, message: 'No file selected' };
 
   try {
@@ -97,8 +120,13 @@ async function exportQuestions(questions, savePath) {
   }
 }
 
-// .zip 읽기
-async function extractZip(fileName, content) {
+/**
+ * .zip 파일을 읽어 압축을 푸는 함수
+ * @param {string} fileName - 읽을 .zip 파일의 이름
+ * @param {Buffer} content - .zip 파일의 내용
+ * @returns {Object} 성공 여부 및 추출된 질문 데이터
+ */
+export async function extractZip(fileName, content) {
   const tempDir = path.join(os.tmpdir(), 'uploadedZip');
   let result;
   
@@ -201,10 +229,3 @@ async function extractZip(fileName, content) {
   
   return result;
 }
-
-module.exports = {
-  saveImage,
-  deleteImage,
-  exportQuestions,
-  extractZip
-};

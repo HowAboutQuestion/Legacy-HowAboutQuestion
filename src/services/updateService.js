@@ -5,6 +5,7 @@
  * - 다운로드 진행 상황을 표시하는 ProgressBar를 사용합니다.
  * - 업데이트가 완료되면 사용자에게 알림을 보내고 설치를 트리거합니다.
  * 
+ * @module updateService
  */
 
 import { autoUpdater } from 'electron-updater';
