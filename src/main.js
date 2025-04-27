@@ -1,26 +1,21 @@
-require('dotenv').config();
-const { app } = require('electron');
-const { updateRecommendDates } = require('./controllers/questionController');
-const { createWindow, getMainWindow } = require('./services/windowService');
-const { setupAutoUpdater } = require('./services/updateService');
-const { setupIpcHandlers } = require('./handlers/ipcHandlers');
+import dotenv from 'dotenv';
+import { app } from 'electron';
+import { updateRecommendDates } from './controllers/questionController.js';
+import { createWindow, getMainWindow } from './services/windowService.js';
+import { setupAutoUpdater } from './services/updateService.js';
+import { setupIpcHandlers } from './handlers/ipcHandlers.js';
+
+dotenv.config();
 
 // IPC 핸들러 설정
 setupIpcHandlers();
 
-
 // 앱 시작 시 처리
 app.on('ready', () => {
-  const updateResult = updateRecommendDates();
-  if (!updateResult.success) {
-    // console.error
-
-  }
+  updateRecommendDates();
   createWindow();
   setupAutoUpdater();
-}
-);
-
+});
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
@@ -33,5 +28,3 @@ app.on("activate", () => {
     createWindow();
   }
 });
-
-
