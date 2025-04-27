@@ -1,5 +1,14 @@
 const patchNotes = `
 <div class="space-y-8">
+<div class="p-6 bg-white rounded shadow">
+    <h3 class="text-2xl font-bold mb-2">
+      👾 <span class="font-mono">[확장 모드 버그 수정]</span> - <span class="italic">"미안하다, 업데이트 확인하려고 어그로 끌었다."</span>
+    </h3>
+    <div class="text-gray-700">
+       문제 추가하면서 확장 모드로 변경 시 이미지 추가 및 정답 입력 문제와 갯수 카운트 등 버그를 수정했습니다.
+    </div>
+  </div>
+
   <!-- 타이머 기능 -->
   <div class="p-6 bg-white rounded shadow">
     <h3 class="text-2xl font-bold mb-2">

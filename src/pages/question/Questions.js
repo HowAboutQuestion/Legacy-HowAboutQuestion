@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { questionsAtom, allTagAtom } from "state/data";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import QuestionItem from "pages/question/QuestionItem";
-import UpdateModal from "pages/question/updateModal/UpdateModal";
 import { useLocation } from "react-router-dom";
-import InsertModal from "pages/question/insertModal/InsertModal";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Sidebar from "pages/question/Sidebar";
-import QuestionsMain from "pages/question/QuestionsMain";
+import Sidebar from "pages/question/Sidebar.js";
+import UpdateModal from "pages/question/updateModal/UpdateModal.js";
+import InsertModal from "pages/question/insertModal/InsertModal.js";
+import QuestionsMain from "pages/question/QuestionsMain.js";
+import { questionsAtom, allTagAtom } from "state/data.js";
 
 function Questions() {
   const location = useLocation();
   //모든 문제 전역에서 불러오기
   const questions = useRecoilValue(questionsAtom);
+  const setQuestions = useSetRecoilState(questionsAtom);
+
   const [filterQuestions, setFilterQuestions] = useState([]);
 
   //존재하는 중복 없는 모든 태그
@@ -75,6 +76,139 @@ function Questions() {
     setUpdateQuestion({ ...question });
   };
 
+  /**
+ * 질문 목록 중 checked == true인 항목이 있으면 → 체크된 질문만 추출해서 checked, id 제거 후 반환
+ * checked == true인 항목이 없으면 → 전체 질문을 대상으로 checked, id 제거 후 반환
+ */
+  const handleDownloadToZip = async () => {
+    console.log("filterQuestions :", filterQuestions);
+    const downloadQuestions =
+      filterQuestions
+        .some(({ index, question }) => question.checked)
+        ? filterQuestions
+          .filter(({ index, question }) => question.checked) // question.checked가 true인 것만 필터링
+          .map(({ index, question }) => {
+            const { checked, id, ...rest } = question;
+            return rest;
+          })
+        : filterQuestions
+          .map(({ index, question }) => {
+            const { checked, id, ...rest } = question; // checked 제외한 데이터만 추출
+            return rest;
+          });
+
+    const result = await window.electronAPI.exportQuestions(downloadQuestions);
+
+    if (result.success) {
+      if (!toast.isActive("export-success")) {
+        toast.success(`문제 내보내기가 완료됐습니다. ${result.path}`, {
+          toastId: "export-success",
+        });
+      }
+    } else {
+      if (!toast.isActive("export-error")) {
+        toast.error(`문제 내보내기 중 문제가 발생했습니다. ${result.message}`, {
+          toastId: "export-error",
+        });
+      }
+    }
+  };
+
+  const confirmDeletion = () => {
+    if (toast.isActive("confirm-deletion")) {
+      toast.dismiss("confirm-deletion");
+    }
+    return new Promise((resolve) => {
+      toast.info(
+        <div>
+          <p className="text-sm">삭제하시겠습니까?</p>
+          <div className="flex gap-2 justify-end mt-2">
+            <button
+              onClick={() => {
+                resolve(true);
+                toast.dismiss("confirm-deletion");
+              }}
+              className="bg-blue-500 text-white px-2 py-1 rounded text-xs"
+            >
+              확인
+            </button>
+            <button
+              onClick={() => {
+                resolve(false);
+                toast.dismiss("confirm-deletion");
+              }}
+              className="bg-gray-300 text-black px-2 py-1 rounded text-xs"
+            >
+              취소
+            </button>
+          </div>
+        </div>,
+        {
+          toastId: "confirm-deletion",
+          position: "top-center",
+          autoClose: false,
+          closeOnClick: false,
+          closeButton: false,
+        }
+      );
+    });
+  };
+
+  const deleteFilteredQuestions = async () => {
+    const confirmed = await confirmDeletion();
+    if (!confirmed) return;
+  
+    const deleteImages = [];
+  
+    // 삭제할 문제 id 수집
+    const idsToDelete = filterQuestions
+      .filter(({ question }) => {
+        if (question.checked === true) {
+          if (question.img) deleteImages.push(question.img);
+          return true;
+        }
+        return false;
+      })
+      .map(({ question }) => question.id); // 삭제 대상 id만 추출
+  
+    // 전체 questions 기준으로 삭제 대상 제외
+    const newQuestions = questions
+      .filter((q) => !idsToDelete.includes(q.id))
+      .map((q) => {
+        const { checked, ...rest } = q; // checked 제거
+        return rest;
+      });
+  
+    setQuestions(newQuestions); // Recoil 상태 업데이트
+  
+    // CSV 반영
+    await window.electronAPI.updateQuestions(newQuestions);
+  
+    // 이미지 삭제
+    const handleDelete = async (imagePath) => {
+      try {
+        const result = await window.electronAPI.deleteImage(imagePath);
+        if (result.success) {
+          console.log("이미지가 성공적으로 삭제되었습니다.");
+        } else {
+          console.error("삭제 실패:", result.message);
+        }
+      } catch (error) {
+        console.error("삭제 중 오류 발생:", error);
+      }
+    };
+    deleteImages.forEach((img) => {
+      handleDelete(img);
+    });
+  
+    toast.success("선택된 문제가 삭제되었습니다.", {
+      position: "top-center",
+      autoClose: 1000,
+    });
+  };
+  
+
+
   // 모달 기본 높이 300px
   const [modalHeight, setModalHeight] = useState(300);
 
@@ -124,8 +258,10 @@ function Questions() {
         filterQuestions={filterQuestions}
         isCollapsed={isCollapsed}
         setFilterQuestions={setFilterQuestions}
+        deleteFilteredQuestions={deleteFilteredQuestions}
         insertButtonClick={insertButtonClick}
         handleUpdateClick={handleUpdateClick}
+        handleDownloadToZip={handleDownloadToZip}
       />
 
       {/* 오버레이는 모달이 열려있을 때만 렌더링 */}
@@ -140,9 +276,8 @@ function Questions() {
       )}
       {/* 모달 컨테이너는 항상 렌더링, 높이는 상태에 따라 변경 */}
       <div
-        className={`transition-all duration-500 width-fill-available shadow-[10px_0px_10px_10px_rgba(0,0,0,0.1)] rounded-t-2xl fixed bottom-0 bg-white ${
-          isCollapsed ? "ml-10" : "ml-80"
-        } z-50`}
+        className={`transition-all duration-500 width-fill-available shadow-[10px_0px_10px_10px_rgba(0,0,0,0.1)] rounded-t-2xl fixed bottom-0 bg-white ${isCollapsed ? "ml-10" : "ml-80"
+          } z-50`}
         style={{ height: insertModal || updateModal ? modalHeight : 0 }}
       >
         {/* 드래그 핸들 (모달 상단 중앙에 위치) */}

@@ -1,54 +1,13 @@
 import React, { useState } from "react";
-import QuestionItem from "pages/question/QuestionItem";
-import { questionsAtom, allTagAtom } from "state/data";
+import QuestionItem from "pages/question/QuestionItem.js";
+import { questionsAtom } from "state/data.js";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { toast } from "react-toastify";
 
 
-function QuestionsMain({ isCollapsed, filterQuestions, setFilterQuestions, insertButtonClick, handleUpdateClick }) {
+function QuestionsMain({ isCollapsed, filterQuestions, setFilterQuestions, insertButtonClick, handleUpdateClick, handleDownloadToZip, deleteFilteredQuestions }) {
   const [isAllChecked, setIsAllChecked] = useState(false); // 전체 체크박스 상태 관리
   const questions = useRecoilValue(questionsAtom);
   const setQuestions = useSetRecoilState(questionsAtom);
-
-  const confirmDeletion = () => {
-    if (toast.isActive("confirm-deletion")) {
-      toast.dismiss("confirm-deletion");
-    }
-    return new Promise((resolve) => {
-      toast.info(
-        <div>
-          <p className="text-sm">삭제하시겠습니까?</p>
-          <div className="flex gap-2 justify-end mt-2">
-            <button
-              onClick={() => {
-                resolve(true);
-                toast.dismiss("confirm-deletion");
-              }}
-              className="bg-blue-500 text-white px-2 py-1 rounded text-xs"
-            >
-              확인
-            </button>
-            <button
-              onClick={() => {
-                resolve(false);
-                toast.dismiss("confirm-deletion");
-              }}
-              className="bg-gray-300 text-black px-2 py-1 rounded text-xs"
-            >
-              취소
-            </button>
-          </div>
-        </div>,
-        {
-          toastId: "confirm-deletion",
-          position: "top-center",
-          autoClose: false,
-          closeOnClick: false,
-          closeButton: false,
-        }
-      );
-    });
-  };
 
   const handleCheckboxChange = (index) => {
     setFilterQuestions((prevQuestions) => {
@@ -104,86 +63,6 @@ function QuestionsMain({ isCollapsed, filterQuestions, setFilterQuestions, inser
     event.target.files[0] = null;
   };
 
-  const handleDownloadToZip = async () => {
-    const downloadQuestions = filterQuestions.some(
-      ({ index, question }) => question.checked
-    )
-      ? filterQuestions
-        .filter(({ index, question }) => question.checked) // question.checked가 true인 것만 필터링
-        .map(({ index, question }) => {
-          const { checked, id, ...rest } = question;
-          return rest;
-        })
-      : filterQuestions.map(({ index, question }) => {
-        const { checked, id, ...rest } = question; // checked 제외한 데이터만 추출
-        return rest;
-      });
-
-    const result = await window.electronAPI.exportQuestions(downloadQuestions);
-
-    if (result.success) {
-      if (!toast.isActive("export-success")) {
-        toast.success(`문제 내보내기가 완료됐습니다. ${result.path}`, {
-          toastId: "export-success",
-        });
-      }
-    } else {
-      if (!toast.isActive("export-error")) {
-        toast.error(`문제 내보내기 중 문제가 발생했습니다. ${result.message}`, {
-          toastId: "export-error",
-        });
-      }
-    }
-  };
-
-  const deleteQuestionsAll = async () => {
-    const confirmed = await confirmDeletion();
-    if (!confirmed) return; // 취소한 경우 중단
-
-    const deleteImages = [];
-
-    const updatedQuestions = filterQuestions
-      .filter(({ question }) => {
-        if (question.checked === true) {
-          if (question.img) deleteImages.push(question.img); // 삭제할 질문의 img 추가
-          return false; // checked가 true면 삭제
-        }
-        return true;
-      })
-      .map(({ question }) => {
-        const { checked, ...rest } = question;
-        return rest;
-      });
-
-    setQuestions([...updatedQuestions]); // 질문 업데이트
-
-    // CSV 파일 업데이트 (CSV 파일에도 반영)
-    await window.electronAPI.updateQuestions(updatedQuestions);
-
-    const handleDelete = async (imagePath) => {
-      console.log("handleDelete function imagePath:", imagePath);
-      try {
-        const result = await window.electronAPI.deleteImage(imagePath);
-        if (result.success) {
-          console.log("이미지가 성공적으로 삭제되었습니다.");
-        } else {
-          console.error("삭제 실패:", result.message);
-        }
-      } catch (error) {
-        console.error("삭제 중 오류 발생:", error);
-      }
-    };
-    // 삭제할 이미지 처리
-    deleteImages.forEach((img) => {
-      handleDelete(img);
-    });
-
-    toast.success("선택된 문제가 삭제되었습니다.", {
-      position: "top-center",
-      autoClose: 1000,
-    });
-  };
-
   // 테이블 데이터 랜더링
   const questionsItems = filterQuestions.map(({ question, index }) => (
     <QuestionItem
@@ -215,7 +94,7 @@ function QuestionsMain({ isCollapsed, filterQuestions, setFilterQuestions, inser
             문제추가
           </div>
           <div className="bg-blue-500 hover:scale-105 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center transition justify-center me-2 mb-2">
-          <svg
+            <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"
@@ -239,7 +118,7 @@ function QuestionsMain({ isCollapsed, filterQuestions, setFilterQuestions, inser
             onClick={handleDownloadToZip}
             className="cursor-pointer bg-blue-500 hover:scale-105 transition text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2 mb-2"
           >
-                        <svg
+            <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"
@@ -251,7 +130,7 @@ function QuestionsMain({ isCollapsed, filterQuestions, setFilterQuestions, inser
                 clipRule="evenodd"
               />
             </svg>
-            
+
           </div>
         </div>
       </div>
@@ -279,7 +158,7 @@ function QuestionsMain({ isCollapsed, filterQuestions, setFilterQuestions, inser
             <th scope="col" className="px-3 py-3"></th>
             <th scope="col" className="px-5 py-3 rounded-tr-xl">
               <svg
-                onClick={deleteQuestionsAll}
+                onClick={() => deleteFilteredQuestions()}
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"

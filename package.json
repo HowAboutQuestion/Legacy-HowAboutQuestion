@@ -1,6 +1,6 @@
 {
   "name": "HowAboutQuestion",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "homepage": ".",
   "main": "src/main.js",
   "files": [
@@ -8,6 +8,7 @@
     "src/**/*",
     "node_modules/**/*"
   ],
+  "type": "module",
   "private": true,
   "dependencies": {
     "adm-zip": "^0.5.16",

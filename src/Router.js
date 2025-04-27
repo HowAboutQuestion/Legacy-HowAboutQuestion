@@ -1,12 +1,12 @@
 import React from "react";
 import {  Route, Routes } from "react-router-dom";
-import Solve from "pages/solve/Solve";
-import Questions from "pages/question/Questions";
-import Dashboard from "pages/dashboard/Dashboard";
-import SelectSolve from "pages/solve/SelectSolve";
-import Card from "pages/solve/Card";
-import CardResult from "pages/solve/CardResult";
-import SolveResult from "pages/solve/SolveResult";
+import Solve from "pages/solve/Solve.js";
+import Questions from "pages/question/Questions.js";
+import Dashboard from "pages/dashboard/Dashboard.js";
+import SelectSolve from "pages/solve/SelectSolve.js";
+import Card from "pages/solve/Card.js";
+import CardResult from "pages/solve/CardResult.js";
+import SolveResult from "pages/solve/SolveResult.js";
 
 
 
