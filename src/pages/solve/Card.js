@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSetRecoilState, useRecoilValue } from "recoil";
-import { questionsAtom, appPathAtom } from "state/data";
+import { questionsAtom, appPathAtom } from "state/data.js";
 import { addDays, format } from 'date-fns'; 
 import ReactMarkdown from 'react-markdown';
 import remarkBreaks from 'remark-breaks';
-import { markdownComponents } from "utils/markdownUtils"
+import { markdownComponents } from "utils/markdownUtils.js"
 
 function Card() {
   const appPath = useRecoilValue(appPathAtom);

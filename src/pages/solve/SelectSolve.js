@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useRecoilValue } from "recoil";
-import { questionsAtom, allTagAtom } from "state/data";
+import { questionsAtom, allTagAtom } from "state/data.js";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

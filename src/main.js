@@ -1,7 +1,7 @@
 require('dotenv').config();
 const { app } = require('electron');
 const { updateRecommendDates } = require('./controllers/questionController');
-const { createWindow } = require('./services/windowService');
+const { createWindow, getMainWindow } = require('./services/windowService');
 const { setupAutoUpdater } = require('./services/updateService');
 const { setupIpcHandlers } = require('./handlers/ipcHandlers');
 
@@ -29,7 +29,7 @@ app.on("window-all-closed", () => {
 });
 
 app.on("activate", () => {
-  if (mainWindow === null) {
+  if (getMainWindow() === null) {
     createWindow();
   }
 });

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import QuestionItem from "pages/question/QuestionItem";
-import { questionsAtom } from "state/data";
+import QuestionItem from "pages/question/QuestionItem.js";
+import { questionsAtom } from "state/data.js";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { questionsAtom, allTagAtom } from "state/data";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import UpdateModal from "pages/question/updateModal/UpdateModal";
 import { useLocation } from "react-router-dom";
-import InsertModal from "pages/question/insertModal/InsertModal";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Sidebar from "pages/question/Sidebar";
-import QuestionsMain from "pages/question/QuestionsMain";
+import Sidebar from "pages/question/Sidebar.js";
+import UpdateModal from "pages/question/updateModal/UpdateModal.js";
+import InsertModal from "pages/question/insertModal/InsertModal.js";
+import QuestionsMain from "pages/question/QuestionsMain.js";
+import { questionsAtom, allTagAtom } from "state/data.js";
 
 function Questions() {
   const location = useLocation();
