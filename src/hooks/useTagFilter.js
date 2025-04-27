@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
-import { questionsAtom, allTagAtom } from 'state/data';
+import { questionsAtom, allTagAtom } from 'state/data.js';
 
 /**
  * 태그 필터링을 처리하는 커스텀 훅
