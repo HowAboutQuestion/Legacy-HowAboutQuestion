@@ -195,7 +195,7 @@ const Helper = ({ closeHelper }) => {
         <footer className="mt-16 text-gray-600 text-sm transition-colors duration-300 border-t pt-5">
           <div className="max-w-screen-md mx-auto text-center">
             <a
-              href="https://github.com/haerim-kweon/HowAboutQuestion/issues"
+              href="https://github.com/HowAboutQuestion/Lagacy-HowAboutQuestion/discussions"
               target="_blank"
               rel="noopener noreferrer"
               className="text-lg font-bold text-gray-800 dark:text-white mb-2 hover:underline"
