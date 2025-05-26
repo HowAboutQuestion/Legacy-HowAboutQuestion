@@ -1,6 +1,6 @@
 {
   "name": "HowAboutQuestion",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "homepage": ".",
   "main": "src/main.js",
   "files": [
@@ -110,8 +110,8 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "haerim-kweon",
-        "repo": "HowAboutQuestion",
+        "owner": "HowAboutQuestion",
+        "repo": "Lagacy-HowAboutQuestion",
         "releaseType": "release"
       }
     ]
