@@ -188,7 +188,7 @@ function InsertModal({ setInsertModal, expanded }) {
     setDescription("");
     setThumbnail(null);
     setSelectedOptionIndex(null);
-
+    setImageFile(null);
     setQuestions((prevQuestions) => [question, ...prevQuestions]);
 
     if (titleInputRef.current) {
