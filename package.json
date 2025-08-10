@@ -1,6 +1,6 @@
 {
   "name": "HowAboutQuestion",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "homepage": ".",
   "main": "src/main.js",
   "files": [
@@ -19,6 +19,7 @@
     "cra-template": "1.2.0",
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
+    "electron-progressbar": "^2.2.1",
     "electron-squirrel-startup": "^1.0.1",
     "electron-updater": "^6.6.2",
     "extract-zip": "^2.0.1",
@@ -36,8 +37,7 @@
     "react-toastify": "^11.0.3",
     "recoil": "^0.7.7",
     "remark-breaks": "^4.0.0",
-    "web-vitals": "^4.2.4",
-    "electron-progressbar": "^2.2.1"
+    "web-vitals": "^4.2.4"
   },
   "scripts": {
     "start:react": "react-scripts start",
@@ -91,12 +91,11 @@
     },
     "win": {
       "target": "nsis",
-      "icon": "public/icon.ico"
+      "icon": "assets/icons/icon.ico"
     },
     "linux": {
       "target": "AppImage"
     },
-    "electronVersion": "33.2.1",
     "asar": true,
     "files": [
       "build/**/*",
@@ -114,6 +113,7 @@
         "repo": "Lagacy-HowAboutQuestion",
         "releaseType": "release"
       }
-    ]
+    ],
+    "electronVersion": "33.2.1"
   }
 }
