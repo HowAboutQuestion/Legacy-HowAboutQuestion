@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -244,6 +245,32 @@ function Questions() {
     window.addEventListener("mouseup", onMouseUp);
   };
 
+  const navigate = useNavigate();
+  const goSelectSolve = () => {
+    const toSolveTags = new Set();
+    const toSolveQuestions = 
+      filterQuestions.some(({ question }) => question.checked)
+      ? filterQuestions
+          .filter(({ question }) => question.checked)
+          .map(({ question }) => {
+            const { checked, id, tag, ...rest } = question;
+            if (tag) tag.forEach((t) => toSolveTags.add(t));
+            return rest;
+          })
+      : filterQuestions.map(({ question }) => {
+          const { checked, id, tag, ...rest } = question;
+          if (tag) tag.forEach((t) => toSolveTags.add(t));
+          return rest;
+        });
+
+      navigate("/select", {
+        state: {
+          selectedTags: [...toSolveTags], 
+          selectedQuestions: toSolveQuestions, 
+        },
+      });
+  }
+
   return (
     <main className="ml-20 flex">
       <Sidebar
@@ -262,6 +289,7 @@ function Questions() {
         insertButtonClick={insertButtonClick}
         handleUpdateClick={handleUpdateClick}
         handleDownloadToZip={handleDownloadToZip}
+        goSelectSolve={goSelectSolve}
       />
 
       {/* 오버레이는 모달이 열려있을 때만 렌더링 */}

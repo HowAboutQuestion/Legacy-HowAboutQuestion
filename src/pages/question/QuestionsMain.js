@@ -4,7 +4,7 @@ import { questionsAtom } from "state/data.js";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 
-function QuestionsMain({ isCollapsed, filterQuestions, setFilterQuestions, insertButtonClick, handleUpdateClick, handleDownloadToZip, deleteFilteredQuestions }) {
+function QuestionsMain({ isCollapsed, filterQuestions, setFilterQuestions, insertButtonClick, handleUpdateClick, handleDownloadToZip, deleteFilteredQuestions, goSelectSolve }) {
   const [isAllChecked, setIsAllChecked] = useState(false); // 전체 체크박스 상태 관리
   const questions = useRecoilValue(questionsAtom);
   const setQuestions = useSetRecoilState(questionsAtom);
@@ -87,6 +87,12 @@ function QuestionsMain({ isCollapsed, filterQuestions, setFilterQuestions, inser
           </h1>
         </div>
         <div className="bg-white items-center flex">
+          <div
+            onClick={() => goSelectSolve()}
+            className="cursor-pointer bg-blue-500 hover:scale-105 transition text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2"
+          >
+            문제풀러가기
+          </div>          
           <div
             onClick={() => insertButtonClick()}
             className="cursor-pointer bg-blue-500 hover:scale-105 transition text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2"
