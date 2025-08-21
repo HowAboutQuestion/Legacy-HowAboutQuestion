@@ -2,7 +2,8 @@ import React, { useRef } from "react";
 import { useSetRecoilState } from "recoil";
 import { Doughnut, Bar } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from "chart.js";
-
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -145,14 +146,31 @@ function SolveResult() {
 
   const navigate = useNavigate();
 
-  const retry = () => {
+  const retryAll = () => {
+    const retryTags = new Set();
+    const retryQuestions = [...answers];
+    
+     // 틀린 문제에서 태그 값을 Set에 추가
+    retryQuestions.forEach((item) => {
+      if (item.tag) {
+        item.tag.forEach((tag) => retryTags.add(tag)); // 중복 없이 태그 추가
+      }
+    });
+
+    navigate("/solve", {
+      state: { questions: retryQuestions, tags: [...retryTags] },
+    });
+  
+  }
+
+  const retryWrongQuestions = () => {
     const retryTags = new Set();
     const retryQuestions = answers.filter((item) => item.answer !== item.selected);
     
     if(retryQuestions.length <= 0){
-      // if (!toast.isActive("no-question-error")) {
-      //         toast.error("현재 풀이 가능한 문제가 없습니다! 문제를 생성해주세요", { toastId: "no-question-error" });
-      // } 
+      if (!toast.isActive("no-question-retry-error")) {
+        toast.error("다시 풀 문제가 없습니다!", { toastId: "no-question-retry-error" });
+      } 
       return;
     }
      // 틀린 문제에서 태그 값을 Set에 추가
@@ -167,7 +185,6 @@ function SolveResult() {
     });
   
   }
-
 
   return (
     <main className="ml-20">
@@ -205,10 +222,16 @@ function SolveResult() {
             </svg>
           </div>
           <div
-              onClick={retry}
+              onClick={retryAll}
               className={`cursor-pointer bg-blue-500 hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2 transition`}
             >
-              다시풀기
+              전체 다시풀기
+          </div>
+          <div
+              onClick={retryWrongQuestions}
+              className={`cursor-pointer bg-blue-500 hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2 transition`}
+            >
+              오답 다시풀기
           </div>
           </div>
         </div>
