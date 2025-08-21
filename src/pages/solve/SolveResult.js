@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useSetRecoilState } from "recoil";
 import { Doughnut, Bar } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from "chart.js";
@@ -137,15 +137,14 @@ function SolveResult() {
   const resultPage = () => {
     return answers.map((answer, index) => {
       return answer.type === "주관식" ? (
-        <SingleResult key={index} question={answer} index={index} setQuestions={setQuestions} />
+        <SingleResult key={index} question={answer} index={index} setQuestions={setQuestions} isShowAllDescription={isShowAllDescription} />
       ) : (
-        <MultipleResult key={index} question={answer} index={index} />
+        <MultipleResult key={index} question={answer} index={index} isShowAllDescription={isShowAllDescription}/>
       );
     });
   };
 
   const navigate = useNavigate();
-
   const retryAll = () => {
     const retryTags = new Set();
     const retryQuestions = [...answers];
@@ -186,6 +185,11 @@ function SolveResult() {
   
   }
 
+  const [isShowAllDescription, setIsShowAllDescription] = useState(false); 
+  const handleShowDescriptionClick = () => {
+    setIsShowAllDescription((prev) => !prev);
+  }
+
   return (
     <main className="ml-20">
       {/* PDF 처리할 REF 설정 */}
@@ -201,37 +205,43 @@ function SolveResult() {
             </h1>
           </div>
           <div className="flex items-center">
-            {/* PDF 다운로드 버튼 */}
-          <div 
-          className="cursor-pointer bg-blue-500 hover:scale-105 transition text-white font-semibold rounded-2xl text-xs h-8 w-8 inline-flex items-center justify-center me-2 mb-2"
-
-          onClick={handleDownloadPDF}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="white"
-              className="size-4"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0 1 10.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0 .229 2.523a1.125 1.125 0 0 1-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0 0 21 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 0 0-1.913-.247M6.34 18H5.25A2.25 2.25 0 0 1 3 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 0 1 1.913-.247m10.5 0a48.536 48.536 0 0 0-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z"
-              />
-            </svg>
-          </div>
           <div
+            onClick={handleShowDescriptionClick}
+            className={`cursor-pointer hover:scale-105 transition text-white font-semibold rounded-2xl text-xs h-8 w-8 inline-flex items-center justify-center me-2 mb-2 ${isShowAllDescription ? "bg-blue-500" : "bg-blue-100"}`}
+          >
+            {isShowAllDescription ? <BulbOnIcon /> : <BulbOffIcon />}
+          </div>
+
+
+            <div 
+              className="cursor-pointer bg-blue-500 hover:scale-105 transition text-white font-semibold rounded-2xl text-xs h-8 w-8 inline-flex items-center justify-center me-2 mb-2"
+              onClick={handleDownloadPDF}>
+              <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="white"
+                  className="size-4"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0 1 10.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0 .229 2.523a1.125 1.125 0 0 1-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0 0 21 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 0 0-1.913-.247M6.34 18H5.25A2.25 2.25 0 0 1 3 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 0 1 1.913-.247m10.5 0a48.536 48.536 0 0 0-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z"
+                  />
+              </svg>
+            </div>
+            <div
               onClick={retryAll}
               className={`cursor-pointer bg-blue-500 hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2 transition`}
             >
               전체 다시풀기
-          </div>
+            </div>
           <div
-              onClick={retryWrongQuestions}
-              className={`cursor-pointer bg-blue-500 hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2 transition`}
-            >
-              오답 다시풀기
+            onClick={retryWrongQuestions}
+            className={`cursor-pointer bg-blue-500 hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2 transition`}
+          >
+            오답 다시풀기
           </div>
           </div>
         </div>
@@ -261,3 +271,38 @@ function SolveResult() {
 }
 
 export default SolveResult;
+
+function BulbOnIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="white"
+      className="size-4"
+      aria-hidden="true"
+    >
+      <path d="M12 2.25c-3.728 0-6.75 2.88-6.75 6.427 0 2.13 1.033 3.853 2.595 5.004.564.42.915 1.04.915 1.715v.104c0 .41.334.745.745.745h4.99c.411 0 .745-.334.745-.745v-.104c0-.676.351-1.295.915-1.715 1.562-1.151 2.595-2.874 2.595-5.004C18.75 5.13 15.728 2.25 12 2.25Z" />
+      <path d="M9 18.75a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1-.75-.75Zm.75 2.25h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5Z" />
+    </svg>
+  );
+}
+
+function BulbOffIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth="1.8"
+      stroke="white"
+      className="size-4"
+      aria-hidden="true"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M9.75 18h4.5M9.75 20.25h4.5M8.25 15.75c0-.8-.38-1.55-1.03-2.02A5.978 5.978 0 0 1 5.25 8.677C5.25 5.243 8.272 2.25 12 2.25s6.75 2.993 6.75 6.427a5.98 5.98 0 0 1-1.97 5.053c-.65.47-1.03 1.22-1.03 2.02m-7.5 0h7.5"
+      />
+    </svg>
+  );
+}
