@@ -158,7 +158,10 @@ function Card() {
       <div className="sm:rounded-lg h-full flex flex-col">
         <div className="p-4 flex justify-between border-b">
           <div>
-            <h1 className="text-2xl font-semibold">{tags.join(" ")}</h1>
+            <h1 className="text-2xl font-semibold">
+              {tags.length == 0 && "문제 풀이"}
+              {tags.length >= 0 && tags.join(" ")}              
+            </h1>
             <h1 className=" text-md font-normal text-gray-400">총 {questions.length} 문제</h1>
           </div>
         </div>
