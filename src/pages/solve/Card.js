@@ -12,11 +12,11 @@ function Card() {
 
   const [questionIndex, setQuestionIndex] = useState(0); // 현재 문제의 인덱스
   const location = useLocation();
-  const questions = location.state.questions;
-  const tags = location.state.tags;
+  const questions = [...location.state.questions];
+  const tags = [...location.state.tags];
   const navigate = useNavigate();
-  const today = new Date(); // 오늘 날짜 객체
-  const formattedToday = format(today, 'yyyy-MM-dd'); // 'YYYY-MM-DD' 형식으로 포맷
+  const today = new Date(); 
+  const formattedToday = format(today, 'yyyy-MM-dd'); 
 
   // Recoil 수정
   const setRecoilQuestions = useSetRecoilState(questionsAtom);
@@ -63,6 +63,8 @@ function Card() {
     const currentLevel = currentQuestion.level ? parseInt(currentQuestion.level, 10) : 0;
     const newLevel = Math.min(currentLevel + 1, 3); // 레벨 증가 (최대 3)
     const newUpdateDate = calculateUpdateDate(today, newLevel);
+
+    currentQuestion.selected = currentQuestion.answer;
 
     setCorrectCount((prevCount) => {
       const updatedCount = prevCount + 1;
@@ -158,7 +160,10 @@ function Card() {
       <div className="sm:rounded-lg h-full flex flex-col">
         <div className="p-4 flex justify-between border-b">
           <div>
-            <h1 className="text-2xl font-semibold">{tags.join(" ")}</h1>
+            <h1 className="text-2xl font-semibold">
+              {tags.length == 0 && "문제 풀이"}
+              {tags.length >= 0 && tags.join(" ")}              
+            </h1>
             <h1 className=" text-md font-normal text-gray-400">총 {questions.length} 문제</h1>
           </div>
         </div>
