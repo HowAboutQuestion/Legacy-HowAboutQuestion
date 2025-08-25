@@ -80,9 +80,14 @@ function CardResult() {
         <div className="my-auto flex-1 flex flex-col gap-2 p-10 items-center">
             <div className="flex flex-col w-3/4 h-[400px] bg-white rounded-2xl shadow flex justify-around">
               <div>
-                <div className="font-bold text-xl text-center">
-                  {tags.length == 0 && "문제 결과"}
-                  {tags.map((tag) => tag + " ")}
+                <div className="relative group w-full px-5">
+                  <h1 className="truncate text-2xl font-semibold overflow-hidden">
+                    {tags.length === 0 && "문제 풀이 결과"}
+                    {tags.map((tag) => `${tag} `)}
+                  </h1>
+                  <span className="absolute top-full left-0 mt-1 hidden group-hover:block bg-gray-800 text-white text-sm rounded px-2 py-1 whitespace-pre-wrap z-10">
+                    {tags.length === 0 ? "문제 풀이 결과" : tags.join(" ")}
+                  </span>
                 </div>
                 <div className="text-sm font-semibold text-gray-400 text-center mt-1">총 {questions.length}문제 중 {result.correct}문제를 맞췄어요</div>
               </div>
@@ -93,13 +98,13 @@ function CardResult() {
                 <div className="flex gap-1">
                   <button 
                     onClick={goCard}
-                    className="cursor-pointer bg-blue-500 rounded-2xl py-2 w-20 whitespace-nowrap text-white font-bold text-xs text-center hover:shadow hover:scale-105 transition ">
+                    className="font-semibold cursor-pointer bg-blue-500 rounded-2xl py-2 w-20 whitespace-nowrap text-white text-xs text-center hover:shadow hover:scale-105 transition ">
                       전체 다시풀기
                     </button>
                   <button 
                     onClick={retryWrongQuestions}
                     disabled={retryQuestions.length === 0}
-                    className={`font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center text-white justify-center me-2 mb-2 transition 
+                    className={`font-semibold rounded-2xl text-xs py-2 w-20 inline-flex items-center text-white justify-center transition 
                       ${retryQuestions.length === 0 
                         ? "bg-blue-100" 
                         : "bg-blue-500 hover:scale-105 cursor-pointer"}`}
@@ -109,7 +114,7 @@ function CardResult() {
                 </div>
                 <div 
                   onClick={goDashBoard}
-                  className="cursor-pointer bg-blue-500 rounded-2xl py-2 w-20 whitespace-nowrap text-white font-bold text-xs text-center hover:shadow hover:scale-105 transition ">완료</div>
+                  className="font-semibold cursor-pointer bg-blue-500 rounded-2xl py-2 w-20 whitespace-nowrap text-white text-xs text-center hover:shadow hover:scale-105 transition ">완료</div>
                 </div>
               
             </div>
