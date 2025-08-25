@@ -183,12 +183,15 @@ function Solve() {
       <div className="sm:rounded-lg">
         <div className="p-4 flex justify-between items-center border-b">
           <div className="flex-1 min-w-0">
-            <h1 className="text-2xl font-semibold truncate">
-              {passedTags.length == 0 && "문제 풀이"}
-              {passedTags.map((tag, idx) => (
-                <span key={idx}>{tag} </span>
-              ))}
+          <div className="relative group w-full">
+            <h1 className="truncate text-2xl font-semibold overflow-hidden">
+              {passedTags.length === 0 && "문제 풀이"}
+              {passedTags.map((tag) => `${tag} `)}
             </h1>
+            <span className="absolute top-full left-0 mt-1 hidden group-hover:block bg-gray-800 text-white text-sm rounded px-2 py-1 whitespace-pre-wrap z-10">
+              {passedTags.length === 0 ? "문제 풀이" : passedTags.join(" ")}
+            </span>
+          </div>
             <h1 className="text-md font-normal text-gray-400">
               총 {passedQuestions.length}문제
             </h1>
