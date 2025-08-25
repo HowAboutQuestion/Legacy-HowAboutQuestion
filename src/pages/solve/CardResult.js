@@ -14,22 +14,16 @@ function CardResult() {
   const result = location.state.result;
   const navigate = useNavigate();
   const goCard = () => { navigate("/card", { state :  { "questions" : questions, "tags" : tags }})}
-  const retryWrongQuestions = () => { 
-    const retryTags = new Set();
-    const retryQuestions = questions.filter((item) => item.answer !== item.selected);
-    retryQuestions.forEach((item) => {
-      if (item.tag) {
-        item.tag.forEach((tag) => retryTags.add(tag));
-      }
-    });
-
-    if(retryQuestions.length <= 0) {
-      if (!toast.isActive("no-question-retry-error")) {
-        toast.error("다시 풀 문제가 없습니다!", { toastId: "no-question-retry-error" });
-      } 
-      return;
+  
+  const retryTags = new Set();
+  const retryQuestions = questions.filter((item) => item.answer !== item.selected);
+  retryQuestions.forEach((item) => {
+    if (item.tag) {
+      item.tag.forEach((tag) => retryTags.add(tag));
     }
+  });    
 
+  const retryWrongQuestions = () => { 
     navigate("/card", { 
       state :  { 
         "questions" : retryQuestions, 
@@ -97,16 +91,21 @@ function CardResult() {
               </div>
               <div className="flex justify-between w-full px-5">
                 <div className="flex gap-1">
-                  <div 
+                  <button 
                     onClick={goCard}
                     className="cursor-pointer bg-blue-500 rounded-2xl py-2 w-20 whitespace-nowrap text-white font-bold text-xs text-center hover:shadow hover:scale-105 transition ">
                       전체 다시풀기
-                    </div>
-                  <div 
+                    </button>
+                  <button 
                     onClick={retryWrongQuestions}
-                    className="cursor-pointer bg-blue-500 rounded-2xl py-2 w-20 whitespace-nowrap text-white font-bold text-xs text-center hover:shadow hover:scale-105 transition ">
-                      오답 다시풀기
-                  </div>
+                    disabled={retryQuestions.length === 0}
+                    className={`font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center text-white justify-center me-2 mb-2 transition 
+                      ${retryQuestions.length === 0 
+                        ? "bg-blue-100" 
+                        : "bg-blue-500 hover:scale-105 cursor-pointer"}`}
+                  >
+                  오답 다시풀기
+                  </button>
                 </div>
                 <div 
                   onClick={goDashBoard}
