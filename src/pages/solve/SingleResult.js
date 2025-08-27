@@ -6,7 +6,7 @@ import remarkBreaks from 'remark-breaks';
 import { appPathAtom } from "state/data.js";
 import { markdownComponents } from "utils/markdownUtils.js"
 
-function SingleResult({ question, index, setQuestions }) {
+function SingleResult({ question, index, setQuestions, isShowAllDescription }) {
   const appPath = useRecoilValue(appPathAtom);
   const [showModal, setShowModal] = useState(false);
   const [isCorrect, setIsCorrect] = useState(question.answer === question.selected);
@@ -161,14 +161,14 @@ function SingleResult({ question, index, setQuestions }) {
           
           <div
           className={`mt-10 rounded-xl p-5 font-md bg-gray-100 w-full overflow-hidden text-clip transition-all inline-flex gap-1 ${
-            !showDescription ? "blur-sm" : "blur-none"
+            (!isShowAllDescription && !showDescription ) ? "blur-sm" : "blur-none"
           }`}>
           <img src="./images/light_icon.png" 
             onClick={() => setShowDescription(false)}
             className="w-5 h-5 cursor-pointer hover:scale-110 transition-all text hover:scale-110 mr-1"/>
             {question.description}
           </div>
-          {!showDescription && (
+          {(!isShowAllDescription && !showDescription) && (
             <button
               className="mt-10 absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 text-white font-bold rounded-xl"
               onClick={() => setShowDescription(true)}
