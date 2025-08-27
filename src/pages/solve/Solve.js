@@ -175,16 +175,15 @@ function Solve() {
     (question) => question.selected && question.selected.trim() !== ""
   );
 
-  // 조건에 따른 스타일 변수들
   const isFirstQuestion = questionIndex === 0;
   const isLastQuestion = questionIndex === answers.length - 1;
 
   return (
     <main className="ml-20">
       <div className="sm:rounded-lg">
-        <div className="p-4 flex justify-between border-b">
-          <div>
-            <h1 className="text-2xl font-semibold">
+        <div className="p-4 flex justify-between items-center border-b">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-2xl font-semibold truncate">
               {passedTags.length == 0 && "문제 풀이"}
               {passedTags.map((tag, idx) => (
                 <span key={idx}>{tag} </span>
@@ -194,29 +193,40 @@ function Solve() {
               총 {passedQuestions.length}문제
             </h1>
           </div>
-          
-          <div className="text-right items-center flex gap-2">
-          {initialTimer > 0 && (
-              <h1 className="text-md font-normal text-gray-400">남은시간: {formatTime(timeLeft)}</h1>
+  
+          <div className="text-right items-center flex gap-2 shrink-0">
+            {initialTimer > 0 && (
+              <h1 className="text-md font-normal text-gray-400">
+                남은시간: {formatTime(timeLeft)}
+              </h1>
             )}
+  
             <div
               onClick={() => setNavCollapse(!navCollapse)}
-              className="cursor-pointer border-2 border-gray-200 hover:bg-blue-300 hover:border-blue-300 rounded-xl p-2.5 text-center me-2 mb-2">
+              className="relative cursor-pointer border-2 border-gray-200 hover:bg-blue-300 hover:border-blue-300 rounded-xl p-2.5 text-center me-2 mb-2"
+            >
               {navCollapse && (
-                <div className='absolute right-5 top-20 bg-white shadow p-4 rounded-lg w-40 h-50'>
-                  <QuestionNav questions={passedQuestions} setQuestionIndex={setQuestionIndex}></QuestionNav>
+                <div className="absolute right-5 top-20 bg-white shadow p-4 rounded-lg w-40 h-50">
+                  <QuestionNav
+                    questions={passedQuestions}
+                    setQuestionIndex={setQuestionIndex}
+                  />
                 </div>
               )}
             </div>
+  
             <div
               onClick={submit}
-              className={`cursor-pointer ${allAnswered ? 'bg-blue-500' : 'bg-gray-400'} hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2 transition`}
+              className={`cursor-pointer ${
+                allAnswered ? "bg-blue-500" : "bg-gray-400"
+              } hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2 transition`}
             >
               제출
             </div>
           </div>
         </div>
-        {answers[questionIndex].type === '주관식' ? (
+  
+        {answers[questionIndex].type === "주관식" ? (
           <Single
             key={questionIndex}
             onAnswerChange={handleAnswerChange}
@@ -232,12 +242,14 @@ function Solve() {
           />
         )}
       </div>
+  
       <div className="fixed z-40 bottom-5 right-5 flex gap-2">
         <div
           onClick={beforeQuestion}
-          className={`rounded-full p-2 text-white ${isFirstQuestion ? 'bg-gray-400' : 'bg-blue-500'} hover:scale-105 transition shadow`}
+          className={`rounded-full p-2 text-white ${
+            isFirstQuestion ? "bg-gray-400" : "bg-blue-500"
+          } hover:scale-105 transition shadow`}
         >
-          {/* 이전 아이콘 */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -253,12 +265,13 @@ function Solve() {
             />
           </svg>
         </div>
-
+  
         <div
           onClick={nextQuestion}
-          className={`rounded-full p-2 text-white ${isLastQuestion ? 'bg-gray-400' : 'bg-blue-500'} hover:scale-105 transition shadow cursor-pointer`}
+          className={`rounded-full p-2 text-white ${
+            isLastQuestion ? "bg-gray-400" : "bg-blue-500"
+          } hover:scale-105 transition shadow cursor-pointer`}
         >
-          {/* 다음 아이콘 */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -277,6 +290,7 @@ function Solve() {
       </div>
     </main>
   );
+  
 }
 
 export default Solve;
