@@ -188,7 +188,7 @@ function Solve() {
               {passedTags.length === 0 && "문제 풀이"}
               {passedTags.map((tag) => `${tag} `)}
             </h1>
-            <span className="absolute top-full left-0 mt-1 hidden group-hover:block bg-gray-800 text-white text-sm rounded px-2 py-1 whitespace-pre-wrap z-10">
+            <span className="opacity-50 absolute top-full left-0 mt-1 hidden group-hover:block bg-gray-800 text-white text-sm rounded px-2 py-1 whitespace-pre-wrap z-10">
               {passedTags.length === 0 ? "문제 풀이" : passedTags.join(" ")}
             </span>
           </div>
