@@ -85,7 +85,7 @@ function CardResult() {
                     {tags.length === 0 && "문제 풀이 결과"}
                     {tags.map((tag) => `${tag} `)}
                   </h1>
-                  <span className="absolute top-full left-0 mt-1 hidden group-hover:block bg-gray-800 text-white text-sm rounded px-2 py-1 whitespace-pre-wrap z-10">
+                  <span className="absolute opacity-50 top-full left-0 mt-1 hidden group-hover:block bg-gray-800 text-white text-sm rounded px-2 py-1 whitespace-pre-wrap z-10">
                     {tags.length === 0 ? "문제 풀이 결과" : tags.join(" ")}
                   </span>
                 </div>
