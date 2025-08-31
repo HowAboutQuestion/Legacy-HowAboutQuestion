@@ -160,10 +160,15 @@ function Card() {
       <div className="sm:rounded-lg h-full flex flex-col">
         <div className="p-4 flex justify-between border-b">
           <div>
-            <h1 className="text-2xl font-semibold">
-              {tags.length == 0 && "문제 풀이"}
-              {tags.length >= 0 && tags.join(" ")}              
-            </h1>
+            <div className="relative group w-full">
+                  <h1 className="truncate text-2xl font-semibold overflow-hidden">
+                    {tags.length === 0 && "문제 풀이 결과"}
+                    {tags.map((tag) => `${tag} `)}
+                  </h1>
+                  <span className="opacity-50 absolute top-full left-0 mt-1 hidden group-hover:block bg-gray-800 text-white text-sm rounded px-2 py-1 whitespace-pre-wrap z-10">
+                    {tags.length === 0 ? "문제 풀이 결과" : tags.join(" ")}
+                  </span>
+              </div>
             <h1 className=" text-md font-normal text-gray-400">총 {questions.length} 문제</h1>
           </div>
         </div>

@@ -162,27 +162,18 @@ function SolveResult() {
   
   }
 
-  const retryWrongQuestions = () => {
-    const retryTags = new Set();
-    const retryQuestions = answers.filter((item) => item.answer !== item.selected);
-    
-    if(retryQuestions.length <= 0){
-      if (!toast.isActive("no-question-retry-error")) {
-        toast.error("다시 풀 문제가 없습니다!", { toastId: "no-question-retry-error" });
-      } 
-      return;
+  const retryTags = new Set();
+  const retryQuestions = answers.filter((item) => item.answer !== item.selected);
+  retryQuestions.forEach((item) => {
+    if (item.tag) {
+      item.tag.forEach((tag) => retryTags.add(tag)); // 중복 없이 태그 추가
     }
-     // 틀린 문제에서 태그 값을 Set에 추가
-    retryQuestions.forEach((item) => {
-      if (item.tag) {
-        item.tag.forEach((tag) => retryTags.add(tag)); // 중복 없이 태그 추가
-      }
-    });
-
+  });
+  
+  const retryWrongQuestions = () => {
     navigate("/solve", {
       state: { questions: retryQuestions, tags: [...retryTags] },
     });
-  
   }
 
   const [isShowAllDescription, setIsShowAllDescription] = useState(false); 
@@ -196,10 +187,15 @@ function SolveResult() {
       <div className="sm:rounded-lg flex flex-col items-center" ref={pdfRef}> 
         <div className="p-4 flex justify-between items-center border-b w-full">
           <div className="flex-1 min-w-0">
-            <h1 className="w-full truncate text-2xl font-semibold overflow-hidden">
-              {tags.length == 0 && "문제 풀이 결과"}
+          <div className="relative group w-full">
+            <h1 className="truncate text-2xl font-semibold overflow-hidden">
+              {tags.length === 0 && "문제 풀이 결과"}
               {tags.map((tag) => `${tag} `)}
             </h1>
+            <span className="absolute opacity-50 top-full left-0 mt-1 hidden group-hover:block bg-gray-800 text-white text-sm rounded px-2 py-1 whitespace-pre-wrap z-10">
+              {tags.length === 0 ? "문제 풀이 결과" : tags.join(" ")}
+            </span>
+          </div>
             <h1 className="text-md font-normal text-gray-400">
               총 {answers.length}문제
             </h1>
@@ -231,18 +227,22 @@ function SolveResult() {
                   />
               </svg>
             </div>
-            <div
+            <button
               onClick={retryAll}
-              className={`cursor-pointer bg-blue-500 hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2 transition`}
+              className={`cursor-pointer border-[1.5px] border-blue-500 hover:scale-105 text-blue-500 font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2 transition`}
             >
               전체 다시풀기
-            </div>
-          <div
-            onClick={retryWrongQuestions}
-            className={`cursor-pointer bg-blue-500 hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2 transition`}
-          >
-            오답 다시풀기
-          </div>
+            </button>
+            <button
+              onClick={retryWrongQuestions}
+              disabled={retryQuestions.length === 0}
+              className={`font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center text-white justify-center me-2 mb-2 transition 
+                ${retryQuestions.length === 0 
+                  ? "bg-blue-100" 
+                  : "bg-blue-500 hover:scale-105 cursor-pointer"}`}
+            >
+              오답 다시풀기
+            </button>
           </div>
         </div>
 
