@@ -11,7 +11,7 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
   const tag = tags.map((tagName, index) => (
     <span
       key={index}
-      className="font-medium text-xs whitespace-nowrap bg-gray-200 rounded-xl py-1 px-2"
+      className="font-medium text-xs whitespace-nowrap bg-gray-300 rounded-xl py-1 px-2"
     >
       {tagName}
     </span>
@@ -184,7 +184,7 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
     <>
       <tr
         onClick={toggle}
-        className={`${!isCollapsed && "border-b hover:shadow"} transition-all `}
+        className={`${!isCollapsed && "hover:shadow"} ${isChecked ? "bg-gray-200" : "bg-gray-50"} transition-all `}
       >
         <td className="w-4 p-4 align-top py-4 px-8">
           <div className="flex items-center ">
@@ -232,9 +232,9 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
         </td>
       </tr>
       <tr
-        className={` hover:shadow transition-all duration-500 ${
+        className={` border-b hover:shadow transition-all duration-500 ${
           isCollapsed ? "border-b" : ""
-        }`}
+        } ${isChecked ? "bg-gray-200" : "bg-gray-50"}`}
       >
         <td></td>
         <td className="overflow-hidden">
@@ -328,6 +328,8 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
               </div>
             )}
           </div>
+        </td>
+        <td class="px-3 py-2 align-top">
         </td>
       </tr>
       {showModal && (
