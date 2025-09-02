@@ -184,7 +184,7 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
     <>
       <tr
         onClick={toggle}
-        className={`${!isCollapsed && "hover:shadow"} ${isChecked ? "bg-gray-200" : "bg-gray-50"} transition-all `}
+        className={`${isChecked ? "bg-gray-200" : "bg-gray-50"} transition-all`}
       >
         <td className="w-4 p-4 align-top py-4 px-8">
           <div className="flex items-center ">
@@ -232,9 +232,8 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
         </td>
       </tr>
       <tr
-        className={` border-b hover:shadow transition-all duration-500 ${
-          isCollapsed ? "border-b" : ""
-        } ${isChecked ? "bg-gray-200" : "bg-gray-50"}`}
+        className={` ${isChecked ? "bg-gray-200" : "bg-gray-50"} border-b
+        } `}
       >
         <td></td>
         <td className="overflow-hidden">
