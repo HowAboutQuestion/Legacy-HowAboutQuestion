@@ -9,8 +9,6 @@ import ProblemRecommendation from "./ProblemRecommendation.js";
 import DashboardStats from "./DashboardStats.js";
 import HistorySection from "./HistorySection.js";
 import { getTodayDate, formatDate } from "utils/dateUtils.js";
-import LargeModal from "./LargeModal.js";
-import Helper from "./Helper.js";
 
 
 import {
@@ -221,11 +219,13 @@ const Dashboard = () => {
   const hasQuestions = questions.length > 0;
 
   return (
-    <main className="ml-20 p-5 flex flex-col gap-4 flex-1">
+    <main className="ml-20 p-5 flex flex-col gap-4 flex-1" tour-id="page-dashboard">
       <div>
         <div
           className="cursor-pointer absolute right-10 top-5 w-10 h-10 flex items-center justify-center text-gray-400"
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+          window.dispatchEvent(new CustomEvent("start-tour"));
+        }}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -242,25 +242,22 @@ const Dashboard = () => {
             />
           </svg>
         </div>
-        {isModalOpen && (
-          <LargeModal>
-            <Helper closeHelper={() => setIsModalOpen(false)} />
-          </LargeModal>
-        )}
       </div>
 
-      <ProblemRecommendation
-        hasQuestions={hasQuestions}
-        totalRecommendToday={todayProblemsToSolve.length}
-        toSolveCount={todayProblemsToSolve.length}
-        solvedCount={solvedCount}
-        selectedProblemCount={selectedProblemCount}
-        setSelectedProblemCount={setSelectedProblemCount}
-        problemsToSolveToday={todayProblemsToSolve}
-        goToQuestions={goToQuestionsPage}
-      />
+      <section data-tour-id="dashboard-recommendation">
+        <ProblemRecommendation // 추천 문제
+          hasQuestions={hasQuestions}
+          totalRecommendToday={todayProblemsToSolve.length}
+          toSolveCount={todayProblemsToSolve.length}
+          solvedCount={solvedCount}
+          selectedProblemCount={selectedProblemCount}
+          setSelectedProblemCount={setSelectedProblemCount}
+          problemsToSolveToday={todayProblemsToSolve}
+          goToQuestions={goToQuestionsPage}
+        />
+      </section>
 
-      <DashboardStats
+      <DashboardStats // 대시보드 일일 상태 창
         todaySolved={todaySolved}
         todayCorrect={todayCorrect}
         completionRate={completionRate}
@@ -269,13 +266,15 @@ const Dashboard = () => {
         chartData={chartData}
       />
 
-      <HistorySection
-        historyView={historyView}
-        setHistoryView={setHistoryView}
-        sortedHistory={sortedHistory}
-        today={today}
-        tileContent={tileContent}
-      />
+      <section data-tour-id="dashboard-history"> 
+        <HistorySection // history 보는곳
+          historyView={historyView}
+          setHistoryView={setHistoryView}
+          sortedHistory={sortedHistory}
+          today={today}
+          tileContent={tileContent}
+        />
+      </section>
     </main>
   );
 };
