@@ -219,7 +219,7 @@ const Dashboard = () => {
   const hasQuestions = questions.length > 0;
 
   return (
-    <main className="ml-20 p-5 flex flex-col gap-4 flex-1" tour-id="page-dashboard">
+    <main className="ml-20 p-5 flex flex-col gap-4 flex-1 bg-white " tour-id="page-dashboard">
       <div>
         <div
           className="cursor-pointer absolute right-10 top-5 w-10 h-10 flex items-center justify-center text-gray-400"
