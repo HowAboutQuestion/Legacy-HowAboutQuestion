@@ -76,7 +76,7 @@ function QuestionsMain({ isCollapsed, filterQuestions, setFilterQuestions, inser
 
   return (
     <div
-      className={`mb-[300px] transition-all duration-500 flex-1 sm:rounded-lg ${isCollapsed ? "ml-10" : "ml-80"
+      className={`mb-[300px] transition-all duration-500 flex-1 sm:rounded-lg bg-white ${isCollapsed ? "ml-10" : "ml-80"
         }`}
     >
       <div className="px-8 py-4 flex justify-between border-b">
@@ -86,62 +86,99 @@ function QuestionsMain({ isCollapsed, filterQuestions, setFilterQuestions, inser
             총 {filterQuestions.length} 문제
           </h1>
         </div>
-        <div className="bg-white items-center flex">
-          <div
-            onClick={() => goSelectSolve()}
-            className="cursor-pointer bg-blue-500 hover:scale-105 transition text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2"
-          >
-            문제풀러가기
-          </div>          
-          <div
-            onClick={() => insertButtonClick()}
-            className="cursor-pointer bg-blue-500 hover:scale-105 transition text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center me-2 mb-2"
-          >
-            문제추가
+        <div className="flex items-center flex ">
+            <div className="bg-white items-center flex">
+              <div
+                    data-tour-id="question-solve-add"
+                    className="flex items-center relative w-full"
+              >
+                <div
+                  onClick={() => goSelectSolve()}
+                  className="cursor-pointer bg-blue-500 hover:scale-105 transition text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center mr-1 ml-1"
+                  
+                >
+                  문제풀러가기
+                </div>          
+                <div
+                  onClick={() => insertButtonClick()}
+                  className="cursor-pointer bg-blue-500 hover:scale-105 transition text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center ml-1 mr-1"
+                  data-tour-id="btn-insert-open"
+                >
+                  문제추가
+                </div>
+              </div>
+            </div>
+
+            <div
+              data-tour-id="question-upload-download"
+              className="flex items-center ml-2 bg-white"
+            >
+            <div className="bg-blue-500 hover:scale-105 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center transition justify-center mr-1 ml-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="size-4 absolute"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <input
+                onChange={handleZipUpload}
+                type="file"
+                accept=".zip"
+                className="opacity-0 h-full w-full"
+              ></input>
+            </div>
+
+            <div
+              onClick={handleDownloadToZip}
+              className="cursor-pointer bg-blue-500 hover:scale-105 transition text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center mr-1 ml-1"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="size-4 absolute"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M11.47 2.47a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 0 1-1.06 1.06l-3.22-3.22V16.5a.75.75 0 0 1-1.5 0V4.81L8.03 8.03a.75.75 0 0 1-1.06-1.06l4.5-4.5ZM3 15.75a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
           </div>
-          <div className="bg-blue-500 hover:scale-105 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center transition justify-center me-2 mb-2">
+          <div
+            className="cursor-pointer right-10 top-5 w-10 h-10 flex items-center justify-center text-gray-400"
+            onClick={() => {
+              window.dispatchEvent(new CustomEvent("open-sidebar"));
+              window.dispatchEvent(new CustomEvent("open-insert-modal"));
+              window.dispatchEvent(new CustomEvent("start-tour"));
+            }}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
+              fill="none"
               viewBox="0 0 24 24"
-              fill="currentColor"
-              className="size-4 absolute"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className="size-6"
             >
               <path
-                fillRule="evenodd"
-                d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z"
-                clipRule="evenodd"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z"
               />
             </svg>
-
-            <input
-              onChange={handleZipUpload}
-              type="file"
-              accept=".zip"
-              className="opacity-0 h-full w-full"
-            ></input>
-          </div>
-          <div
-            onClick={handleDownloadToZip}
-            className="cursor-pointer bg-blue-500 hover:scale-105 transition text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center justify-center me-2 mb-2"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="size-4 absolute"
-            >
-              <path
-                fillRule="evenodd"
-                d="M11.47 2.47a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 0 1-1.06 1.06l-3.22-3.22V16.5a.75.75 0 0 1-1.5 0V4.81L8.03 8.03a.75.75 0 0 1-1.06-1.06l4.5-4.5ZM3 15.75a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z"
-                clipRule="evenodd"
-              />
-            </svg>
-
           </div>
         </div>
       </div>
 
-      <table className="text-left rtl:text-right text-gray-500 m-5 rounded-xl bg-gray-50 ">
+      <table className="text-left rtl:text-right text-gray-500 m-5 rounded-xl bg-gray-50" data-tour-id="question-root">
         <thead className="text-sm font-bold text-gray-700 uppercase border-b">
           <tr className="px-10 bg-gray-100">
             <th scope="col" className="py-4 px-8 rounded-tl-xl">

@@ -28,6 +28,7 @@ function Sidebar({ isCollapsed, allTag, selectedTag, onTagClick, setIsCollapsed 
 
   return (
     <div
+    data-tour-id="tag-name"
     className={`fixed h-full ${isCollapsed ? "border-r w-10" : "w-80"
       } rounded-r-xl  flex flex-col items-center shadow bg-gray-100 transition-all duration-500`}
   >
