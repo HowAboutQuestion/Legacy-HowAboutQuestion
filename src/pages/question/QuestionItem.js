@@ -34,6 +34,8 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
     onUpdateClick();
   };
 
+  
+
 
   const onChangeCheckbox = (e) => {
     e.stopPropagation();

@@ -261,6 +261,7 @@ function InsertModal({ setInsertModal, expanded }) {
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
+      
     >
       {isDragging && (
         <div
