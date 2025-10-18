@@ -129,6 +129,7 @@ function TourManager() {
                     backgroundColor: '#3B82F6', // “다음” 버튼 색
                     color: '#fff',
                     outline: 'none',
+                    fontWeight: 'bold'
                 },
                 buttonBack: {
                     color: '#6B7280',           // “뒤로” 버튼 색
