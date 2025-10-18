@@ -41,11 +41,11 @@ function TourManager() {
         } else if(location.pathname === "/select") {
             return [
                 {target: 'body',  title: <h3>문제 풀기 페이지에 오신 것을 환영합니다</h3> ,   content: "이곳에서 시험 또는 카드 형식으로 문제를 풀어 볼 수 있어요", placement: 'center', disableBeacon: true,},
-                {target: '[data-tour-id="exam-timer"]', content: "문제 풀이 시간을 설정할 수 있습니다.", placement: "left-start", disableBeacon: true, floaterProps: { disableFlip: true }},
-                {target: '[data-tour-id="exam-select-shuffle"]', content: "객관식 선택지를 무작위로 섞습니다.", placement: "left-start", disableBeacon: true, floaterProps: { disableFlip: true }},
-                {target: '[data-tour-id="exam-shuffle"]', content: "문제 출제 순서를 섞습니다.", placement: "left-start", disableBeacon: true, floaterProps: { disableFlip: true }},
-                {target: '[data-tour-id="exam-select"]', content: "선택한 문제를 시험 형태로 풉니다.", placement: "left-start", disableBeacon: true, floaterProps: { disableFlip: true }},
-                {target: '[data-tour-id="exam-card"]', content: "선택한 문제를 카드 형식으로 풉니다.", placement: "left-start", disableBeacon: true, floaterProps: { disableFlip: true }},
+                {target: '[data-tour-id="exam-timer"]', content: "문제 풀이 시간을 설정할 수 있어요.", placement: "left-start", disableBeacon: true, floaterProps: { disableFlip: true }},
+                {target: '[data-tour-id="exam-select-shuffle"]', content: "객관식 선택지를 무작위로 섞어요.", placement: "left-start", disableBeacon: true, floaterProps: { disableFlip: true }},
+                {target: '[data-tour-id="exam-shuffle"]', content: "문제 출제 순서를 섞어요.", placement: "left-start", disableBeacon: true, floaterProps: { disableFlip: true }},
+                {target: '[data-tour-id="exam-select"]', content: "선택한 문제를 시험 형태로 풀어요.", placement: "left-start", disableBeacon: true, floaterProps: { disableFlip: true }},
+                {target: '[data-tour-id="exam-card"]', content: "선택한 문제를 카드 형식으로 풀어요.", placement: "left-start", disableBeacon: true, floaterProps: { disableFlip: true }},
 
 
             ]
