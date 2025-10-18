@@ -18,7 +18,7 @@ function TourManager() {
     const steps = useMemo(() => {
         if(location.pathname === "/dashboard" || location.pathname ==="/") {
             return [
-                {target: 'body', title: <h1>대시보드 페이지에 오신걸 환영합니다 👋</h1>, content: (<div style={{ textAlign: 'center' }}> <p>이 곳에서는 문제 추천, 학습 진도률, 히스토리 등 확인할 수 있어요.</p></div>), placement: 'center', disableBeacon: true,},
+                {target: 'body', title: <h1>대시보드 페이지에 오신걸 환영합니다</h1>, content: (<div style={{ textAlign: 'center' }}> <p>이 곳에서는 문제 추천, 학습 진도률, 히스토리 등 확인할 수 있어요.</p></div>), placement: 'center', disableBeacon: true,},
                 {target : '[data-tour-id="dashboard-recommendation"]', content: "오늘 추천 문제를 확인할 수 있어요", placement: "bottom", disableBeacon: true},
                 {target : '[data-tour-id="dashboard-stats"]', content: "오늘 하루 맞춘 문제와 추천 문제 기준 학습 진도률을 확인할 수 있어요", placement: "top", disableBeacon: true},
                 {target : '[data-tour-id="dashboard-graph"]', content: "지금까지의 정답률을 그래프로 확인할 수 있어요", placement: "bottom", disableBeacon: true},
@@ -27,7 +27,7 @@ function TourManager() {
         }
         else if(location.pathname === "/questions") {
             return [
-                {target: 'body',  title: <h3>문제 관리 페이지에 오신걸 환영합니다 👋</h3> ,   content: "이곳은 문제를 만들고 공유하며, 수정할 수 있는 공간이에요.", placement: 'center', disableBeacon: true,},
+                {target: 'body',  title: <h1>문제 관리 페이지에 오신걸 환영합니다</h1> ,   content: "이곳은 문제를 만들고 공유하며, 수정할 수 있는 공간이에요.", placement: 'center', disableBeacon: true,},
                 {target: '[data-tour-id="question-root"]', content: "내가 만든 문제와 추가한 문제가 여기에 표시돼요.", placement: "left-start", disableBeacon: true, floaterProps: { disableFlip: true }},
                 {id: "tag-modal", target: '[data-tour-id="tag-name"]', content: "문제집과 태그를 확인하고, 클릭해 필터링할 수 있어요.", placement: "right", disableBeacon: true},
                 {target: '[data-tour-id="question-solve-add"]', content: "이 버튼으로 문제를 풀거나 새로 만들 수 있어요.", placement: "left", disableBeacon: true},
@@ -36,6 +36,16 @@ function TourManager() {
                 {id: "lock", target: '[data-tour-id="insert-modal-tag"]', content: "쉼표(,)로 구분해 태그나 문제집 이름을 지정할 수 있어요.", placement: "bottom", disableBeacon: true},
                 {id: "lock", target: '[data-tour-id="insert-modal-select"]', content: "이 버튼으로 정답을 선택할 수 있어요.", placement: "bottom", disableBeacon: true},
                 {id: "lock", target: '[data-tour-id="insert-modal-expend"]', content: "창이 작다면 여기를 눌러 확장해 보세요. 설명이나 글을 더 쓸 수 있어요.", placement: "bottom", disableBeacon: true},
+
+            ]
+        } else if(location.pathname === "/select") {
+            return [
+                {target: 'body',  title: <h3>문제 풀기 페이지에 오신걸 환영합니다</h3> ,   content: "이곳에서 시험, 카드 형식으로 문제를 풀어 볼 수 있어요", placement: 'center', disableBeacon: true,},
+                {target: '[data-tour-id="exam-timer"]', content: "문제 타이머를 지정할 수 있어요", placement: "left-start", disableBeacon: true, floaterProps: { disableFlip: true }},
+                {target: '[data-tour-id="exam-select-shuffle"]', content: "객관식 문제 선택지를 섞을 수 있어요", placement: "left-start", disableBeacon: true, floaterProps: { disableFlip: true }},
+                {target: '[data-tour-id="exam-shuffle"]', content: "문제 순서를 섞을 수 있어요", placement: "left-start", disableBeacon: true, floaterProps: { disableFlip: true }},
+                {target: '[data-tour-id="exam-select"]', content: "선택한 문제들을 시험 형태로 풀어 볼 수 있어요", placement: "left-start", disableBeacon: true, floaterProps: { disableFlip: true }},
+                {target: '[data-tour-id="exam-card"]', content: "선택한 문제들을 카드 형식으로 풀 수 있어요", placement: "left-start", disableBeacon: true, floaterProps: { disableFlip: true }},
 
             ]
         }

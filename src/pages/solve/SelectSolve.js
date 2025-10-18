@@ -259,82 +259,90 @@ function SelectSolve() {
         {/* 우측 */}
         <div className="text-right items-center flex gap-2">
           {/* 옵션 버튼 */}
-          <div className="flex items-center mr-3">
-            {/* 타이머 토글 */}
-            <span className="text-xs font-semibold mr-4">타이머</span>
-            <div
-              className={`relative w-12 h-6 flex items-center rounded-full transition-all cursor-pointer ${
-                timerOn ? "bg-blue-500" : "bg-gray-300"
-              }`}
-              onClick={() => setTimerOn((prev) => !prev)}
-            >
+          <div className="flex items-center mr-3 gap-3">
+            <div data-tour-id="exam-timer" className="flex items-center">
+              {/* 타이머 토글 */}
+              <span className="text-xs font-semibold mr-4">타이머</span>
               <div
-                className={`absolute w-4 h-4 bg-white rounded-full shadow-md transform transition-all duration-300 ${
-                  timerOn ? "translate-x-7" : "translate-x-1"
+                className={`relative w-12 h-6 flex items-center rounded-full transition-all cursor-pointer ${
+                  timerOn ? "bg-blue-500" : "bg-gray-300"
                 }`}
-              ></div>
+                onClick={() => setTimerOn((prev) => !prev)}
+              >
+                <div
+                  className={`absolute w-4 h-4 bg-white rounded-full shadow-md transform transition-all duration-300 ${
+                    timerOn ? "translate-x-7" : "translate-x-1"
+                  }`}
+                ></div>
+              </div>
+
+              {/* 타이머 입력 필드 */}
+              <div
+                className={`flex gap-1 overflow-hidden transition-all duration-500 ${
+                  timerOn ? "max-w-[100px] opacity-100 mr-4" : "max-w-0 opacity-0"
+                }`}
+              >
+                <input
+                  type="number"
+                  min="0"
+                  className="w-10 text-center border rounded text-sm bg-white transition-all duration-300 focus:border-blue-500 focus:outline-none"
+                  value={timerMinutes}
+                  onChange={(e) => setTimerMinutes(e.target.value)}
+                  placeholder="분"
+                />
+                <span className="transition-opacity duration-300">:</span>
+                <input
+                  type="number"
+                  min="0"
+                  max="59"
+                  className="w-10 text-center border rounded text-sm bg-white transition-all duration-300 focus:border-blue-500 focus:outline-none"
+                  value={timerSeconds}
+                  onChange={(e) => setTimerSeconds(e.target.value)}
+                  placeholder="초"
+                />
+              </div>
             </div>
 
-            {/* 타이머 입력 필드 */}
-            <div
-              className={`ml-4 flex gap-1 overflow-hidden transition-all duration-500 ${
-                timerOn ? "max-w-[100px] opacity-100 mr-4" : "max-w-0 opacity-0"
-              }`}
-            >
-              <input
-                type="number"
-                min="0"
-                className="w-10 text-center border rounded text-sm bg-white transition-all duration-300 focus:border-blue-500 focus:outline-none"
-                value={timerMinutes}
-                onChange={(e) => setTimerMinutes(e.target.value)}
-                placeholder="분"
-              />
-              <span className="transition-opacity duration-300">:</span>
-              <input
-                type="number"
-                min="0"
-                max="59"
-                className="w-10 text-center border rounded text-sm bg-white transition-all duration-300 focus:border-blue-500 focus:outline-none"
-                value={timerSeconds}
-                onChange={(e) => setTimerSeconds(e.target.value)}
-                placeholder="초"
-              />
+            <div data-tour-id="exam-select-shuffle" className="flex items-center">
+              {/* 선택지 셔플 토글 */}
+              <span className="text-xs font-semibold mr-4 ">선택지 셔플</span>
+              <div
+                className={`relative w-12 h-6 flex items-center rounded-full transition-all cursor-pointer ${
+                  choiceShuffleOption ? "bg-blue-500" : "bg-gray-300"
+                }`}
+                onClick={() => setChoiceShuffleOption((prev) => !prev)}
+              >
+                <div
+                  className={`absolute w-4 h-4 bg-white rounded-full shadow-md transform transition-all duration-300 ${
+                    choiceShuffleOption ? "translate-x-7" : "translate-x-1"
+                  }`}
+                ></div>
+              </div>
             </div>
 
-            {/* 선택지 셔플 토글 */}
-            <span className="text-xs font-semibold mr-4 ">선택지 셔플</span>
-            <div
-              className={`relative w-12 h-6 flex items-center rounded-full transition-all cursor-pointer ${
-                choiceShuffleOption ? "bg-blue-500" : "bg-gray-300"
-              }`}
-              onClick={() => setChoiceShuffleOption((prev) => !prev)}
-            >
+            <div data-tour-id="exam-shuffle" className="flex items-center" >
+              {/* 문제 셔플 토글 */}
+              <span className="text-xs font-semibold mr-4 ">문제 셔플</span>
               <div
-                className={`absolute w-4 h-4 bg-white rounded-full shadow-md transform transition-all duration-300 ${
-                  choiceShuffleOption ? "translate-x-7" : "translate-x-1"
+                className={`relative w-12 h-6 flex items-center rounded-full transition-all cursor-pointer ${
+                  questionShuffleOption ? "bg-blue-500" : "bg-gray-300"
                 }`}
-              ></div>
-            </div>
-
-            {/* 문제 셔플 토글 */}
-            <span className="text-xs font-semibold mx-4 ">문제 셔플</span>
-            <div
-              className={`relative w-12 h-6 flex items-center rounded-full transition-all cursor-pointer ${
-                questionShuffleOption ? "bg-blue-500" : "bg-gray-300"
-              }`}
-              onClick={() => setQuestionShuffleOption((prev) => !prev)}
-            >
-              <div
-                className={`absolute w-4 h-4 bg-white rounded-full shadow-md transform transition-all duration-300 ${
-                  questionShuffleOption ? "translate-x-7" : "translate-x-1"
-                }`}
-              ></div>
+                onClick={() => setQuestionShuffleOption((prev) => !prev)}
+              >
+                <div
+                  className={`absolute w-4 h-4 bg-white rounded-full shadow-md transform transition-all duration-300 ${
+                    questionShuffleOption ? "translate-x-7" : "translate-x-1"
+                  }`}
+                ></div>
+              </div>
             </div>
           </div>
+
 
           <div
             onClick={goCard}
             className={`cursor-pointer bg-blue-500 hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-20 inline-flex items-center justify-center me-2 mb-2 transition`}
+            data-tour-id="exam-select"
           >
             카드
           </div>
@@ -342,10 +350,35 @@ function SelectSolve() {
           <div
             onClick={goSolve}
             className={`cursor-pointer bg-blue-500 hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-20 inline-flex items-center justify-center me-2 mb-2 transition`}
+            data-tour-id="exam-card"
           >
             시험
           </div>
+          <div
+            className="cursor-pointer right-10 top-5 w-10 h-10 flex items-center justify-center text-gray-400"
+            onClick={() => {
+              window.dispatchEvent(new CustomEvent("open-sidebar"));
+              window.dispatchEvent(new CustomEvent("open-insert-modal"));
+              window.dispatchEvent(new CustomEvent("start-tour"));
+            }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className="size-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z"
+              />
+            </svg>
+          </div>
         </div>
+
       </div>
 
       <div className="flex flex-col justify-center  items-center bg-gray-50">
