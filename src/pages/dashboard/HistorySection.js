@@ -38,6 +38,7 @@ const HistorySection = ({
             <button
               onClick={() => setHistoryView('calendar')}
               className="cursor-pointer text-sm font-bold px-4 py-2 rounded transition bg-gray-100 hover:scale-105"
+              data-tour-id="dashboard-switch"
             >
               달력 보기
             </button>
