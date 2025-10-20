@@ -342,7 +342,8 @@ function SelectSolve() {
           <div
             onClick={goCard}
             className={`cursor-pointer bg-blue-500 hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-20 inline-flex items-center justify-center me-2 mb-2 transition`}
-            data-tour-id="exam-select"
+            data-tour-id="exam-card"
+            
           >
             카드
           </div>
@@ -350,7 +351,7 @@ function SelectSolve() {
           <div
             onClick={goSolve}
             className={`cursor-pointer bg-blue-500 hover:scale-105 text-white font-semibold rounded-2xl text-xs h-8 w-20 inline-flex items-center justify-center me-2 mb-2 transition`}
-            data-tour-id="exam-card"
+            data-tour-id="exam-select"
           >
             시험
           </div>
