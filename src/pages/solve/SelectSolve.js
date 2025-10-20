@@ -382,10 +382,10 @@ function SelectSolve() {
 
       </div>
 
-      <div className="flex flex-col justify-center  items-center bg-gray-50">
+      <div className="flex flex-col justify-center  items-center bg-gray-50" >
         {allQuestions.length > 0 ? (
-          <div className="flex flex-col gap-3 p-10 items-center justify-center rounded-xl w-full max-w-[960px]">
-            <div className="space-y-4 w-full">
+          <div className="flex flex-col gap-3 p-10 items-center justify-center rounded-xl w-full max-w-[960px] " >
+            <div className="space-y-4 w-full" data-tour-id="exam-tag-select">
               {Object.keys(tagGroups)
                 .sort()
                 .map((category) => (
@@ -416,7 +416,7 @@ function SelectSolve() {
             </div>
           </div>
         ) : (
-          <div className="bg-white shadow m-10 p-10  items-center justify-center flex-col gap-5 rounded-xl min-w-[500px]">
+          <div className="bg-white shadow m-10 p-10  items-center justify-center flex-col gap-5 rounded-xl min-w-[500px]" data-tour-id="exam-tag-select">
             <div className="w-full h-40 mx-auto mb-4 relative">
               <img
                 src="./images/no-problems.png"
