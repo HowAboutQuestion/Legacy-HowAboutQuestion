@@ -54,7 +54,7 @@ const HistorySection = ({
       {/* 뷰 전환 */}
       {historyView === 'list' ? (
         <div>
-          <p className="text-sm text-gray-500">최근 7일</p>
+          <p className="text-sm text-gray-500">최근 7개 기록</p>
           <table className="w-full bg-white rounded shadow text-gray-700 mt-4">
             <thead>
               <tr className="bg-gray-100">
