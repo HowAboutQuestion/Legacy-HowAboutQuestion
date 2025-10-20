@@ -95,7 +95,7 @@ function InsertModalCompact({
                   <div className="flex gap-3">
                     <input
                       className="focus:outline-blue-500"
-                      data-tour-id="insert-modal-select"
+                      data-tour-id="insert-modal-answer"
                       type="radio"
                       name="answer"
                       value={select1}
@@ -113,6 +113,7 @@ function InsertModalCompact({
                       }}
                       placeholder="선택지1"
                       value={select1}
+                      data-tour-id="insert-modal-select"
                       onChange={(e) => setSelect1(e.target.value)}
                       onKeyDown={(e) => {
                         if (
