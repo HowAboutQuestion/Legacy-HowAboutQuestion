@@ -6,7 +6,7 @@ import { ToastContainer } from "react-toastify";
 import { allTagAtom, questionsAtom, appPathAtom } from "state/data.js";
 import Navbar from "pages/Navbar.js";
 import "react-toastify/dist/ReactToastify.css";
-import TourManager from "TourManager";
+import TourManager from "tour/TourManager.js";
 
 const App = () => {
   const [questions, setQuestions] = useRecoilState(questionsAtom);
