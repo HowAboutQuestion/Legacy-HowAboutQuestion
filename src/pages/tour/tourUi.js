@@ -14,31 +14,23 @@ export const withTooltip = (size, extra = {}) => ({
 
 
 export const MediumTitle = ({ children }) => (
-  <p style={{ fontSize: '18px', fontWeight: 'bold', color: '#1D4ED8' }}>
-    {children}
-  </p>
+  <p className="text-[18px] font-bold text-blue-700">{children}</p>
 );
 
 export const LargeTitle = ({ children }) => (
-    <p style={{ color: '#1D4ED8', fontSize:'20px', fontWeight: 'bold'}}>
-        {children}
-    </p>
+  <p className="text-[20px] font-bold text-blue-700">{children}</p>
 );
 
 export const SmallContent = ({ children }) => (
-  <p style={{ fontSize: '14px' }}>
-    {children}
-  </p>
+  <p className="text-[14px] leading-relaxed">{children}</p>
 );
 
 export const Code = ({ children }) => (
-  <code style={{ background: '#F3F4F6', padding: '2px 6px', borderRadius: '4px', fontSize: '13px' }}>
+  <code className="bg-gray-100 px-2 py-[2px] rounded text-[13px] font-mono text-gray-800">
     {children}
   </code>
 );
 
 export const TagSelected = ({ children }) => (
-    <span className="bg-blue-500 text-white px-1 rounded">
-        {children}
-    </span>
+  <span className="bg-blue-500 text-white px-1 rounded">{children}</span>
 );
