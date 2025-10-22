@@ -87,32 +87,15 @@ function TourManager() {
     return (
         <>
             {run && total > 0 && (
-                <div
-                    style={{
-                        position: 'fixed',
-                        bottom: 16,
-                        right: 16,
-                        width: 200,
-                        zIndex: 11000,
-                        background: 'rgba(255,255,255,0.96)',
-                        borderRadius: 12,
-                        boxShadow: '0 2px 10px rgba(0,0,0,0.12)',
-                        padding: '10px 12px'
-                    }}
-                >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 6 }}>
-                        <span style={{ fontSize: 12, color: '#374151' }}>도움말 진행</span>
-                        <span style={{ fontSize: 12, color: '#6B7280' }}>{cur}/{total}</span>
+                <div className=" fixed bottom-4 right-4 w-[200px] z-[11000] bg-white/95 rounded-xl shadow-md px-3 py-2.5 ">
+                    <div className="flex justify-between items-baseline mb-1.5">
+                        <span className="text-[12px] text-gray-700">도움말 진행</span>
+                        <span className="text-[12px] text-gray-500">{cur}/{total}</span>
                     </div>
-                    <div style={{ height: 6, borderRadius: 999, background: '#E5E7EB' }}>
-                        <div
-                            style={{
-                                width: `${progressPct}%`,
-                                height: '100%',
-                                borderRadius: 999,
-                                background: '#3B82F6',
-                                transition: 'width .25s ease'
-                            }}
+                     <div className="h-[6px] rounded-full bg-gray-200">
+                         <div
+                            className="h-full rounded-full bg-blue-500 transition-[width] duration-200 ease-in-out"
+                            style={{ width: `${progressPct}%` }}
                         />
                     </div>
                 </div>
