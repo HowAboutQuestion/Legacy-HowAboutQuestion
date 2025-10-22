@@ -84,6 +84,7 @@ function InsertModalCompact({
             <input
               type="text"
               className="block outline-none border-b-2 border-gray-200 focus:border-blue-500 text-sm px-2 py-1 h-10 w-1/2 flex-none"
+              data-tour-id="insert-modal-tag"
               placeholder="문제집 또는 태그를 입력해주세요"
               value={tag}
               onChange={(e) => setTag(e.target.value)}
@@ -94,6 +95,7 @@ function InsertModalCompact({
                   <div className="flex gap-3">
                     <input
                       className="focus:outline-blue-500"
+                      data-tour-id="insert-modal-answer"
                       type="radio"
                       name="answer"
                       value={select1}
@@ -111,6 +113,7 @@ function InsertModalCompact({
                       }}
                       placeholder="선택지1"
                       value={select1}
+                      data-tour-id="insert-modal-select"
                       onChange={(e) => setSelect1(e.target.value)}
                       onKeyDown={(e) => {
                         if (
