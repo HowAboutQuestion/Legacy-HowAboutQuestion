@@ -1,4 +1,4 @@
-import { MediumTitle, LargeTitle, SmallContent, Code, TOOLTIP } from "tour/tourStyle.js"
+import { MediumTitle, LargeTitle, SmallContent, Code, TOOLTIP } from "pages/tour/tourUi.js"
 
 export default function getQuestionsSteps() {
     return [

@@ -1,4 +1,4 @@
-import { MediumTitle, SmallContent, TOOLTIP } from "tour/tourStyle.js"
+import { MediumTitle, SmallContent, TOOLTIP } from "pages/tour/tourUi.js"
 
 export default function getSelectSolveSteps() {
 

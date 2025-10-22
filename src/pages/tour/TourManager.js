@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import Joyride, { STATUS, EVENTS } from 'react-joyride';
 import { useLocation } from "react-router-dom";
-import getDashboardSteps from 'tour/steps/dashboardSteps.js';
-import getQuestionsSteps from 'tour/steps/questionsSteps.js';
-import getSelectSolveSteps from 'tour/steps/selectSolveSteps.js';
+import getDashboardSteps from 'pages/tour/steps/dashboardSteps.js';
+import getQuestionsSteps from 'pages/tour/steps/questionsSteps.js';
+import getSelectSolveSteps from 'pages/tour/steps/selectSolveSteps.js';
 
 const LOCALE_KO = { back: "뒤로", close: "닫기", last: "완료", next: "다음", skip: "건너뛰기", step: "단계" };
 
