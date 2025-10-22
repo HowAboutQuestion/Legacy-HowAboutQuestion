@@ -28,6 +28,24 @@ function Questions() {
     }
   }, [location.state]);
 
+  useEffect(() => {
+    const handleOpenSidebar = () => setIsCollapsed(false);
+
+    const handleOpenInsertModal = () => {
+      setInsertModal(true);
+      setUpdateModal(false);
+      setModalHeight(300);
+    };
+
+    window.addEventListener("open-sidebar", handleOpenSidebar);
+    window.addEventListener("open-insert-modal", handleOpenInsertModal);
+
+    return () => {
+      window.removeEventListener("open-sidebar", handleOpenSidebar);
+      window.removeEventListener("open-insert-modal", handleOpenInsertModal);
+    };
+  }, []);
+
   // 태그 선택/해제 핸들러
   const onTagClick = (tagName) => {
     setSelectedTag(
@@ -54,6 +72,15 @@ function Questions() {
       );
     setFilterQuestions(filtered);
   }, [questions, selectedTag]);
+
+  useEffect(() => {
+    const collapseHandler = () => {
+      // 확장 모드를 일반 모드(300px 높이)로 되돌림
+      setModalHeight(300);
+    };
+    window.addEventListener("collapse-insert-modal", collapseHandler);
+    return () => window.removeEventListener("collapse-insert-modal", collapseHandler);
+  }, []);
 
   //좌측 사이드바 토글
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -273,14 +300,14 @@ function Questions() {
 
   return (
     <main className="ml-20 flex">
-      <Sidebar
-        isCollapsed={isCollapsed}
-        allTag={allTag}
-        selectedTag={selectedTag}
-        onTagClick={onTagClick}
-        setIsCollapsed={setIsCollapsed}
-      />
-
+        <Sidebar
+          isCollapsed={isCollapsed}
+          allTag={allTag}
+          selectedTag={selectedTag}
+          onTagClick={onTagClick}
+          setIsCollapsed={setIsCollapsed}
+        />
+    
       <QuestionsMain
         filterQuestions={filterQuestions}
         isCollapsed={isCollapsed}
@@ -291,7 +318,6 @@ function Questions() {
         handleDownloadToZip={handleDownloadToZip}
         goSelectSolve={goSelectSolve}
       />
-
       {/* 오버레이는 모달이 열려있을 때만 렌더링 */}
       {(insertModal || updateModal) && (
         <div
@@ -304,6 +330,7 @@ function Questions() {
       )}
       {/* 모달 컨테이너는 항상 렌더링, 높이는 상태에 따라 변경 */}
       <div
+        data-tour-id="insert-modal-root"
         className={`transition-all duration-500 width-fill-available shadow-[10px_0px_10px_10px_rgba(0,0,0,0.1)] rounded-t-2xl fixed bottom-0 bg-white ${isCollapsed ? "ml-10" : "ml-80"
           } z-50`}
         style={{ height: insertModal || updateModal ? modalHeight : 0 }}
@@ -312,6 +339,7 @@ function Questions() {
         <div
           className="h-1.5 w-12 mx-auto mt-3 bg-[#ccc] rounded-xl cursor-pointer"
           onClick={toggleModalHeight}
+          data-tour-id="insert-modal-expend"
         />
         {insertModal && (
           <InsertModal setInsertModal={setInsertModal} expanded={expanded} />

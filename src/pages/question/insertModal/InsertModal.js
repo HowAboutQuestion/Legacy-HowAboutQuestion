@@ -198,6 +198,7 @@ function InsertModal({ setInsertModal, expanded }) {
 
   const renderImageUpload = () => (
     <div
+      data-tour-id="insert-modal-image"
       className="relative bg-gray-50 min-h-[150px] flex rounded h-full"
       style={{
         backgroundImage: thumbnail
@@ -261,6 +262,7 @@ function InsertModal({ setInsertModal, expanded }) {
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
+      
     >
       {isDragging && (
         <div
