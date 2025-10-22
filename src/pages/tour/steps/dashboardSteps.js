@@ -1,4 +1,4 @@
-import { MediumTitle, LargeTitle, SmallContent, Code, TOOLTIP, withTooltip } from "tour/tourStyle.js"
+import { MediumTitle, LargeTitle, SmallContent, Code, TOOLTIP, withTooltip } from "pages/tour/tourUi.js"
 
 export default function getDashboardSteps() {
     return [
