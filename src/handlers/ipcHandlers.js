@@ -5,7 +5,7 @@
  * - 애플리케이션의 경로 정보를 반환
  */
 
-import { ipcMain, dialog } from 'electron';
+import { ipcMain, dialog, app } from 'electron';
 import { getMainWindow } from '../services/windowService.js';
 import { readQuestionsCSV, updateRecommendDates, updateQuestionsFile } from '../controllers/questionController.js';
 import { updateHistory, readHistoryCSV } from '../controllers/historyController.js';
@@ -48,6 +48,9 @@ function setupIpcHandlers() {
 
     // 경로 정보 핸들러
     ipcMain.handle('read-app-path', () => ({ appPath: userDataPath }));
+
+    // 버전 가져오기
+    ipcMain.handle("get-app-version", () => app.getVersion());
 }
 
 export { setupIpcHandlers };
