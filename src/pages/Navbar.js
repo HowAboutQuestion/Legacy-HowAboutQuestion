@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import { selectedTagsAtom, selectedQuestionsAtom } from 'state/data.js';
-import NoticeModal from 'pages/notic/NoticeModal.js'
+import NoticeModal from 'pages/notice/NoticeModal.js'
 import { getAppVersion, hasSeen } from 'services/noticeService.js';
 
 
