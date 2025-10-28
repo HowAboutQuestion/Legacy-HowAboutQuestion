@@ -18,10 +18,10 @@ const Notice = ({ closeNotice }) => {
 
       <div className="flex flex-col top-0 max-h-[80vh] overflow-y-auto p-4">
         
-        {/* 변경사항 섹션 */}
-        <PatchNotes130/>
-
-        <div className="mt-4">
+        <div className= "flex justify-center items-center">
+          <PatchNotes130/>
+        </div>
+        <div className=" mt-4">
           
         </div>
 
