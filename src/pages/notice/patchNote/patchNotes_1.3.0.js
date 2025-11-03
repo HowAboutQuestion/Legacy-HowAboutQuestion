@@ -16,7 +16,7 @@ function PatchNotes130() {
         </div>
       </header>
 
-      <div className="my-16 border-t border-gray-300 w-2/5 mx-auto"></div>
+      <div className="my-16 border-t w-2/5 mx-auto"></div>
 
 
       <div className="px-8">
@@ -94,7 +94,7 @@ function PatchNotes130() {
           </p>
         </div>
 
-        <div className="py-8">
+        <div className="pt-8">
           <p className="font-semibold italic text-3xl mt-4 mb-1">"페이지별 도움말 가이드"</p>
           <p>
             기존 도움말 페이지가 페이지별 가이드로 새롭게 개편되었습니다. <br />
