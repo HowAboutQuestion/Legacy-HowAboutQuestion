@@ -11,7 +11,7 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
   const tag = tags.map((tagName, index) => (
     <span
       key={index}
-      className="font-medium text-xs whitespace-nowrap bg-gray-200 rounded-xl py-1 px-2"
+      className="font-medium text-xs whitespace-nowrap bg-gray-300 rounded-xl py-1 px-2"
     >
       {tagName}
     </span>
@@ -23,6 +23,8 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
   };
 
   const [isChecked, setIsChecked] = useState(question.checked || false); // 기본값 설정
+  const [noAnim, setNoAnim] = useState(false);
+  
   useEffect(() => {
     setIsChecked(question.checked);
   }, [question]);
@@ -30,6 +32,24 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
   const updateClick = (event) => {
     event.stopPropagation();
     onUpdateClick();
+  };
+
+  
+
+
+  const onChangeCheckbox = (e) => {
+    e.stopPropagation();
+    const next = e.target.checked;
+
+    // 1) 체크 순간 즉시 반영
+    setNoAnim(true);
+    setIsChecked(next);
+    handleCheckboxChange(e); // 기존 부모 통지 로직 그대로
+
+    // 2) 한/두 프레임 뒤에 원복 (hover 애니메이션 유지)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => setNoAnim(false));
+    });
   };
 
   const [showModal, setShowModal] = useState(false);
@@ -83,9 +103,13 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
       <>
         <tr
           onClick={toggle}
-          className={`${
-            !isCollapsed && "border-b hover:shadow"
-          } transition-all cursor-pointer`}
+          className={`
+          ${!isCollapsed ? "border-b" : ""}
+          ${!isCollapsed ? "hover:shadow" : ""}
+          ${isChecked ? "bg-gray-200" : ""}
+          transition-all hover:duration-200
+          ${noAnim ? "!duration-0" : ""}
+      `}
         >
           <td className="w-4 p-4 align-top py-4 px-8">
             <div className="flex items-center ">
@@ -93,7 +117,7 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
                 id="checkbox-table-search-1"
                 type="checkbox"
                 checked={!!isChecked} // boolean
-                onChange={handleCheckboxChange}
+                onChange={onChangeCheckbox}
                 onClick={(e) => e.stopPropagation()}
                 className="w-4 h-4 text-blue-600 cursor-pointer bg-gray-100 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
               />
@@ -131,9 +155,12 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
           </td>
         </tr>
         <tr
-          className={` hover:shadow transition-all duration-500 ${
-            isCollapsed ? "border-b" : ""
-          }`}
+          className={`
+            ${isChecked ? "bg-gray-200" : ""}
+            ${isCollapsed ? "border-b" : ""}
+            transition-all hover:shadow hover:duration-500
+            ${noAnim ? "!duration-0" : ""}
+          `}
         >
           <td></td>
           <td className="overflow-hidden">
@@ -172,6 +199,8 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
               )}
             </div>
           </td>
+          <td className="p-0 align-top">
+          </td>
         </tr>
         {showModal && (
           <Modal imgSrc={appPath + question.img} onClose={closeModal} />
@@ -183,8 +212,14 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
   return (
     <>
       <tr
-        onClick={toggle}
-        className={`${!isCollapsed && "border-b hover:shadow"} transition-all `}
+          onClick={toggle}
+          className={`
+          ${!isCollapsed ? "border-b" : ""}
+          ${!isCollapsed ? "hover:shadow" : ""}
+          ${isChecked ? "bg-gray-200" : ""}
+          transition-all hover:duration-200
+          ${noAnim ? "!duration-0" : ""}
+      `}
       >
         <td className="w-4 p-4 align-top py-4 px-8">
           <div className="flex items-center ">
@@ -231,11 +266,14 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
           )}
         </td>
       </tr>
-      <tr
-        className={` hover:shadow transition-all duration-500 ${
-          isCollapsed ? "border-b" : ""
-        }`}
-      >
+       <tr
+          className={`
+            ${isChecked ? "bg-gray-200" : ""}
+            ${isCollapsed ? "border-b" : ""}
+            transition-all hover:shadow hover:duration-500
+            ${noAnim ? "!duration-0" : ""}
+          `}
+        >
         <td></td>
         <td className="overflow-hidden">
           <div
@@ -329,6 +367,7 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
             )}
           </div>
         </td>
+        <td className="p-0 align-top"></td>
       </tr>
       {showModal && (
         <Modal imgSrc={appPath + question.img} onClose={closeModal} />
