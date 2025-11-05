@@ -1,6 +1,6 @@
 {
   "name": "HowAboutQuestion",
-  "version": "1.2.5",
+  "version": "1.3.0",
   "homepage": ".",
   "main": "src/main.js",
   "files": [
