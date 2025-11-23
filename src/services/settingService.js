@@ -2,32 +2,20 @@ import fs from "fs";
 import path from "path";
 import { app } from "electron";
 import crypto from "crypto";
+import { userDataPath } from "../config/paths.js";
 
 
-const HIDDEN_DIR_NAME = ".howaboutquestion";
-const SETTING_FILE_NAME = "setting.dat";
+const SETTING_FILE_NAME = ".setting.dat";
 
 
 
 /**
- * Documents(문서) 안에 setting 파일 주소를 가져옵니다.
- * 없는 경우 해당 위치에 숨김 폴더로 .howaboutquestion 생성
+ * appData안에 setting 파일 주소를 가져옵니다.
  * @returns setting 파일 주소 반환
  */
 function getSettingFilePath() {
-    // Documents 주소 가져오기
-    const documentPath = app.getPath("documents");
-
-    // Documents + /폴더명 
-    const hiddenDirPath = path.join(documentPath, HIDDEN_DIR_NAME);
-
-    // 해당 주소에 폴더가 없으면 폴더 만들기
-    if (!fs.existsSync(hiddenDirPath)) {
-        fs.mkdirSync(hiddenDirPath, { recursive: true });
-    }
-
-    // 파일 주소 반환
-    return path.join(hiddenDirPath, SETTING_FILE_NAME);
+    
+    return path.join(userDataPath, SETTING_FILE_NAME);
 }
 
 /**
