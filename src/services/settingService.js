@@ -20,19 +20,12 @@ function getSettingFilePath() {
 
 /**
  * UUID를 생성합니다.
- * Node 16 미만에서는 crypto가 안되는 경우도 있어서 예외 처리를 했습니다.
  * @returns 생성한 UUID 반환
  */
 function creatUuid() {
     if (typeof crypto.randomUUID === "function") {
         return crypto.randomUUID();
     }
-
-    // Node 16미만 버전 지원
-    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11)
-        .replace(/[018]/g, c =>
-            (c ^ (crypto.randomBytes(1)[0] & (15 >> (c / 4)))).toString(16)
-        );
 }
 
 /**
