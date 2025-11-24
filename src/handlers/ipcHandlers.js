@@ -11,6 +11,7 @@ import { readQuestionsCSV, updateRecommendDates, updateQuestionsFile } from '../
 import { updateHistory, readHistoryCSV } from '../controllers/historyController.js';
 import { saveImage, deleteImage, exportQuestions, extractZip } from '../controllers/fileController.js';
 import { userDataPath } from '../config/paths.js';
+import { getUserId } from '../services/settingService.js';
 
 
 /**
@@ -51,6 +52,9 @@ function setupIpcHandlers() {
 
     // 버전 가져오기
     ipcMain.handle("get-app-version", () => app.getVersion());
+    ipcMain.handle("get-user-id", () => {
+        return getUserId();
+    });
 }
 
 export { setupIpcHandlers };

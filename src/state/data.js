@@ -36,5 +36,10 @@ const appPathAtom = atom({
   default: "",
 });
 
+const userIdAtom = atom({
+  key:"userIdAtom",
+  default: null,
+})
 
-export {questionsAtom, allTagAtom, historyDataAtom, recommendedQuestionsAtom, selectedTagsAtom, selectedQuestionsAtom, appPathAtom};
+
+export {questionsAtom, allTagAtom, historyDataAtom, recommendedQuestionsAtom, selectedTagsAtom, selectedQuestionsAtom, appPathAtom, userIdAtom};
