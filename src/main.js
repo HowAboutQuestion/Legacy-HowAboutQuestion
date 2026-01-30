@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
-import { app } from 'electron';
+import { app, shell } from 'electron';
 import { updateRecommendDates } from './controllers/questionController.js';
-import { createWindow, getMainWindow } from './services/windowService.js';
+import { createWindow, getMainWindow, applyNavigationPolicy } from './services/windowService.js';
 import { setupAutoUpdater } from './services/updateService.js';
 import { setupIpcHandlers } from './handlers/ipcHandlers.js';
 import { getSettingFile } from './services/settingService.js';
@@ -30,4 +30,8 @@ app.on("activate", () => {
   if (getMainWindow() === null) {
     createWindow();
   }
+});
+
+app.on("web-contents-created", (_event, contents) => {
+  applyNavigationPolicy(contents);
 });

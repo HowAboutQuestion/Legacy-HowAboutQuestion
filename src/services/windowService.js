@@ -1,4 +1,4 @@
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, shell } from 'electron';
 import path from 'path';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -25,8 +25,9 @@ export async function createWindow() {
     minWidth: 1200,
     minHeight: 800,
     webPreferences: {
-      nodeIntegration: true,
+      nodeIntegration: false,
       contextIsolation: true,
+      sandbox: true,
       preload: preloadPath,
     },
   });
@@ -57,4 +58,42 @@ export async function createWindow() {
  */
 export function getMainWindow() {
   return mainWindow;
+}
+
+
+// 허용 url
+export const isAllowedInApp = (urlString) => {
+  try {
+    const url = new URL(urlString);
+
+    if (url.protocol !== "http:" && url.protocol !== "https:") return true;
+
+    const host = url.hostname.toLowerCase();
+
+    if (host === "github.com" || host.endsWith(".github.com")) return true;
+
+    if (host === "githubassets.com" || host.endsWith(".githubassets.com")) return true;
+    if (host === "githubusercontent.com" || host.endsWith(".githubusercontent.com")) return true;
+
+    return false;
+  } catch {
+    return false;
+  }
+};
+
+// 정책
+export function applyNavigationPolicy(contents) {
+  contents.setWindowOpenHandler(({ url }) => {
+    if (isAllowedInApp(url)) return { action: "allow" };
+
+    shell.openExternal(url);
+    return { action: "deny" };
+  });
+
+  contents.on("will-navigate", (event, url) => {
+    if (isAllowedInApp(url)) return;
+
+    event.preventDefault();
+    shell.openExternal(url);
+  });
 }
