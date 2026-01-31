@@ -15,28 +15,13 @@ import { getUserId } from "./settingService.js";
  * @returns {Promise<{success: boolean, reason?: string}>}
  */
 export async function trackEvent(name, params = {}) {
-    const GA_MEASUREMENT_ID = process.env.GA_MEASUREMENT_ID;
-    const GA_API_SECRET = process.env.GA_API_SECRET;
-  if (!GA_MEASUREMENT_ID || !GA_API_SECRET) {
-    console.warn("[GA] missing env", {
-      GA_MEASUREMENT_ID: !!GA_MEASUREMENT_ID,
-      GA_API_SECRET: !!GA_API_SECRET,
-    });
-    return { success: false, reason: "missing_env" };
-  }
+  const GA_MEASUREMENT_ID = process.env.GA_MEASUREMENT_ID;
+  const GA_API_SECRET = process.env.GA_API_SECRET;
 
-  if (!name) {
-    console.warn("[GA] missing event name");
-    return { success: false, reason: "missing_event_name" };
-  }
+  if (!GA_MEASUREMENT_ID || !GA_API_SECRET) return { success: false, reason: "missing_env" };
+  if (!name) return { success: false, reason: "missing_event_name" };
 
   const clientId = getUserId();
-
-  console.log("[GA] trackEvent called", {
-    event: name,
-    clientId,
-    params,
-  });
 
   const url =
     `https://www.google-analytics.com/mp/collect` +
@@ -50,37 +35,21 @@ export async function trackEvent(name, params = {}) {
         name,
         params: {
           ...params,
-          platform: "Desktop",
+          platform: "electron",
           app_version: app.getVersion(),
         },
       },
     ],
   };
 
-  // ⚠️ body 전체는 찍지 말고 요약만
-  console.log("[GA] request prepared", {
-    url,
-    bodyPreview: {
-      client_id: body.client_id,
-      event: body.events[0].name,
-    },
-  });
-
   try {
-    const res = await fetch(url, {
+    await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
-
-    console.log("[GA] request sent", {
-      status: res.status,
-      ok: res.ok,
-    });
-
     return { success: true };
-  } catch (e) {
-    console.error("[GA] network error", e);
+  } catch {
     return { success: false, reason: "network_error" };
   }
 }
