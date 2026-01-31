@@ -5,6 +5,7 @@ import { createWindow, getMainWindow, applyNavigationPolicy } from './services/w
 import { setupAutoUpdater } from './services/updateService.js';
 import { setupIpcHandlers } from './handlers/ipcHandlers.js';
 import { getSettingFile } from './services/settingService.js';
+import { trackEvent } from "./services/gaService.js";
 
 
 dotenv.config();
@@ -16,6 +17,7 @@ setupIpcHandlers();
 app.on('ready', () => {
   updateRecommendDates();
   getSettingFile();
+  trackEvent("app_start");
   createWindow();
   setupAutoUpdater();
 });
