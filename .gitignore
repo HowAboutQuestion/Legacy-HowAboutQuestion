@@ -18,6 +18,9 @@ node_modules/
 .vscode/
 .idea/
 
+# 설정 파일
+.env
+
 # 로그 파일
 *.log
 
