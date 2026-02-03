@@ -57,11 +57,6 @@
 | 사용자 UUID | `C:\Users\<사용자명>\AppData\Roaming\HowAboutQuestion\.setting.dat`                                     |
 | 풀이 히스토리  | `C:\Users\<사용자명>\AppData\Roaming\HowAboutQuestion\history.csv`                                      |
 
-
-## 아키텍처
-
-<img width="896" height="471" alt="아키텍처" src="https://github.com/user-attachments/assets/92824b01-7d77-4054-8535-9700a6fa84ac" />
-
 ## 제안하기
 버그 외에도, 사용하시면서 필요하다고 느끼신 기능이나 개선 아이디어가 있다면 
 
