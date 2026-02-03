@@ -1,145 +1,72 @@
-# 문제어때 - 내안의 작은 학습방
-
-![main](https://howaboutquestion-bucket.s3.us-east-1.amazonaws.com/main.png)
+<img alt="문제어때 리드미" src="https://github.com/user-attachments/assets/4b707a25-68e7-4378-bb94-45ac6fece644" />
 
 
-* 배포 URL : [HowAboutQuestion](https://howaboutquestion-bucket.s3.us-east-1.amazonaws.com/HowAboutQuestion.zip)
-* TEST FILE : [TEST QUESTIONS FILE](https://howaboutquestion-bucket.s3.us-east-1.amazonaws.com/questions.csv) 
-* TEST HISTORY : [TEST HISTORY FILE](https://howaboutquestion-bucket.s3.us-east-1.amazonaws.com/history.csv)
+> **문제를 직접 제작하고, 공유하고 스스로 풀어볼 수 있는 학습 프로그램입니다.**
 
-## 프로젝트 소개
-* 문제 어때는 문제를 직접 제작하고 만든 문제를 직접 풀어 볼 수 있는 학습 프로그램 입니다.
-* 스스로 풀어 본 문제들은 기록되며 스스로의 학습량을 분석하고 확인할 수 있습니다.
-* 분석된 결과를 통해 학습이 미흡한 문제는 "오늘 풀어야할 문제"에 자주 등장합니다.
-* 다양한 테그들을 활용하여 문제를 구분하거나 문제집 별로 테그를 활용해 문제를 분류할 수 있습니다.
+[<img src="https://img.shields.io/badge/다운로드-000000?style=flat&logo=toggltrack&logoColor=white" width="180" />](https://github.com/HowAboutQuestion/Legacy-HowAboutQuestion/releases/download/v1.3.0/HowAboutQuestion-Setup-1.3.0.exe)
+[<img src="https://img.shields.io/badge/업데이트-000000?style=flat&logo=readdotcv&logoColor=white" width="180" />](https://github.com/HowAboutQuestion/Legacy-HowAboutQuestion/releases)
 
-## 팀원 소개
-|권해림|최은창|
-|---|---|
-| [<img src="./gif/gun.jpg" height=150 width=150> <br/> @haerim-kweon](https://github.com/haerim-kweon) | [<img src="./gif/eun.jpg" height=150 width=150> <br/> @cod0216](https://github.com/cod0216) | 
+## 서비스 소개
+사용자가 직접 문제를 제작하고, 제작한 문제를 스스로 풀어볼 수 있는 학습 프로그램입니다.
 
-## 1. 개발 환경
-* Node.js
-* npm
-* Electron
-* React
-* Recoil
-* TailWind CSS
-* Chart.js
-* 디자인 : Figma
-* 협업 툴 : Discord, ZEP, Obsidian
+풀었던 문제는 기록되어 학습량을 분석할 수 있으며, 부족한 문제는 “오늘 풀어야 할 문제”로 추천됩니다.
 
-## 2. 역할 분담
-### 🐽권해림
-* UI
-    * 페이지 : 문제 관리, 문제 풀이, 결과
+또한, 다양한 태그를 활용해 문제를 구분하거나, 문제집 단위로 분류하여 체계적인 학습이 가능합니다.
+>[!NOTE]
+> 엔지니어께서는 [기술 문서](https://github.com/HowAboutQuestion/Legacy-HowAboutQuestion/blob/docs/readme/DEVELOPERS.md)를 참고해주세요
 
-* 기능
-    * Question CURD, 확인, 파일 I/O
+## 사용법
 
+사용법은 애플리케이션 우측 상단 <img width="27" height="23" alt="스크린샷 2026-02-02 오전 2 56 50" src="https://github.com/user-attachments/assets/ffc812f8-f79f-4bfa-9177-012b963d8581" /> 버튼을 통해서도 투어가 가능합니다.
 
-### 🧙‍♂️최은창
-* UI
-    * 페이지 : 대시 보드, 문제 추천, 히스토리, 
+### 설치 방법
+<img width="100" height="100" alt="문제 어때" src="https://github.com/user-attachments/assets/ddec9a6f-97e8-473d-82d3-8e19d33654cb" />
 
-* 기능
-    * History CRU, 문제 추천 로직, 
+[다운로드](https://github.com/HowAboutQuestion/Legacy-HowAboutQuestion/releases/download/v1.3.0/HowAboutQuestion-Setup-1.3.0.exe) 를 통해 받은 `exe` 파일을 실행하여 설치를 완료해 주세요.
+
+> [!NOTE]
+> 설치 과정에서 **Windows의 PC 보호** 화면이 나타난다면 `추가 정보`를 클릭해 `실행`버튼을 눌러 주세요
+
+### 문제 제작
+<img width="576" height="378" alt="image" src="https://github.com/user-attachments/assets/1230b2dd-cacd-4add-a25e-b6718e66f8ef" />
+
+1. 문제 관리 버튼을 클릭해 문제 관리 페이지로 이동할 수 있습니다.
+2. 문제추가 버튼을 통해 문제 추가하기 모달을 열 수 있습니다.
+3. `문제 제목` `문제 태그` `객관식 / 주관식` `보기` `이미지`를 작성할 수 있습니다.
+4. 문제 작성이 끝나면   `저장하기` 버튼을 클릭해 문제를 생성할 수 있습니다.
 
 
-## 3. 개발 기간 및 관리
+### 문제 풀기
 
-### 개발 기간
-* 전체 개발 기간 : 2024-12-09 ~ 2025-02-09
-* UI 구현 및 기능 구현 : 2024-12-09 ~ 2025-01-09
-* 배포 : 2025-01-09 ~ 2025-02-09
+<img width="576" height="378" alt="image" src="https://github.com/user-attachments/assets/26015085-e29d-40fc-82ad-3377e66a7893" />
 
-### 작업 관리
-* GitHub Repo를 사용하여 진행 상항을 공유했습니다.
-* 일일 스크럼을 진행하며 작업 순서와 방향성에 대해 고민을 나누고 해결 방안을 모색해 나아가습니다.
-* Excalidraw를 이용하여 가시적인 의견과 해결 방안을 제시하였습니다.  
+1. 문제 풀기 버튼을 클릭해 문제 풀기 페이지로 이동할 수 있습니다.
+2. 태그를 선택해 문제집 단위로 문제들을 선택할 수 있습니다.
+    - **개별 문제는 문제 관리 페이지의 체크박스와 문제 풀러 가기 버튼을 통해 선택할 수 있습니다.**
+3. `타이머 설정`, `문제 섞기`, `객관식 보기 섞기` 옵션을 선택할 수 있습니다.
+4. 선택한 문제를 `시험 / 카드` 형식으로 풀 수 있습니다.
 
-### 데이터 관리
-* CSV 파일을 이용하여 데이터를 저장하였습니다.
-    * `questions.csv` → 문제 리스트 저장
-    * `history.csv` → 풀이 기록 저장
-* Electron의 `fs` 모듈을 사용하여 CSV 데이터를 읽고 저장하였습니다.
+<img src="https://github.com/user-attachments/assets/faf14bb5-b4f5-401f-be04-7abfd11b0f0c" width="45%" /> <img src="https://github.com/user-attachments/assets/3dfda008-cac5-48d3-8402-abb4e02c5a09" width="45%" />
 
-## 4. 신경 쓴 부분 (수정)
-* Recoil을 통한 상태 관리 및 유지
-* 문제 생성(이미지 등)
-* 문제 추천 로직
+## 파일 경로
+| 항목       | 경로                                                 |
+| -------- | -------------------------------------------------- |
+| 문제어때 | `C:\Users\<사용자명>\AppData\Roaming\HowAboutQuestion` |
+| 문제 파일   | `C:\Users\<사용자명>\AppData\Roaming\HowAboutQuestion\questions.csv`                                    |
+| 문제 이미지   | `C:\Users\<사용자명>\AppData\Roaming\HowAboutQuestion\images\`                                          |
+| 사용자 UUID | `C:\Users\<사용자명>\AppData\Roaming\HowAboutQuestion\.setting.dat`                                     |
+| 풀이 히스토리  | `C:\Users\<사용자명>\AppData\Roaming\HowAboutQuestion\history.csv`                                      |
 
-## 5. 페이지별 기능
+## 제안하기
+버그 외에도, 사용하시면서 필요하다고 느끼신 기능이나 개선 아이디어가 있다면 
 
-### [대시보드]
-![대시보드](./gif/main.gif)
-
-
-#### [문제 추천]
-* 내가 제작한 문제들이 추천됩니다.
-* 많이 맞을 수록 추천 문제에 덜 등장하게 되고 많이 틀릴수록 추천 문제에 더 자주 등장하게 됩니다.
-![문제 추천](./gif/recommandQuestion.gif)
-
-#### [히스토리]
-* 나의 문제 푼 기록을 확인할 수 있습니다.
-* 최근 7개의 문제 히스토리 기록을 확인 할 수 있으며 달력을 통해 더 이전의 기록을 확인할 수 있습니다.
-![히스토리](./gif/list.gif)
+- [![Discussions](https://img.shields.io/github/discussions/HowAboutQuestion/Legacy-HowAboutQuestion?style=flat-square&logo=github)](https://github.com/HowAboutQuestion/Legacy-HowAboutQuestion/discussions) [Discussions](https://github.com/HowAboutQuestion/Legacy-HowAboutQuestion/discussions)에 자유롭게 이야기 해주세요. 
+- [![Discord](https://img.shields.io/badge/Discord-Join%20Community-5865F2?logo=discord&style=flat-square)](https://discord.gg/zMjs9HM3SV) [디스코드](https://discord.gg/zMjs9HM3SV)를 통해서도 언제든지 의견을 남기실 수 있니다.
 
 
-### [문제 관리]
-![문제 관리](./gif/questions.gif)
-
-#### [문제 추가]
-* 문제를 만들 수 있수 있습니다.
-* "다음 중 틀린것을 고르시오" 등과 같은 문제를 위해 문제 중복을 허용했습니다.
-* 객관식, 주관식을 선택할 수 있습니다.
-* 태그 기능을 활용하여 문제집 처럼 문제들을 분류 할 수 있습니다.
-* 생성한 객관식 갯수만큼 보기를 만들 수 있으며 최대 4개의 보기를 만들 수 있습니다.
-* 이미지 삽입을 통해 사진을 활용한 문제도 제작할 수 있습니다.
-![문제추가](./gif/questionAdd.gif)
-
-#### [문제 삭제]
-![문제삭제](./gif/questionDelete.gif)
-
-#### [문제 수정]
-![문제 수정](./gif/questionUpdate.gif)
-
-#### [문제 업로드]
-* 지금까지 생성한 문제들을 zip 파일로 내보낼 수 있습니다.
-![문제 업로드](./gif/upload.gif)
-
-#### [문제 다운로드]
-* 다른 사용자가 생성한 zip파일 문제들을 추가 할 수 있습니다.
-![문제 다운로드](./gif/download.gif)
 
 
-### [문제풀기]
-* 문제 풀기 페이지는 문제 풀이를 할 수 있습니다.
-* 다운로드 하거나 제작한 문제의 테그를 선택해서 문제 풀이를 할 수 있습니다.
-* 객관식, 주관식 문제 풀이는 시험을, 카드 형식은 카드를 선택 할 수 있습니다.
-* 오늘의 추천 문제를 통해 선택된 문제를 해당 페이지에서 시험, 카드 를 선택해서 문제 풀이를 할 수 있습니다.
 
-#### [시험]
-* 답안을 선택 후 우측 하단 좌, 우 기호를 클릭해 다음 문제로 넘어갈 수 있습니다.
-* 우측 상단 동그라미를 클릭하면 문제 번호들이 나오며 문제 번호를 클릭해 해당 문제 번호로 이동 할 수 있습니다.
-* 제출 버튼을 클릭하면 지금까지 풀었던 문제들과 남아 있는 모든 문제들을 제출합니다.
-![시험](./gif/test.gif)
 
-#### [카드]
-* 내가 만든 문제를 카드 형식으로 제공합니다.
-* 문제 제목과 사진, 답안을 확인 할 수 있습니다.
-* 내가 생각한 답안과 실제 답안을 비교하여 맞춤, 틀림을 선택할 수 있습니다.
-![카드](./gif/card.gif)
-
-## 6. 프로젝트 후기
-### 권해림
-문제어때를 시작한 건 꽤 충동적인 결정이었다.
-SSAFY 부트캠프 때 강사님께서 매일 한 사람씩 지목해 진도에 맞는 문제를 출제하도록 했는데, 그 과정이 꽤 불편했다. 문제를 .word 파일로 만들고, 답안지를 따로 정리하고, 푸는 사람은 A4 용지에 풀이를 작성한 뒤 직접 채점까지 해야 했다. 출제자마다 형식이 제각각이라 정리하기도 어려웠고, 이전에 풀었던 문제를 다시 찾아보기도 불편했다. 무엇보다 SSAFY 시험은 웹에서 진행되는데, 실제 시험 환경과 비슷하게 연습하고 싶었다.
-
-그러다 문제를 출제할 차례가 되었을 때, 문득 엑셀에 문제를 정리한 뒤 웹에서 한 번에 문제를 풀고 채점할 수 있도록 만들면 어떨까 싶었다. "세 번 이상 반복되는 코드는 분리하라"는 말을 종종 듣는데, 재미있게도 내가 딱 세 번째 출제자였던 것 같다. 그렇게 시작한 프로젝트를 발전시켜 결국 데스크탑용 애플리케이션까지 만들게 되었다.
-개발자로서 일상의 불편함을 코드로 해결하는 게 하나의 로망이었는데, 드디어 1차적인 형태로나마 완성하게 돼서 정말 뿌듯하다. 물론 아직 부족한 점이 많지만, 직접 만들어서 쓰고 있다는 사실만으로도 기분이 좋다.
-
-### 최은창
-이번 프로젝트를 통해 React와 Electron을 활용하며 새로운 기술을 익힐 수 있었습니다. 또한, 대시보드에서 문제를 풀기까지 버튼을 클릭하는 횟수나 첫 화면에 어떤 요소를 배치할지 등 사용자 경험(UX)에 대한 다양한 고민을 팀원과 나눌 수 있는 좋은 기회였습니다. 이 과정에서 사용자의 편의성과 직관적인 인터페이스 설계를 위해 많은 논의를 거쳤으며, 이를 통해 UX/UI의 중요성을 더욱 깊이 깨닫게 되었습니다.
 
 
