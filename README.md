@@ -1,5 +1,3 @@
-# 문제어때 - 내안의 작은 학습방
-
 <img alt="문제어때 리드미" src="https://github.com/user-attachments/assets/4b707a25-68e7-4378-bb94-45ac6fece644" />
 
 
