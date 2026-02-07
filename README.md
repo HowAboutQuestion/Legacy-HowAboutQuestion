@@ -19,7 +19,7 @@
 
 사용법은 애플리케이션 우측 상단 <img width="27" height="23" alt="스크린샷 2026-02-02 오전 2 56 50" src="https://github.com/user-attachments/assets/ffc812f8-f79f-4bfa-9177-012b963d8581" /> 버튼을 통해서도 투어가 가능합니다.
 
-### 설치 방법
+### 🛠️설치 방법
 <img width="100" height="100" alt="문제 어때" src="https://github.com/user-attachments/assets/ddec9a6f-97e8-473d-82d3-8e19d33654cb" />
 
 [다운로드](https://github.com/HowAboutQuestion/Legacy-HowAboutQuestion/releases/download/v1.3.0/HowAboutQuestion-Setup-1.3.0.exe) 를 통해 받은 `exe` 파일을 실행하여 설치를 완료해 주세요.
@@ -27,7 +27,7 @@
 > [!NOTE]
 > 설치 과정에서 **Windows의 PC 보호** 화면이 나타난다면 `추가 정보`를 클릭해 `실행`버튼을 눌러 주세요
 
-### 문제 제작
+### ✍️ 문제 제작
 
 <img width="576" height="378" alt="image" src="https://github.com/user-attachments/assets/f9b0816a-90bb-48f1-95cb-60f84eb5e13a" />
 
@@ -42,7 +42,7 @@
 5️⃣ 문제 작성이 끝나면 `저장하기` 버튼을 클릭해 문제를 생성할 수 있습니다.
 
 
-### 문제 풀기
+### 📖 문제 풀기
 
 <img width="576" height="378" alt="image" src="https://github.com/user-attachments/assets/3adc849a-1126-43fb-9dea-d19a4fea958b" />
 
@@ -57,7 +57,7 @@
 
 4️⃣ 선택한 문제를 `시험 / 카드` 형식으로 풀 수 있습니다.
 
-### 모의 시험
+### 📝 모의 시험
 
 <img width="576" height="378" alt="image" src="https://github.com/user-attachments/assets/096b4e02-e941-4e03-b88d-30693e1e994d" />
 
@@ -75,7 +75,7 @@
 2️⃣ 태그별 정답률과 오답률을 통해 취약한 태그를 확인할 수 있습니다.
 
 
-### 카드 시험
+### 🃏 카드 시험
 
 <img width="576" height="378" alt="image" src="https://github.com/user-attachments/assets/8fb2a044-f50e-4621-963f-35c40e0a7e64" />
 
@@ -90,7 +90,7 @@
 
 2️⃣ 방금 문제를 다시 풀어볼 수 있습니다.
 
-### 문제 내보내기 / 불러오기
+### 📦 문제 내보내기 / 불러오기
 
 <img width="576" height="378" alt="image" src="https://github.com/user-attachments/assets/74f46751-fbeb-4ade-b64c-1da50e629973" />
 
