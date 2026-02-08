@@ -1,4 +1,35 @@
-## 프로젝트 개요
+<img alt="문제어때 리드미" src="https://github.com/user-attachments/assets/4b707a25-68e7-4378-bb94-45ac6fece644" />
+
+> [!NOTE]
+> 이 문서는 **엔지니어를 위한 문서**입니다.
+
+
+## 서비스 기획
+
+문제어때는 문제 제작의 반복적인 작업에서 느낀 불편함에서 출발했습니다.
+
+작은 문제를 빠르게 만들고 풀 수 있는 환경을 만들고자 시작되었으며,
+
+이후 사용자들이 각자의 문제를 공유하고 서로 풀어보는 구조로 발전했습니다.
+
+이 과정에서 서비스는 개인의 성과 경쟁이 아닌, 함께 성장하며 학습의 저점을 끌어올리는 문화를 목표로 운영되고 있습니다.
+
+### 개발 기간
+- 첫 배포 `2024-12-09` ~ `2025-02-09`
+
+### 실행 및 빌드
+
+```bash
+# 설치
+npm install
+
+# 빌드 
+npm run build
+
+# 개발 모드 실행(빌드 파일 생성 후 실행)
+npm run start 
+
+```
 
 ## 팀 구성
 
@@ -62,20 +93,38 @@ project-root/
 └─ README.md
 
 ```
+### IPC Channel
 
-## 실행 및 빌드
+| 구분   | Channel 이름               | 설명                                         | Renderer → Main 입력              | Main → Renderer 출력                        |
+| ---- | ------------------------ | ------------------------------------------ | ------------------------------- | ----------------------------------------- |
+| 질문   | `read-questions-csv`     | `questions.csv` 파일을 읽어 문제 목록과 전체 태그 목록을 조회 | 없음                              | `{ success, questions, allTag, message }` |
+| 질문   | `update-recommend-dates` | 오늘 날짜 기준으로 문제의 `recommenddate` 갱신          | 없음                              | `{ success, message }`                    |
+| 질문   | `update-questions-file`  | 렌더러 상태의 문제 목록을 CSV 파일로 저장                  | `questions: Question[]`         | `{ success, message }`                    |
+| 기록   | `read-history-csv`       | `history.csv` 파일 읽기                        | 없음                              | `History[]`                               |
+| 기록   | `update-history`         | 문제 풀이 결과(정답/오답)를 기록에 반영                    | `{ isCorrect: boolean }`        | `{ success, message }`                    |
+| 이미지  | `save-image`             | 이미지 파일을 앱 데이터 디렉터리에 저장                     | `{ fileName, content(Buffer) }` | `{ success, path, filename }`             |
+| 이미지  | `delete-image`           | 저장된 이미지 파일 삭제                              | `{ imgPath: string }`           | `{ success, message }`                    |
+| 내보내기 | `export-questions`       | 문제 데이터를 ZIP 파일로 내보내기                       | `questions: Question[]`         | `{ success, path }`                       |
+| 가져오기 | `extract-zip`            | ZIP 파일 압축 해제 후 문제 데이터 복원                   | `{ fileName, content(Buffer) }` | `{ success, questions }`                  |
+| 앱 정보 | `read-app-path`          | 앱 userData 저장 경로 조회                        | 없음                              | `{ appPath: string }`                     |
+| 앱 정보 | `get-app-version`        | 애플리케이션 버전 조회                               | 없음                              | `string`                                  |
+| 설정   | `get-user-id`            | 사용자 고유 ID 조회                               | 없음                              | `string`                                  |
 
-```bash
-# 설치
-npm install
 
-# 빌드 
-npm run build
+### CSV 스키마 정의
 
-# 개발 모드 실행(빌드 파일 생성 후 실행)
-npm run start 
+| 컬럼 | 타입 | 설명 |
+| --- | --- | --- |
+| `title` | string | 문제 제목 |
+| `type` | string | 객관식/주관식 |
+| `select1~4` | string | 객관식 선택지 |
+| `answer` | string | 정답 |
+| `description` | string | 문제 해설 |
+| `img` | string | 이미지 파일 경로 |
+| `level` | number | 난이도 |
+| `date`, `update`, `recommenddate`, `solveddate` | string | 상호작용 날짜 |
+| `tag` | string | 태그 목록 |
 
-```
 
 ## 애플리케이션 생명주기
 
@@ -108,16 +157,7 @@ App 종료
 | ③ 데이터 전처리 | `question CSV` 파일에서 오늘 날짜를 기준으로 문제의 추천 날짜 업데이트 |
 | ④ 윈도우 생성 | 브라우저 창을 생성하고 `index.html`을 로드하여 애플리케이션 시작 |
 | ⑤ 업데이트 | `latest.yml` 과 github을 비교하여 확인 및 업데이트 |
-
-### 문제 생성 / 수정
-
-| 단계 | 설명 |
-| --- | --- |
-| ① 입력 | 사용자가 React UI에서 문제 등록/삭제 |
-| ② 요청 | Renderer → Main (IPC 통신) |
-| ③ 처리 | Main에서 fs.writeFileSync / readFileSync 로 CSV 갱신 |
-| ④ 응답 | 처리 결과를 Renderer에 전달 |
-| ⑤ 렌더링 | React 상태 갱신 → 화면 반영 |
+| ⑥ 서비스 이용 | 문제 생성 및 풀이 |
 
 ## 데이터 플로우
 
@@ -131,50 +171,85 @@ App 종료
 | `imageDir` | `${userDataPath}/images` | 이미지 파일 저장 |
 | `tempDir` | `${app.getPath('temp')}/questions_export` | ZIP 내보내기 임시 디렉토리 |
 
-### CSV 스키마 정의
 
-| 컬럼 | 타입 | 설명 |
-| --- | --- | --- |
-| `title` | string | 문제 제목 |
-| `type` | string | 문제 유형 |
-| `select1~4` | string | 객관식 선택지 |
-| `answer` | string | 정답 |
-| `description` | string | 문제 해설 |
-| `img` | string | 이미지 파일 경로 |
-| `level` | number | 난이도 |
-| `date`, `update`, `recommenddate`, `solveddate` | string | 날짜 관련 |
-| `tag` | string | 태그 목록 |
 
-### CRUD 처리 플로우
+### 문제 생성 / 수정
 
-#### Create / Update
+| 단계 | 설명 |
+| --- | --- |
+| ① 입력 | 사용자가 React UI에서 문제를 생성 또는 수정 |
+| ② 상태 변경 | Renderer Process에서 `questionsAtom` 상태 업데이트 |
+| ③ 감지 | `useEffect`로 상태 변경 감지 |
+| ④ 요청 | Renderer → Main IPC 호출 |
+| ⑤ 처리 | Main Process에서 CSV 파일 갱신 |
+| ⑥ 응답 | 처리 결과를 Renderer로 반환 |
+| ⑦ 반영 | React 상태 갱신 후 화면 렌더링 |
 
-1. **문제 생성/수정**
-    - Renderer Process에서 `questionsAtom` 상태를 업데이트.
-    - `useEffect`로 상태 변화를 감지 → `window.electronAPI.updateQuestions(questions)` 호출.
-    - IPC → Main 프로세스 → `fileController.updateQuestionsFile`에서 CSV 파일 갱신.
-2. **이미지 업로드**
-    - Renderer에서 `window.electronAPI.saveImage(id, file)` 호출.
-    - FileReader로 ArrayBuffer 변환 후 Main 프로세스에 전달.
-    - `fileController.saveImage`에서 `imageDir`에 저장.
-    
+### 이미지 업로드
 
-#### Read
+| 단계 | 설명 |
+| --- | --- |
+| ① 입력 | 사용자가 이미지 파일 선택 |
+| ② 요청 | Renderer에서 `saveImage(id, file)` 호출 |
+| ③ 변환 | FileReader로 ArrayBuffer 변환 |
+| ④ 전달 | Renderer → Main IPC 전송 |
+| ⑤ 저장 | Main Process에서 이미지 디렉터리에 저장 |
+| ⑥ 응답 | 저장된 이미지 경로 반환 |
 
-- 앱 시작 시 `window.electronAPI.readQuestionsCSV()` 호출.
-- CSV 파싱 후 `questionsAtom` 상태에 저장.
-- `<img src={appPath + question.img}>` 형식으로 렌더링.
+### 데이터 조회
 
-#### Delete
+| 단계 | 설명 |
+| --- | --- |
+| ① 시작 | 앱 실행 |
+| ② 요청 | Renderer에서 `readQuestionsCSV()` 호출 |
+| ③ 처리 | Main Process에서 CSV 파일 읽기 |
+| ④ 파싱 | CSV 데이터를 JSON으로 변환 |
+| ⑤ 저장 | `questionsAtom` 상태에 저장 |
+| ⑥ 렌더링 | 이미지 경로 기준으로 화면 출력 |
 
-- 문제 삭제: `questionsAtom` 상태에서 제거 후 `updateQuestions` 호출.
-- 이미지 삭제: `window.electronAPI.deleteImage(imgPath)` 호출.
+### 문제 삭제
 
-#### CSV와 이미지 동기화 플로우
+| 단계 | 설명 |
+| --- | --- |
+| ① 선택 | 사용자가 삭제할 문제 선택 |
+| ② 상태 변경 | Renderer에서 `questionsAtom`에서 제거 |
+| ③ 요청 | Renderer → Main IPC 호출 |
+| ④ 처리 | Main Process에서 CSV 파일 갱신 |
+| ⑤ 이미지 삭제 | 관련 이미지 파일 삭제 |
+| ⑥ 반영 | 변경 내용 화면 반영 |
 
-1. 문제 생성/수정 → CSV 업데이트 + 이미지 저장
-2. 문제 삭제 → CSV 갱신 + 이미지 삭제
-3. 앱 시작 시 CSV 로드 → 이미지 파일 존재 여부 확인 → 누락 시 기본 이미지 사용
-4. ZIP 내보내기/가져오기
-    - `exportQuestions`: CSV + 이미지 ZIP 생성
-    - `extractZip`: CSV 파싱 + 이미지 복사 → Renderer 상태 업데이트
+### CSV · 이미지 동기화
+
+| 단계 | 설명 |
+| --- | --- |
+| ① 생성/수정 | 문제 저장 시 CSV 갱신 + 이미지 저장 |
+| ② 삭제 | 문제 삭제 시 CSV 갱신 + 이미지 삭제 |
+| ③ 시작 | 앱 실행 시 CSV 로드 |
+| ④ 검증 | 이미지 파일 존재 여부 확인 |
+| ⑤ 대체 | 이미지 누락 시 기본 이미지 사용 |
+
+### ZIP 내보내기
+
+| 단계 | 설명 |
+| --- | --- |
+| ① 요청 | Renderer에서 `exportQuestions` 호출 |
+| ② 수집 | CSV 파일과 이미지 파일 수집 |
+| ③ 생성 | ZIP 파일 생성 |
+| ④ 저장 | 사용자 지정 경로에 저장 |
+
+### ZIP 가져오기
+
+| 단계 | 설명 |
+| --- | --- |
+| ① 요청 | Renderer에서 ZIP 파일 선택 |
+| ② 전달 | Renderer → Main IPC 전송 |
+| ③ 해제 | ZIP 압축 해제 |
+| ④ 파싱 | CSV 파싱 및 이미지 복사 |
+| ⑤ 반영 | Renderer 상태 업데이트 |
+
+
+## 제안하기
+버그 외에도, 사용하시면서 필요하다고 느끼신 기능이나 개선 아이디어가 있다면 
+
+- [![Discussions](https://img.shields.io/github/discussions/HowAboutQuestion/Legacy-HowAboutQuestion?style=flat-square&logo=github)](https://github.com/HowAboutQuestion/Legacy-HowAboutQuestion/discussions) [Discussions](https://github.com/HowAboutQuestion/Legacy-HowAboutQuestion/discussions)에 자유롭게 이야기 해주세요. 
+- [![Discord](https://img.shields.io/badge/Discord-Join%20Community-5865F2?logo=discord&style=flat-square)](https://discord.gg/zMjs9HM3SV) [디스코드](https://discord.gg/zMjs9HM3SV)를 통해서도 언제든지 의견을 남기실 수 있니다.
