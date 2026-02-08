@@ -93,25 +93,35 @@ project-root/
 └─ README.md
 
 ```
-### IPC Channel
+## 파일 및 디렉토리 경로 정의
 
-| 구분   | Channel 이름               | 설명                                         | Renderer → Main 입력              | Main → Renderer 출력                        |
-| ---- | ------------------------ | ------------------------------------------ | ------------------------------- | ----------------------------------------- |
-| 질문   | `read-questions-csv`     | `questions.csv` 파일을 읽어 문제 목록과 전체 태그 목록을 조회 | 없음                              | `{ success, questions, allTag, message }` |
-| 질문   | `update-recommend-dates` | 오늘 날짜 기준으로 문제의 `recommenddate` 갱신          | 없음                              | `{ success, message }`                    |
-| 질문   | `update-questions-file`  | 렌더러 상태의 문제 목록을 CSV 파일로 저장                  | `questions: Question[]`         | `{ success, message }`                    |
-| 기록   | `read-history-csv`       | `history.csv` 파일 읽기                        | 없음                              | `History[]`                               |
-| 기록   | `update-history`         | 문제 풀이 결과(정답/오답)를 기록에 반영                    | `{ isCorrect: boolean }`        | `{ success, message }`                    |
-| 이미지  | `save-image`             | 이미지 파일을 앱 데이터 디렉터리에 저장                     | `{ fileName, content(Buffer) }` | `{ success, path, filename }`             |
-| 이미지  | `delete-image`           | 저장된 이미지 파일 삭제                              | `{ imgPath: string }`           | `{ success, message }`                    |
-| 내보내기 | `export-questions`       | 문제 데이터를 ZIP 파일로 내보내기                       | `questions: Question[]`         | `{ success, path }`                       |
-| 가져오기 | `extract-zip`            | ZIP 파일 압축 해제 후 문제 데이터 복원                   | `{ fileName, content(Buffer) }` | `{ success, questions }`                  |
-| 앱 정보 | `read-app-path`          | 앱 userData 저장 경로 조회                        | 없음                              | `{ appPath: string }`                     |
-| 앱 정보 | `get-app-version`        | 애플리케이션 버전 조회                               | 없음                              | `string`                                  |
-| 설정   | `get-user-id`            | 사용자 고유 ID 조회                               | 없음                              | `string`                                  |
+| 변수 | 경로 | 용도 |
+| --- | --- | --- |
+| `userDataPath` | `app.getPath('userData')` | 로컬 앱 데이터 저장 |
+| `questionsCsvPath` | `${userDataPath}/questions.csv` | 문제 데이터 CSV |
+| `historyCsvPath` | `${userDataPath}/history.csv` | 문제풀이 이력 |
+| `imageDir` | `${userDataPath}/images` | 이미지 파일 저장 |
+| `tempDir` | `${app.getPath('temp')}/questions_export` | ZIP 내보내기 임시 디렉토리 |
+
+## IPC Channel
+
+| Channel 이름               | 설명                                         | Renderer → Main 입력              | Main → Renderer 출력                        |
+| ------------------------ | ------------------------------------------ | ------------------------------- | ----------------------------------------- |
+| `read-questions-csv`     | `questions.csv` 파일을 읽어 문제 목록과 전체 태그 목록을 조회 | 없음                              | `{ success, questions, allTag, message }` |
+| `update-recommend-dates` | 오늘 날짜 기준으로 문제의 `recommenddate` 갱신          | 없음                              | `{ success, message }`                    |
+| `update-questions-file`  | 렌더러 상태의 문제 목록을 CSV 파일로 저장                  | `questions: Question[]`         | `{ success, message }`                    |
+| `read-history-csv`       | `history.csv` 파일 읽기                        | 없음                              | `History[]`                               |
+| `update-history`         | 문제 풀이 결과(정답/오답)를 기록에 반영                    | `{ isCorrect: boolean }`        | `{ success, message }`                    |
+| `save-image`             | 이미지 파일을 앱 데이터 디렉터리에 저장                     | `{ fileName, content(Buffer) }` | `{ success, path, filename }`             |
+| `delete-image`           | 저장된 이미지 파일 삭제                              | `{ imgPath: string }`           | `{ success, message }`                    |
+| `export-questions`       | 문제 데이터를 ZIP 파일로 내보내기                       | `questions: Question[]`         | `{ success, path }`                       |
+| `extract-zip`            | ZIP 파일 압축 해제 후 문제 데이터 복원                   | `{ fileName, content(Buffer) }` | `{ success, questions }`                  |
+| `read-app-path`          | 앱 userData 저장 경로 조회                        | 없음                              | `{ appPath: string }`                     |
+| `get-app-version`        | 애플리케이션 버전 조회                               | 없음                              | `string`                                  |
+| `get-user-id`            | 사용자 고유 ID 조회                               | 없음                              | `string`                                  |
 
 
-### CSV 스키마 정의
+## CSV 스키마 정의
 
 | 컬럼 | 타입 | 설명 |
 | --- | --- | --- |
@@ -160,18 +170,6 @@ App 종료
 | ⑥ 서비스 이용 | 문제 생성 및 풀이 |
 
 ## 데이터 플로우
-
-### 파일 및 디렉토리 경로 정의
-
-| 변수 | 경로 | 용도 |
-| --- | --- | --- |
-| `userDataPath` | `app.getPath('userData')` | 로컬 앱 데이터 저장 |
-| `questionsCsvPath` | `${userDataPath}/questions.csv` | 문제 데이터 CSV |
-| `historyCsvPath` | `${userDataPath}/history.csv` | 문제풀이 이력 |
-| `imageDir` | `${userDataPath}/images` | 이미지 파일 저장 |
-| `tempDir` | `${app.getPath('temp')}/questions_export` | ZIP 내보내기 임시 디렉토리 |
-
-
 
 ### 문제 생성 / 수정
 
