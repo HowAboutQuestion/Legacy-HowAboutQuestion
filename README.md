@@ -13,7 +13,7 @@
 
 또한, 다양한 태그를 활용해 문제를 구분하거나, 문제집 단위로 분류하여 체계적인 학습이 가능합니다.
 >[!NOTE]
-> 엔지니어는 [기술 문서](https://github.com/HowAboutQuestion/Legacy-HowAboutQuestion/blob/docs/readme/DEVELOPERS.md)를 참고해주세요
+> 엔지니어는 [기술 문서](./DEVELOPERS.md)를 참고해주세요
 
 ## 사용법
 
