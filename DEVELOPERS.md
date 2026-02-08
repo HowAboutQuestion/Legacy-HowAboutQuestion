@@ -31,7 +31,7 @@ npm run start
 
 ```
 
-## ELECTRON ENGENNER
+## 팀 구성
 
 | **권해림** | **최은창** |
 | --- | --- |
