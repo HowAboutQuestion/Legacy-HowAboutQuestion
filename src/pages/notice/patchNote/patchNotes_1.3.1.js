@@ -3,7 +3,7 @@ import React from "react";
 function PatchNotes131() {
   return (
     <div className="w-full">
-      <header className="relative w-full h-64 overflow-hidden bg-white">
+      <header className="mt-8 relative w-full h-64 overflow-hidden bg-white">
         <a
           href="https://github.com/HowAboutQuestion/Legacy-HowAboutQuestion/discussions"
           target="_blank"
@@ -19,7 +19,7 @@ function PatchNotes131() {
       </header>
 
       <div className="mt-4 text-center">
-        이용하시면서 좋았던 점이나 개선이 필요한 부분을 남겨주시면 큰 힘이 됩니다!
+        좋았던 점이나 개선이 필요한 부분을 남겨주시면 큰 힘이 됩니다!
       </div>
       
     </div>
