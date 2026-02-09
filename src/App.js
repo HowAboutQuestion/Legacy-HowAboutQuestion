@@ -3,7 +3,7 @@ import Router from "Router";
 import { useRecoilState } from "recoil";
 import { HashRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import { allTagAtom, questionsAtom, appPathAtom } from "state/data.js";
+import { allTagAtom, questionsAtom, appPathAtom, userIdAtom } from "state/data.js";
 import Navbar from "pages/Navbar.js";
 import "react-toastify/dist/ReactToastify.css";
 import TourManager from "pages/tour/TourManager.js";
@@ -12,6 +12,7 @@ const App = () => {
   const [questions, setQuestions] = useRecoilState(questionsAtom);
   const [allTag, setAlltag] = useRecoilState(allTagAtom);
   const [appPath, setAppPath] = useRecoilState(appPathAtom);
+  const [userId, setUserId] = useRecoilState(userIdAtom);
 
   // CSV 데이터를 비동기적으로 읽어오는 함수
   const readElectron = async () => {
@@ -29,9 +30,22 @@ const App = () => {
     }
   };
 
+  // setting 파일에서 userId 불러와서 Atom에 넣기 (옵션 추가 되면 그때 수정)
+  const initUserId = async() => {
+    try{
+      const id = await window.electronAPI.getUserId();
+      setUserId(id);
+      console.log("사용자 id : ", id);
+    }catch(error){
+      console.error("사용자 id를 Atom에 넣는 과정에서 문제가 발생했습니다.");
+    }
+  }
+
+
   useEffect(() => {
-    // 컴포넌트가 마운트되면 CSV 데이터를 읽기
-    readElectron();
+    // TODO : 메서드 하나 더 추가되면 그때 패턴 적용하거나 정리좀 하기
+    initUserId(); // setting 값 읽어오기
+    readElectron(); // 컴포넌트가 마운트되면 CSV 데이터를 읽기
   }, []);
 
   useEffect(() => {
