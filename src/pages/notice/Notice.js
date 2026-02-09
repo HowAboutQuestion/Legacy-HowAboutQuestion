@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import PatchNotes130 from "./patchNote/patchNotes_1.3.0.js";
+import PatchNotes131 from "./patchNote/patchNotes_1.3.1.js";
 
 const Notice = ({ closeNotice }) => {
 
@@ -19,7 +19,7 @@ const Notice = ({ closeNotice }) => {
       <div className="flex flex-col top-0 max-h-[80vh] overflow-y-auto p-4">
         
         <div className= "flex justify-center items-center">
-          <PatchNotes130/>
+          <PatchNotes131/>
         </div>
         <div className="flex justify-end px-8 pb-4">
           <a

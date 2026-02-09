@@ -6,7 +6,7 @@ function PatchNotes130() {
       <header className="relative h-64 text-center overflow-hidden">
         <img
           src="./images/help/1_3_0/header-bg.png"
-          alt="1.3.0 패치노트 배경"
+          alt="공유"
           className="absolute inset-0 w-full h-full object-cover"
         />
 
@@ -20,6 +20,12 @@ function PatchNotes130() {
 
 
       <div className="px-8">
+         <p className="font-semibold italic text-3xl">"넌 못지나 간다."</p>
+         <p className="mb-2">
+           외부 사이트 접근 방식을 개선하고 앱 실행 환경을 분리하여 시스템 자원을 보호였습니다.
+         </p>
+      </div>
+
         <div className="border-b py-8">
           <p className="font-semibold italic text-3xl">"틀린 문제만 다시 풀기!"</p>
           <div className="mt-4">
@@ -125,8 +131,6 @@ function PatchNotes130() {
             </div>
           </p>
         </div>
-      </div>
-
     </div>
   );
 }
