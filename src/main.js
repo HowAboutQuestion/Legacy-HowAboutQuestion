@@ -1,6 +1,5 @@
 import dotenv from 'dotenv';
 import { app, shell } from 'electron';
-import { updateRecommendDates } from './controllers/questionController.js';
 import { createWindow, getMainWindow, applyNavigationPolicy } from './services/windowService.js';
 import { setupAutoUpdater } from './services/updateService.js';
 import { setupIpcHandlers } from './handlers/ipcHandlers.js';
@@ -17,7 +16,6 @@ setupIpcHandlers();
 app.on('ready', () => {
   createWindow();
   trackEvent("app_start");
-  updateRecommendDates();
   getSettingFile();
   setupAutoUpdater();
 });

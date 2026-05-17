@@ -15,6 +15,8 @@ const App = () => {
   const [appPath, setAppPath] = useRecoilState(appPathAtom);
   const [userId, setUserId] = useRecoilState(userIdAtom);
   const [appInitStep, setAppInitStep] = useRecoilState(appInitStepAtom);
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 
   // CSV 데이터를 비동기적으로 읽어오는 함수
   const readElectron = async () => {
@@ -45,18 +47,42 @@ const App = () => {
     }
   }
 
+  const recommendations = async () => {
+    try{
+      const result = await window.electronAPI.updateRecommendDates();
+      if(!result.success){
+        console.error(result.message);
+        setAppInitStep("error");
+      }
+    }catch(error) {
+      console.error("추천 날자 보정 실패: ", error);
+      setAppInitStep("error");
+    }
+  };
+
 
   useEffect(() => {
     const initializeApp = async () => {
       try{
         // TODO : 메서드 하나 더 추가되면 그때 패턴 적용하거나 정리좀 하기
         setAppInitStep("loading-settings");
+        await delay(1000); // 지울것
         await initUserId(); // setting 값 읽어오기
 
         setAppInitStep("loading-questions");
+        await delay(1000); // 지울것
         await readElectron(); // 컴포넌트가 마운트되면 CSV 데이터를 읽기
 
+        setAppInitStep("recommendations");
+        await delay(1000); // 지울것
+        await recommendations();
+
+        setAppInitStep("loading-updateQuestions");
+        await delay(1000); // 지울것
+        await readElectron();
+
         setAppInitStep("ready");
+        await delay(1000); // 지울것
       } catch(error) {
         console.error("앱 초기화 실패: ", error);
         setAppInitStep("error");
