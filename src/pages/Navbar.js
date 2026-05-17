@@ -13,6 +13,7 @@ function Navbar() {
   const setSelectedTags = useSetRecoilState(selectedTagsAtom);
   const setSelectedQuestions = useSetRecoilState(selectedQuestionsAtom);
   const [showNotice, setShowNotice] = useState(false);
+  const [appVersion, setAppVersion] = useState("")
 
   const openNotice = () => setShowNotice(true);
   const closeNotice = () => setShowNotice(false);
@@ -30,6 +31,7 @@ function Navbar() {
   useEffect(() => {
     (async () => {
       const v = await getAppVersion();
+      setAppVersion(v);
       if (!hasSeen(v)) setShowNotice(true);
     })();
   }, []);
@@ -125,10 +127,12 @@ function Navbar() {
                 </svg>
               </button>
             </div>
+            <p className="mb-6 text-[11px] text-gray-400"> v{appVersion} </p>
           </div>
         </div>
       </aside>
       {showNotice && <NoticeModal onClose={closeNotice} />}
+
     </>
   );
 }
