@@ -7,7 +7,7 @@ const stepMessageMap = {
     "recommendations": "오늘의 추천 문제를 준비하고 있어요",
     "loading-updateQuestions": "마무리로 데이터를 정리하고 있어요",
     "ready": "준비가 끝났어요. 곧 시작합니다!",
-    "error": "앗, 준비 중에 잠시 문제가 생겼어요.",
+    "error": "앗, 준비 중에 잠시 문제가 생겼어요",
 };
 
 const stepProgressMap = {
@@ -21,7 +21,7 @@ const stepProgressMap = {
 };
 
 function InitLoading({step = "idle"}){
-    const message = stepMessageMap[step] || "앱을 준비하고 있습니다...";
+    const message = stepMessageMap[step] || "앱을 준비하고 있습니다";
     const progress = stepProgressMap[step] ?? 0;
     const [displayedMessage, setDisplayedMessage] = useState("");
 
