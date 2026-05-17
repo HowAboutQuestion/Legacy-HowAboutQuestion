@@ -15,10 +15,10 @@ setupIpcHandlers();
 
 // 앱 시작 시 처리
 app.on('ready', () => {
+  createWindow();
+  trackEvent("app_start");
   updateRecommendDates();
   getSettingFile();
-  trackEvent("app_start");
-  createWindow();
   setupAutoUpdater();
 });
 
