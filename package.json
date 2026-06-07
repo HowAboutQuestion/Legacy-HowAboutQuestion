@@ -88,11 +88,13 @@
     "appId": "com.HowAboutQuestion.www",
     "productName": "HowAboutQuestion",
     "mac": {
-      "category": "public.app-category.utilities"
+      "category": "public.app-category.utilities",
+      "artifactName": "${productName}.${ext}"
     },
     "win": {
       "target": "nsis",
-      "icon": "assets/icons/icon.ico"
+      "icon": "assets/icons/icon.ico",
+      "artifactName": "${productName}.${ext}"
     },
     "linux": {
       "target": "AppImage"
