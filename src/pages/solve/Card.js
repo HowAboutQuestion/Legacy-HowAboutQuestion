@@ -239,7 +239,7 @@ function Card() {
             </div>
           )}
 
-          <div className="w-3/4 bg-gray-200 rounded-full h-2 dark:bg-gray-700">
+          <div className="w-3/4 bg-gray-200 rounded-full h-2">
             <div
               className="bg-blue-500 h-2 rounded-full"
               style={{ width: `${((questionIndex + 1) / questions.length) * 100}%` }}

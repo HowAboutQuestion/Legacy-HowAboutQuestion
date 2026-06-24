@@ -198,7 +198,7 @@ const Helper = ({ closeHelper }) => {
               href="https://github.com/HowAboutQuestion/Lagacy-HowAboutQuestion/discussions"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-lg font-bold text-gray-800 dark:text-white mb-2 hover:underline"
+              className="text-lg font-bold text-gray-800 mb-2 hover:underline"
             >
               HowAboutQuestion
             </a>
