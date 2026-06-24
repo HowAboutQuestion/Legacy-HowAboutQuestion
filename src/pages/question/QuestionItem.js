@@ -119,7 +119,7 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
                 checked={!!isChecked} // boolean
                 onChange={onChangeCheckbox}
                 onClick={(e) => e.stopPropagation()}
-                className="w-4 h-4 text-blue-600 cursor-pointer bg-gray-100 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                className="w-4 h-4 text-blue-600 cursor-pointer bg-gray-100 rounded focus:ring-blue-500 focus:ring-2"
               />
             </div>
           </td>
@@ -229,7 +229,7 @@ function QuestionItem({ question, onUpdateClick, handleCheckboxChange }) {
               checked={isChecked}
               onChange={handleCheckboxChange}
               onClick={(e) => e.stopPropagation()}
-              className="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              className="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 rounded focus:ring-blue-500 focus:ring-2"
             />
           </div>
         </td>
