@@ -25,12 +25,18 @@ export function readQuestionsCSV() {
       return { success: false, message: 'CSV 파일을 찾을 수 없습니다.' };
     }
 
+    console.time("[readQuestionsCSV] total (Main)");
+
+    console.time("[readQuestionsCSV] readFileSync");
     const csvFile = readFileSync(questionsCsvPath, 'utf-8');
+    console.timeEnd("[readQuestionsCSV] readFileSync");
+
     let questions = [];
     const tagSet = new Set();
 
+    console.time("[readQuestionsCSV] Papa.parse+map");
     Papa.parse(csvFile, {
-      header: true, 
+      header: true,
       skipEmptyLines: true,
       complete: (result) => {
         questions = result.data.map((item) => {
@@ -38,15 +44,17 @@ export function readQuestionsCSV() {
           if (item.tag) item.tag = item.tag.split(',').map(t => t.trim());
           else item.tag = [];
 
-          item.tag.forEach(t => tagSet.add(t)); // 태그 집합에 추가
+          item.tag.forEach(t => tagSet.add(t));
 
           item.id = generateUniqueId();
           item.checked = false;
           return item;
         });
+        console.timeEnd("[readQuestionsCSV] Papa.parse+map");
       },
     });
 
+    console.timeEnd("[readQuestionsCSV] total (Main)");
     console.log("questions read success");
 
     return {
@@ -74,12 +82,20 @@ export function updateRecommendDates() {
       return { success: false, message: 'CSV 파일을 찾을 수 없습니다.' };
     }
 
+    console.time("[updateRecommendDates] total (Main)");
+
+    console.time("[updateRecommendDates] readFileSync");
     const csvFile = readFileSync(questionsCsvPath, 'utf-8');
+    console.timeEnd("[updateRecommendDates] readFileSync");
+
+    console.time("[updateRecommendDates] Papa.parse");
     const parsed = Papa.parse(csvFile, { header: true, skipEmptyLines: true });
+    console.timeEnd("[updateRecommendDates] Papa.parse");
 
     const today = getTodayDate();
     const todayDate = parseISO(today);
 
+    console.time("[updateRecommendDates] map");
     const updatedData = parsed.data.map(row => {
       const recommendDate = parseISO(row.recommenddate);
       const updateDate = parseISO(row.update);
@@ -98,10 +114,14 @@ export function updateRecommendDates() {
 
       return row;
     });
+    console.timeEnd("[updateRecommendDates] map");
 
+    console.time("[updateRecommendDates] Papa.unparse+writeFileSync");
     const newCsv = Papa.unparse(updatedData);
     writeFileSync(questionsCsvPath, newCsv, 'utf-8');
+    console.timeEnd("[updateRecommendDates] Papa.unparse+writeFileSync");
 
+    console.timeEnd("[updateRecommendDates] total (Main)");
     console.log('recommenddate update success');
     return { success: true, message: 'recommenddate가 성공적으로 업데이트되었습니다.' };
   } catch (error) {
@@ -120,6 +140,7 @@ export function updateQuestionsFile(questions) {
   console.log("updateQuestionsFile called!");
 
   try {
+    console.time("[updateQuestionsFile] Papa.unparse+writeFileSync");
     const csvString = Papa.unparse(
       questions.map(question => {
         const { id, checked, ...rest } = question;
@@ -127,9 +148,23 @@ export function updateQuestionsFile(questions) {
       })
     );
     writeFileSync(questionsCsvPath, csvString, 'utf-8');
+    console.timeEnd("[updateQuestionsFile] Papa.unparse+writeFileSync");
     return { success: true };
   } catch (error) {
     console.error('CSV update error:', error);
+    return { success: false, message: error.message };
+  }
+}
+
+export function writeQuestionsCSVFile(csv) {
+  console.log("writeQuestionsCSVFile called!");
+  try {
+    console.time("[writeQuestionsCSVFile] writeFileSync");
+    writeFileSync(questionsCsvPath, csv, 'utf-8');
+    console.timeEnd("[writeQuestionsCSVFile] writeFileSync");
+    return { success: true };
+  } catch (error) {
+    console.error('CSV write error:', error);
     return { success: false, message: error.message };
   }
 }

@@ -94,7 +94,9 @@ function Card() {
 
     // history.csv 업데이트 호출
     try {
+      console.time("[card] updateHistory (correct)");
       const historyResponse = await window.electronAPI.updateHistory({ isCorrect: true });
+      console.timeEnd("[card] updateHistory (correct)");
       if (!historyResponse.success) {
         console.error(historyResponse.message);
       }
@@ -138,7 +140,9 @@ function Card() {
 
     // history.csv 업데이트 호출
     try {
+      console.time("[card] updateHistory (wrong)");
       const historyResponse = await window.electronAPI.updateHistory({ isCorrect: false });
+      console.timeEnd("[card] updateHistory (wrong)");
       if (!historyResponse.success) {
         console.error(`history.csv 업데이트 실패: ${historyResponse.message}`);
       }

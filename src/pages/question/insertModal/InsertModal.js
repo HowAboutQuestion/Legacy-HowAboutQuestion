@@ -103,12 +103,14 @@ function InsertModal({ setInsertModal, expanded }) {
   }
 
   const insertEvent = async () => {
+    console.time("[insertModal] insertEvent total");
     if (!title) {
       if (!toast.isActive("insert-title-error")) {
         toast.error("제목은 필수 입력 항목입니다", {
           toastId: "insert-title-error",
         });
       }
+      console.timeEnd("[insertModal] insertEvent total");
       return;
     }
 
@@ -153,10 +155,12 @@ function InsertModal({ setInsertModal, expanded }) {
     // 이미지가 있는 경우 처리
     if (imageFile) {
       try {
+        console.time("[insertModal] saveImage");
         const result = await handleSave(
-          question.id, // 질문의 id를 파일명으로 사용
-          imageFile // 파일 내용
+          question.id,
+          imageFile
         );
+        console.timeEnd("[insertModal] saveImage");
 
         if (result.success) {
           question.img = result.path; // 저장된 경로를 할당
@@ -190,6 +194,7 @@ function InsertModal({ setInsertModal, expanded }) {
     setSelectedOptionIndex(null);
     setImageFile(null);
     setQuestions((prevQuestions) => [question, ...prevQuestions]);
+    console.timeEnd("[insertModal] insertEvent total");
 
     if (titleInputRef.current) {
       titleInputRef.current.focus();

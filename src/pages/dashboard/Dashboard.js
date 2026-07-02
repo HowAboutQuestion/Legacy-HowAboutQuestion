@@ -63,7 +63,9 @@ const Dashboard = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
+        console.time("[dashboard] readHistoryCSV");
         const historyResult = await window.electronAPI.readHistoryCSV();
+        console.timeEnd("[dashboard] readHistoryCSV");
         if (historyResult.success) {
           setHistoryData(historyResult.historyData);
         } else {

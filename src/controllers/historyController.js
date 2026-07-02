@@ -21,6 +21,7 @@ import { parseISO, isValid, getTodayDate } from '../utils/dateUtils.js';
  */
 export function updateHistory(isCorrect) {
   try {
+    console.time("[updateHistory] total (Main)");
     const today = getTodayDate();
 
     if (!existsSync(historyCsvPath)) {
@@ -32,13 +33,20 @@ export function updateHistory(isCorrect) {
       }];
       const csv = Papa.unparse(initialData);
       writeFileSync(historyCsvPath, csv, 'utf-8');
+      console.timeEnd("[updateHistory] total (Main)");
       console.log(`history.csv에 새로운 날짜(${today}) 기록이 추가되었습니다.`);
       return { success: true, message: '새로운 기록이 추가되었습니다.' };
     }
 
+    console.time("[updateHistory] readFileSync");
     const csvFile = readFileSync(historyCsvPath, 'utf-8');
-    const parsed = Papa.parse(csvFile, { header: true, skipEmptyLines: true });
+    console.timeEnd("[updateHistory] readFileSync");
 
+    console.time("[updateHistory] Papa.parse");
+    const parsed = Papa.parse(csvFile, { header: true, skipEmptyLines: true });
+    console.timeEnd("[updateHistory] Papa.parse");
+
+    console.time("[updateHistory] map");
     let rowFound = false;
     const updatedData = parsed.data.map(row => {
       if (row.date === today) {
@@ -51,6 +59,7 @@ export function updateHistory(isCorrect) {
       }
       return row;
     });
+    console.timeEnd("[updateHistory] map");
 
     if (!rowFound) {
       updatedData.push({
@@ -61,9 +70,12 @@ export function updateHistory(isCorrect) {
       });
     }
 
+    console.time("[updateHistory] Papa.unparse+writeFileSync");
     const newCsv = Papa.unparse(updatedData);
     writeFileSync(historyCsvPath, newCsv, 'utf-8');
+    console.timeEnd("[updateHistory] Papa.unparse+writeFileSync");
 
+    console.timeEnd("[updateHistory] total (Main)");
     console.log(`history.csv의 ${today} 날짜 기록이 업데이트되었습니다.`);
     return { success: true, message: 'history.csv가 성공적으로 업데이트되었습니다.' };
   } catch (error) {
@@ -85,7 +97,13 @@ export function readHistoryCSV() {
       return { success: false, message: 'CSV 파일을 찾을 수 없습니다.' };
     }
 
+    console.time("[readHistoryCSV] total (Main)");
+
+    console.time("[readHistoryCSV] readFileSync");
     const csvFile = readFileSync(historyCsvPath, 'utf-8');
+    console.timeEnd("[readHistoryCSV] readFileSync");
+
+    console.time("[readHistoryCSV] Papa.parse+map");
     const parsed = Papa.parse(csvFile, { header: true, skipEmptyLines: true });
     const historyData = parsed.data
       .map(row => {
@@ -97,9 +115,10 @@ export function readHistoryCSV() {
         return { date, solvedCount, correctCount, correctRate };
       })
       .filter(row => row !== null);
+    console.timeEnd("[readHistoryCSV] Papa.parse+map");
 
+    console.timeEnd("[readHistoryCSV] total (Main)");
     console.log("history.csv read success");
-    console.log(historyData);
     return { success: true, historyData, message: 'history 읽기 성공' };
   } catch (error) {
     console.error(error);

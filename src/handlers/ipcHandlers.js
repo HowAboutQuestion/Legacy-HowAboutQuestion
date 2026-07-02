@@ -7,7 +7,7 @@
 
 import { ipcMain, dialog, app } from 'electron';
 import { getMainWindow } from '../services/windowService.js';
-import { readQuestionsCSV, updateRecommendDates, updateQuestionsFile } from '../controllers/questionController.js';
+import { readQuestionsCSV, updateRecommendDates, updateQuestionsFile, writeQuestionsCSVFile } from '../controllers/questionController.js';
 import { updateHistory, readHistoryCSV } from '../controllers/historyController.js';
 import { saveImage, deleteImage, exportQuestions, extractZip } from '../controllers/fileController.js';
 import { userDataPath } from '../config/paths.js';
@@ -25,6 +25,7 @@ function setupIpcHandlers() {
     ipcMain.handle('read-questions-csv', () => readQuestionsCSV());
     ipcMain.handle('update-recommend-dates', () => updateRecommendDates());
     ipcMain.handle('update-questions-file', (event, questions) => updateQuestionsFile(questions));
+    ipcMain.handle('write-questions-csv', (event, csv) => writeQuestionsCSVFile(csv));
 
     // 기록 관련 핸들러
     ipcMain.handle('read-history-csv', () => readHistoryCSV());

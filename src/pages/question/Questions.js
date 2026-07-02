@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { useLocation } from "react-router-dom";
@@ -17,6 +17,7 @@ function Questions() {
   const setQuestions = useSetRecoilState(questionsAtom);
 
   const [filterQuestions, setFilterQuestions] = useState([]);
+  const renderTimerRef = useRef(null);
 
   //존재하는 중복 없는 모든 태그
   const allTag = useRecoilValue(allTagAtom);
@@ -56,22 +57,39 @@ function Questions() {
     );
   };
 
+  // questions 변경 시작 시점 기록
+  useEffect(() => {
+    renderTimerRef.current = performance.now();
+  }, [questions]);
+
   //태그 필터링 이벤트트
   useEffect(() => {
+    console.time("[questions] filterQuestions (연산)");
     if (selectedTag.length === 0) {
       setFilterQuestions(
         questions.map((question, index) => ({ question, index }))
       );
+      console.timeEnd("[questions] filterQuestions (연산)");
       return;
     }
 
     const filtered = questions
-      .map((question, index) => ({ question, index })) // 각 질문과 인덱스를 묶음
+      .map((question, index) => ({ question, index }))
       .filter(({ question }) =>
         question.tag.some((tag) => selectedTag.includes(tag))
       );
     setFilterQuestions(filtered);
+    console.timeEnd("[questions] filterQuestions (연산)");
   }, [questions, selectedTag]);
+
+  // filterQuestions 세팅 완료 시점 → Recoil 변경부터 여기까지가 렌더 준비 시간
+  useEffect(() => {
+    if (renderTimerRef.current !== null) {
+      const elapsed = performance.now() - renderTimerRef.current;
+      console.log(`[questions] Recoil→filterQuestions 완료: ${elapsed.toFixed(2)}ms (문제 수: ${questions.length}개)`);
+      renderTimerRef.current = null;
+    }
+  }, [filterQuestions]);
 
   useEffect(() => {
     const collapseHandler = () => {
@@ -207,10 +225,7 @@ function Questions() {
         return rest;
       });
   
-    setQuestions(newQuestions); // Recoil 상태 업데이트
-  
-    // CSV 반영
-    await window.electronAPI.updateQuestions(newQuestions);
+    setQuestions(newQuestions); // Recoil 상태 업데이트 → App.js useEffect가 write 처리
   
     // 이미지 삭제
     const handleDelete = async (imagePath) => {

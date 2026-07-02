@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import Papa from 'papaparse';
 import Router from "Router";
 import { useRecoilState } from "recoil";
 import { HashRouter } from "react-router-dom";
@@ -62,20 +63,30 @@ const App = () => {
   useEffect(() => {
     const initializeApp = async () => {
       try{
-        // TODO : 메서드 하나 더 추가되면 그때 패턴 적용하거나 정리좀 하기
+        console.time("[init] total");
+
         setAppInitStep("loading-settings");
-        await initUserId(); // setting 값 읽어오기
+        console.time("[init] 1. getUserId");
+        await initUserId();
+        console.timeEnd("[init] 1. getUserId");
 
         setAppInitStep("loading-questions");
-        await readElectron(); // 컴포넌트가 마운트되면 CSV 데이터를 읽기
+        console.time("[init] 2. readQuestionsCSV (1st)");
+        await readElectron();
+        console.timeEnd("[init] 2. readQuestionsCSV (1st)");
 
         setAppInitStep("recommendations");
+        console.time("[init] 3. updateRecommendDates");
         await recommendations();
+        console.timeEnd("[init] 3. updateRecommendDates");
 
         setAppInitStep("loading-updateQuestions");
+        console.time("[init] 4. readQuestionsCSV (2nd)");
         await readElectron();
+        console.timeEnd("[init] 4. readQuestionsCSV (2nd)");
 
         setAppInitStep("ready");
+        console.timeEnd("[init] total");
       } catch(error) {
         console.error("앱 초기화 실패: ", error);
         setAppInitStep("error");
@@ -93,8 +104,15 @@ const App = () => {
 
     const updateQuestionsAsync = async () => {
       try {
-        // 상태 업데이트 후 비동기적으로 questions를 처리
-        const result = await window.electronAPI.updateQuestions(questions);
+        console.time("[app] ① Papa.unparse (CSV 변환)");
+        const csv = Papa.unparse(
+          questions.map(({ id, checked, ...rest }) => rest)
+        );
+        console.timeEnd("[app] ① Papa.unparse (CSV 변환)");
+
+        console.time("[app] ② writeQuestionsCSV IPC 전체");
+        await window.electronAPI.writeQuestionsCSV(csv);
+        console.timeEnd("[app] ② writeQuestionsCSV IPC 전체");
       } catch (error) {
         console.error("[App.js] updateQuestionsAsync", error)
       }

@@ -23,6 +23,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
   deleteImage: (imgPath) => ipcRenderer.invoke('delete-image', { imgPath }),
   updateQuestions: (questions) => ipcRenderer.invoke('update-questions-file', questions),
+  writeQuestionsCSV: (csv) => ipcRenderer.invoke('write-questions-csv', csv),
   updateRecommendDates: () => ipcRenderer.invoke('update-recommend-dates'),
   exportQuestions: (questions) => ipcRenderer.invoke("export-questions", questions),
   extractZip: async (file) => {
