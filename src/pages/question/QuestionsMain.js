@@ -1,60 +1,44 @@
-import React, { useState } from "react";
+import React, { useRef, useEffect } from "react";
 import QuestionItem from "pages/question/QuestionItem.js";
 import { questionsAtom } from "state/data.js";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
-
-function QuestionsMain({ isCollapsed, filterQuestions, setFilterQuestions, insertButtonClick, handleUpdateClick, handleDownloadToZip, deleteFilteredQuestions, goSelectSolve }) {
-  const [isAllChecked, setIsAllChecked] = useState(false); // 전체 체크박스 상태 관리
+function QuestionsMain({
+  isCollapsed, filterQuestions,
+  insertButtonClick, handleUpdateClick, handleDownloadToZip,
+  deleteFilteredQuestions, goSelectSolve,
+  // selection system
+  checkedIds, isAllSelected, excludedIds, selectedCount,
+  handleCheckboxChange, handleAllCheckboxChange, isAllChecked,
+  // infinite scroll
+  displayCount, onLoadMore,
+  // zip
+  onQuestionsAdded,
+}) {
   const questions = useRecoilValue(questionsAtom);
   const setQuestions = useSetRecoilState(questionsAtom);
 
-  const handleCheckboxChange = (index) => {
-    setFilterQuestions((prevQuestions) => {
-      const updatedQuestions = prevQuestions.map(
-        ({ question, index: idx }) => ({
-          question: {
-            ...question,
-            checked: idx === index ? !question.checked : question.checked, // 해당 index만 변경
-          },
-          index: idx,
-        })
-      );
+  const sentinelRef = useRef(null);
 
-      // 전체 체크박스 상태 업데이트
-      const allChecked = updatedQuestions.every(
-        ({ question }) => question.checked
-      );
-      setIsAllChecked(allChecked);
-
-      return updatedQuestions;
-    });
-  };
-
-  // 전체 체크박스 상태 변경
-  const handleAllCheckboxChange = () => {
-    const newCheckedState = !isAllChecked;
-
-    setFilterQuestions((prevQuestions) =>
-      prevQuestions.map(({ question, index }) => ({
-        question: {
-          ...question,
-          checked: newCheckedState, // 전체 체크박스 상태에 따라 변경
-        },
-        index,
-      }))
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) onLoadMore(); },
+      { threshold: 0 }
     );
-
-    setIsAllChecked(newCheckedState);
-  };
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [onLoadMore]);
 
   const handleZipUpload = async (event) => {
-    const file = event.target.files[0]; // 사용자가 업로드한 파일
+    const file = event.target.files[0];
     if (file) {
       try {
         const result = await window.electronAPI.extractZip(file);
         if (result.success) {
-          setQuestions([...result.questions, ...questions]); // questions 배열 업데이트
+          setQuestions([...result.questions, ...questions]);
+          onQuestionsAdded(result.questions.map(q => q.id));
         }
       } catch (error) {
         console.error("Zip 파일 처리 중 오류:", error);
@@ -63,56 +47,62 @@ function QuestionsMain({ isCollapsed, filterQuestions, setFilterQuestions, inser
     event.target.files[0] = null;
   };
 
-  // 테이블 데이터 랜더링
-  const questionsItems = filterQuestions.map(({ question, index }) => (
-    <QuestionItem
-      key={index}
-      question={question}
-      defaultChecked={false}
-      onUpdateClick={() => handleUpdateClick(question, index)} // index 전달
-      handleCheckboxChange={() => handleCheckboxChange(index)}
-    />
-  ));
+  const visibleQuestions = filterQuestions.slice(0, displayCount);
+
+  const questionsItems = visibleQuestions.map(({ question, index }) => {
+    const isChecked = isAllSelected
+      ? !excludedIds.has(question.id)
+      : checkedIds.has(question.id);
+    return (
+      <QuestionItem
+        key={question.id}
+        question={question}
+        index={index}
+        isChecked={isChecked}
+        onUpdateClick={handleUpdateClick}
+        handleCheckboxChange={handleCheckboxChange}
+      />
+    );
+  });
 
   return (
     <div
-      className={`mb-[300px] transition-all duration-500 flex-1 sm:rounded-lg bg-white ${isCollapsed ? "ml-10" : "ml-80"
-        }`}
+      className={`mb-[300px] transition-all duration-500 flex-1 sm:rounded-lg bg-white ${isCollapsed ? "ml-10" : "ml-80"}`}
     >
       <div className="px-8 py-4 flex justify-between border-b">
         <div>
           <h1 className="text-2xl font-semibold">문제 관리</h1>
           <h1 className="text-md font-normal text-gray-400">
-            총 {filterQuestions.length} 문제
+            총 {filterQuestions.length}개
+            {selectedCount > 0 && ` · ${filterQuestions.length}개 중 ${selectedCount}개 선택`}
           </h1>
         </div>
-        <div className="flex items-center flex ">
-            <div className="bg-white items-center flex">
+        <div className="flex items-center flex">
+          <div className="bg-white items-center flex">
+            <div
+              data-tour-id="question-solve-add"
+              className="flex items-center relative w-full"
+            >
               <div
-                    data-tour-id="question-solve-add"
-                    className="flex items-center relative w-full"
+                onClick={() => goSelectSolve()}
+                className="cursor-pointer bg-blue-500 hover:scale-105 transition text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center mr-1 ml-1"
               >
-                <div
-                  onClick={() => goSelectSolve()}
-                  className="cursor-pointer bg-blue-500 hover:scale-105 transition text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center mr-1 ml-1"
-                  
-                >
-                  문제풀러가기
-                </div>          
-                <div
-                  onClick={() => insertButtonClick()}
-                  className="cursor-pointer bg-blue-500 hover:scale-105 transition text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center ml-1 mr-1"
-                  data-tour-id="btn-insert-open"
-                >
-                  문제추가
-                </div>
+                문제풀러가기
+              </div>
+              <div
+                onClick={() => insertButtonClick()}
+                className="cursor-pointer bg-blue-500 hover:scale-105 transition text-white font-semibold rounded-2xl text-xs h-8 w-24 inline-flex items-center justify-center ml-1 mr-1"
+                data-tour-id="btn-insert-open"
+              >
+                문제추가
               </div>
             </div>
+          </div>
 
-            <div
-              data-tour-id="question-upload-download"
-              className="flex items-center ml-2 bg-white"
-            >
+          <div
+            data-tour-id="question-upload-download"
+            className="flex items-center ml-2 bg-white"
+          >
             <div className="bg-blue-500 hover:scale-105 text-white font-semibold rounded-full text-xs h-8 w-8 inline-flex items-center transition justify-center mr-1 ml-1">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -131,7 +121,7 @@ function QuestionsMain({ isCollapsed, filterQuestions, setFilterQuestions, inser
                 type="file"
                 accept=".zip"
                 className="opacity-0 h-full w-full"
-              ></input>
+              />
             </div>
 
             <div
@@ -185,8 +175,8 @@ function QuestionsMain({ isCollapsed, filterQuestions, setFilterQuestions, inser
               <div className="flex items-center">
                 <input
                   type="checkbox"
-                  onChange={handleAllCheckboxChange} // 클릭 시 전체 선택/해제
-                  checked={isAllChecked} // 모든 항목이 체크된 상태에 따라 체크박스 상태 변경
+                  onChange={handleAllCheckboxChange}
+                  checked={isAllChecked}
                   className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
                 />
               </div>
@@ -194,7 +184,6 @@ function QuestionsMain({ isCollapsed, filterQuestions, setFilterQuestions, inser
             <th scope="col" className="px-6 py-3 w-full">
               문제
             </th>
-
             <th scope="col" className="px-6 py-3 whitespace-nowrap">
               유형
             </th>
@@ -207,7 +196,7 @@ function QuestionsMain({ isCollapsed, filterQuestions, setFilterQuestions, inser
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="size-4"
+                className="size-4 cursor-pointer"
               >
                 <path
                   strokeLinecap="round"
@@ -221,7 +210,10 @@ function QuestionsMain({ isCollapsed, filterQuestions, setFilterQuestions, inser
         <tbody>
           {questionsItems}
           <tr>
-            <td className="rounded-b-xl h-10 bg-gray-50" colSpan={4}></td>
+            <td className="rounded-b-xl h-10 bg-gray-50" colSpan={5}></td>
+          </tr>
+          <tr>
+            <td ref={sentinelRef} colSpan={5} className="h-1"></td>
           </tr>
         </tbody>
       </table>

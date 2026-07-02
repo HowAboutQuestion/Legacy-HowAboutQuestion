@@ -238,6 +238,10 @@ function UpdateModal({
       updatedQuestions[index] = updatedQuestion;
       return updatedQuestions;
     });
+    console.time("[updateModal] updateQuestion IPC");
+    window.electronAPI.updateQuestion(updatedQuestion).then(() => {
+      console.timeEnd("[updateModal] updateQuestion IPC");
+    });
     console.timeEnd("[updateModal] updateEvent total");
 
     setUpdateQuestion(null);

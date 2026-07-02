@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { useLocation } from "react-router-dom";
@@ -22,6 +22,14 @@ function Questions() {
   //존재하는 중복 없는 모든 태그
   const allTag = useRecoilValue(allTagAtom);
   const [selectedTag, setSelectedTag] = useState([]);
+
+  // 선택 시스템
+  const [checkedIds, setCheckedIds] = useState(new Set());
+  const [isAllSelected, setIsAllSelected] = useState(false);
+  const [excludedIds, setExcludedIds] = useState(new Set());
+
+  // 무한 스크롤
+  const [displayCount, setDisplayCount] = useState(50);
 
   useEffect(() => {
     if (location.state?.openModal) {
@@ -47,15 +55,58 @@ function Questions() {
     };
   }, []);
 
+  // selectedTag 변경 시 displayCount 리셋
+  useEffect(() => {
+    setDisplayCount(50);
+  }, [selectedTag]);
+
   // 태그 선택/해제 핸들러
   const onTagClick = (tagName) => {
     setSelectedTag(
       (prev) =>
         prev.includes(tagName)
-          ? prev.filter((tag) => tag !== tagName) // 이미 선택된 경우 제거
-          : [...prev, tagName] // 새로 선택된 경우 추가
+          ? prev.filter((tag) => tag !== tagName)
+          : [...prev, tagName]
     );
   };
+
+  const handleCheckboxChange = useCallback((id) => {
+    if (isAllSelected) {
+      setExcludedIds(prev => {
+        const next = new Set(prev);
+        next.has(id) ? next.delete(id) : next.add(id);
+        return next;
+      });
+    } else {
+      setCheckedIds(prev => {
+        const next = new Set(prev);
+        next.has(id) ? next.delete(id) : next.add(id);
+        return next;
+      });
+    }
+  }, [isAllSelected]);
+
+  const handleAllCheckboxChange = useCallback(() => {
+    setCheckedIds(new Set());
+    setExcludedIds(new Set());
+    setIsAllSelected(prev => !prev);
+  }, []);
+
+  const handleLoadMore = useCallback(() => {
+    setDisplayCount(prev => prev + 50);
+  }, []);
+
+  const onQuestionAdded = useCallback((newId) => {
+    if (isAllSelected) {
+      setExcludedIds(prev => new Set([...prev, newId]));
+    }
+  }, [isAllSelected]);
+
+  const onQuestionsAdded = useCallback((newIds) => {
+    if (isAllSelected && newIds.length > 0) {
+      setExcludedIds(prev => new Set([...prev, ...newIds]));
+    }
+  }, [isAllSelected]);
 
   // questions 변경 시작 시점 기록
   useEffect(() => {
@@ -115,33 +166,29 @@ function Questions() {
   const [updateQuestion, setUpdateQuestion] = useState(null); // 수정할 질문 객체 (모달 제어 포함)
   const [updateIndex, setUpdateIndex] = useState(null);
 
-  const handleUpdateClick = (question, index) => {
+  const handleUpdateClick = useCallback((question, index) => {
     setInsertModal(false);
     setUpdateModal(true);
     setUpdateIndex(index);
     setUpdateQuestion({ ...question });
-  };
+  }, []);
 
-  /**
- * 질문 목록 중 checked == true인 항목이 있으면 → 체크된 질문만 추출해서 checked, id 제거 후 반환
- * checked == true인 항목이 없으면 → 전체 질문을 대상으로 checked, id 제거 후 반환
- */
+  const selectedCount = isAllSelected
+    ? filterQuestions.filter(({ question }) => !excludedIds.has(question.id)).length
+    : filterQuestions.filter(({ question }) => checkedIds.has(question.id)).length;
+
+  const isAllChecked = selectedCount > 0 && selectedCount === filterQuestions.length;
+
   const handleDownloadToZip = async () => {
-    console.log("filterQuestions :", filterQuestions);
-    const downloadQuestions =
-      filterQuestions
-        .some(({ index, question }) => question.checked)
-        ? filterQuestions
-          .filter(({ index, question }) => question.checked) // question.checked가 true인 것만 필터링
-          .map(({ index, question }) => {
-            const { checked, id, ...rest } = question;
-            return rest;
-          })
-        : filterQuestions
-          .map(({ index, question }) => {
-            const { checked, id, ...rest } = question; // checked 제외한 데이터만 추출
-            return rest;
-          });
+    const isSelected = (question) =>
+      isAllSelected ? !excludedIds.has(question.id) : checkedIds.has(question.id);
+
+    const downloadQuestions = selectedCount > 0
+      ? filterQuestions
+          .filter(({ question }) => isSelected(question))
+          .map(({ question }) => { const { checked, id, ...rest } = question; return rest; })
+      : filterQuestions
+          .map(({ question }) => { const { checked, id, ...rest } = question; return rest; });
 
     const result = await window.electronAPI.exportQuestions(downloadQuestions);
 
@@ -200,54 +247,66 @@ function Questions() {
     });
   };
 
+  const isDeletingRef = useRef(false);
+
   const deleteFilteredQuestions = async () => {
+    if (isDeletingRef.current) return;
+
     const confirmed = await confirmDeletion();
     if (!confirmed) return;
-  
-    const deleteImages = [];
-  
-    // 삭제할 문제 id 수집
-    const idsToDelete = filterQuestions
-      .filter(({ question }) => {
-        if (question.checked === true) {
-          if (question.img) deleteImages.push(question.img);
-          return true;
-        }
-        return false;
-      })
-      .map(({ question }) => question.id); // 삭제 대상 id만 추출
-  
-    // 전체 questions 기준으로 삭제 대상 제외
-    const newQuestions = questions
-      .filter((q) => !idsToDelete.includes(q.id))
-      .map((q) => {
-        const { checked, ...rest } = q; // checked 제거
-        return rest;
+
+    if (isDeletingRef.current) return;
+    isDeletingRef.current = true;
+
+    try {
+      const isSelected = (question) =>
+        isAllSelected ? !excludedIds.has(question.id) : checkedIds.has(question.id);
+
+      const deleteImagesSet = new Set();
+      const idsToDelete = filterQuestions
+        .filter(({ question }) => {
+          if (isSelected(question)) {
+            if (question.img) deleteImagesSet.add(question.img);
+            return true;
+          }
+          return false;
+        })
+        .map(({ question }) => question.id);
+
+      if (idsToDelete.length === 0) return;
+
+      const newQuestions = questions.filter((q) => !idsToDelete.includes(q.id));
+      setQuestions(newQuestions);
+      console.time("[questions] deleteQuestions IPC");
+      window.electronAPI.deleteQuestions(idsToDelete).then(() => {
+        console.timeEnd("[questions] deleteQuestions IPC");
       });
-  
-    setQuestions(newQuestions); // Recoil 상태 업데이트 → App.js useEffect가 write 처리
-  
-    // 이미지 삭제
-    const handleDelete = async (imagePath) => {
-      try {
-        const result = await window.electronAPI.deleteImage(imagePath);
-        if (result.success) {
-          console.log("이미지가 성공적으로 삭제되었습니다.");
-        } else {
-          console.error("삭제 실패:", result.message);
+
+      setCheckedIds(new Set());
+      setIsAllSelected(false);
+      setExcludedIds(new Set());
+
+      const handleDelete = async (imagePath) => {
+        try {
+          const result = await window.electronAPI.deleteImage(imagePath);
+          if (result.success) {
+            console.log("이미지가 성공적으로 삭제되었습니다.");
+          } else {
+            console.error("삭제 실패:", result.message);
+          }
+        } catch (error) {
+          console.error("삭제 중 오류 발생:", error);
         }
-      } catch (error) {
-        console.error("삭제 중 오류 발생:", error);
-      }
-    };
-    deleteImages.forEach((img) => {
-      handleDelete(img);
-    });
-  
-    toast.success("선택된 문제가 삭제되었습니다.", {
-      position: "top-center",
-      autoClose: 1000,
-    });
+      };
+      [...deleteImagesSet].forEach((img) => handleDelete(img));
+
+      toast.success("선택된 문제가 삭제됐습니다.", {
+        position: "top-center",
+        autoClose: 1000,
+      });
+    } finally {
+      isDeletingRef.current = false;
+    }
   };
   
 
@@ -290,28 +349,30 @@ function Questions() {
   const navigate = useNavigate();
   const goSelectSolve = () => {
     const toSolveTags = new Set();
-    const toSolveQuestions = 
-      filterQuestions.some(({ question }) => question.checked)
+    const isSelected = (question) =>
+      isAllSelected ? !excludedIds.has(question.id) : checkedIds.has(question.id);
+
+    const toSolveQuestions = selectedCount > 0
       ? filterQuestions
-          .filter(({ question }) => question.checked)
+          .filter(({ question }) => isSelected(question))
           .map(({ question }) => {
-            const { checked, id, tag, ...rest } = question;
+            const { checked, tag, ...rest } = question;
             if (tag) tag.forEach((t) => toSolveTags.add(t));
             return rest;
           })
       : filterQuestions.map(({ question }) => {
-          const { checked, id, tag, ...rest } = question;
+          const { checked, tag, ...rest } = question;
           if (tag) tag.forEach((t) => toSolveTags.add(t));
           return rest;
         });
 
-      navigate("/select", {
-        state: {
-          selectedTags: [...toSolveTags], 
-          selectedQuestions: toSolveQuestions, 
-        },
-      });
-  }
+    navigate("/select", {
+      state: {
+        selectedTags: [...toSolveTags],
+        selectedQuestions: toSolveQuestions,
+      },
+    });
+  };
 
   return (
     <main className="ml-20 flex">
@@ -326,12 +387,21 @@ function Questions() {
       <QuestionsMain
         filterQuestions={filterQuestions}
         isCollapsed={isCollapsed}
-        setFilterQuestions={setFilterQuestions}
         deleteFilteredQuestions={deleteFilteredQuestions}
         insertButtonClick={insertButtonClick}
         handleUpdateClick={handleUpdateClick}
         handleDownloadToZip={handleDownloadToZip}
         goSelectSolve={goSelectSolve}
+        checkedIds={checkedIds}
+        isAllSelected={isAllSelected}
+        excludedIds={excludedIds}
+        selectedCount={selectedCount}
+        handleCheckboxChange={handleCheckboxChange}
+        handleAllCheckboxChange={handleAllCheckboxChange}
+        isAllChecked={isAllChecked}
+        displayCount={displayCount}
+        onLoadMore={handleLoadMore}
+        onQuestionsAdded={onQuestionsAdded}
       />
       {/* 오버레이는 모달이 열려있을 때만 렌더링 */}
       {(insertModal || updateModal) && (
@@ -357,7 +427,11 @@ function Questions() {
           data-tour-id="insert-modal-expend"
         />
         {insertModal && (
-          <InsertModal setInsertModal={setInsertModal} expanded={expanded} />
+          <InsertModal
+            setInsertModal={setInsertModal}
+            expanded={expanded}
+            onQuestionAdded={onQuestionAdded}
+          />
         )}
         {updateModal && (
           <UpdateModal

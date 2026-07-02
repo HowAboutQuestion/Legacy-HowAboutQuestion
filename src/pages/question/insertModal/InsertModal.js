@@ -8,7 +8,7 @@ import InsertModalExpanded from "./InserModalExpanded.js";
 import InsertModalCompact from "./InsertModalCompact.js";
 import { questionsAtom, allTagAtom } from "state/data.js";
 
-function InsertModal({ setInsertModal, expanded }) {
+function InsertModal({ setInsertModal, expanded, onQuestionAdded }) {
   //문제추가폼
   const [title, setTitle] = useState("");
   const [type, setType] = useState("객관식");
@@ -194,6 +194,12 @@ function InsertModal({ setInsertModal, expanded }) {
     setSelectedOptionIndex(null);
     setImageFile(null);
     setQuestions((prevQuestions) => [question, ...prevQuestions]);
+    toast.success("문제가 추가됐습니다.", { position: "top-center", autoClose: 1500 });
+    onQuestionAdded(question.id);
+    console.time("[insertModal] appendQuestion IPC");
+    window.electronAPI.appendQuestion(question).then(() => {
+      console.timeEnd("[insertModal] appendQuestion IPC");
+    });
     console.timeEnd("[insertModal] insertEvent total");
 
     if (titleInputRef.current) {

@@ -92,6 +92,16 @@ function Card() {
       return updatedQuestions;
     });
 
+    console.time("[card] updateQuestion IPC (correct)");
+    window.electronAPI.updateQuestion({
+      id: currentQuestion.id,
+      level: newLevel.toString(),
+      update: newUpdateDate,
+      solveddate: formattedToday,
+    }).then(() => {
+      console.timeEnd("[card] updateQuestion IPC (correct)");
+    });
+
     // history.csv 업데이트 호출
     try {
       console.time("[card] updateHistory (correct)");
@@ -136,6 +146,16 @@ function Card() {
           : item
       );
       return updatedQuestions;
+    });
+
+    console.time("[card] updateQuestion IPC (wrong)");
+    window.electronAPI.updateQuestion({
+      id: currentQuestion.id,
+      level: newLevel.toString(),
+      update: newUpdateDate,
+      solveddate: formattedToday,
+    }).then(() => {
+      console.timeEnd("[card] updateQuestion IPC (wrong)");
     });
 
     // history.csv 업데이트 호출
