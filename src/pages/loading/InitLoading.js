@@ -2,20 +2,14 @@ import React, {useEffect, useState } from "react";
 
 const stepMessageMap = {
     idle: "문제어때가 시작을 준비하고 있어요",
-    "loading-settings": "설정을 확인하고 있어요",
-    "loading-questions": "문제들을 불러오고 있어요",
-    "recommendations": "오늘의 추천 문제를 준비하고 있어요",
-    "loading-updateQuestions": "마무리로 데이터를 정리하고 있어요",
+    "loading": "문제들을 불러오고 있어요",
     "ready": "준비가 끝났어요. 곧 시작합니다!",
     "error": "앗, 준비 중에 잠시 문제가 생겼어요",
 };
 
 const stepProgressMap = {
     idle: 10,
-    "loading-settings": 15,
-    "loading-questions": 45,
-    "recommendations": 60,
-    "loading-updateQuestions": 85,
+    "loading": 50,
     ready: 100,
     error: 100,
 };

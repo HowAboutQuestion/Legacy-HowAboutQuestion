@@ -35,6 +35,9 @@ export function readQuestionsCSV() {
     const tagSet = new Set();
 
     console.time("[readQuestionsCSV] Papa.parse+map");
+    let needsMigration = false;
+    const existingIds = new Set();
+
     Papa.parse(csvFile, {
       header: true,
       skipEmptyLines: true,
@@ -46,13 +49,31 @@ export function readQuestionsCSV() {
 
           item.tag.forEach(t => tagSet.add(t));
 
-          item.id = generateUniqueId();
+          if (!item.id) {
+            let newId;
+            do { newId = `id-${Math.random().toString(36).slice(2, 11)}`; }
+            while (existingIds.has(newId));
+            item.id = newId;
+            needsMigration = true;
+          }
+          existingIds.add(item.id);
           item.checked = false;
           return item;
         });
         console.timeEnd("[readQuestionsCSV] Papa.parse+map");
       },
     });
+
+    if (needsMigration) {
+      console.log("[readQuestionsCSV] id 컬럼 마이그레이션 실행");
+      const migratedCsv = Papa.unparse(
+        questions.map(({ checked, ...rest }) => ({
+          ...rest,
+          tag: Array.isArray(rest.tag) ? rest.tag.join(',') : rest.tag,
+        }))
+      );
+      writeFileSync(questionsCsvPath, migratedCsv, 'utf-8');
+    }
 
     console.timeEnd("[readQuestionsCSV] total (Main)");
     console.log("questions read success");
@@ -66,6 +87,83 @@ export function readQuestionsCSV() {
   } catch (error) {
     console.error(error);
     return { success: false, message: 'questions read fail' };
+  }
+}
+
+/**
+ * 앱 초기화용: CSV 읽기 + id 마이그레이션 + 추천날짜 갱신 + 쓰기를 한 번에 처리합니다.
+ */
+export function initQuestions() {
+  try {
+    if (!existsSync(questionsCsvPath)) {
+      return { success: false, message: 'CSV 파일을 찾을 수 없습니다.' };
+    }
+
+    console.time("[initQuestions] total (Main)");
+
+    console.time("[initQuestions] readFileSync");
+    const csvFile = readFileSync(questionsCsvPath, 'utf-8');
+    console.timeEnd("[initQuestions] readFileSync");
+
+    console.time("[initQuestions] Papa.parse");
+    const { data } = Papa.parse(csvFile, { header: true, skipEmptyLines: true });
+    console.timeEnd("[initQuestions] Papa.parse");
+
+    const today = getTodayDate();
+    const todayDate = parseISO(today);
+    let needsWrite = false;
+    const existingIds = new Set();
+
+    console.time("[initQuestions] map+updateDates");
+    const updatedRows = data.map(row => {
+      if (!row.id) {
+        let newId;
+        do { newId = `id-${Math.random().toString(36).slice(2, 11)}`; }
+        while (existingIds.has(newId));
+        row = { ...row, id: newId };
+        needsWrite = true;
+      }
+      existingIds.add(row.id);
+
+      const recommendDate = parseISO(row.recommenddate);
+      const updateDate = parseISO(row.update);
+
+      if (isValid(recommendDate) && isValid(updateDate) && isBefore(startOfDay(recommendDate), todayDate)) {
+        needsWrite = true;
+        return {
+          ...row,
+          recommenddate: isAfter(startOfDay(updateDate), todayDate)
+            ? format(updateDate, 'yyyy-MM-dd')
+            : today,
+        };
+      }
+
+      return row;
+    });
+    console.timeEnd("[initQuestions] map+updateDates");
+
+    if (needsWrite) {
+      console.time("[initQuestions] Papa.unparse+writeFileSync");
+      writeFileSync(questionsCsvPath, Papa.unparse(updatedRows), 'utf-8');
+      console.timeEnd("[initQuestions] Papa.unparse+writeFileSync");
+    }
+
+    console.time("[initQuestions] toQuestions");
+    const tagSet = new Set();
+    const questions = updatedRows.map(row => {
+      const tags = row.tag ? row.tag.split(',').map(t => t.trim()) : [];
+      tags.forEach(t => tagSet.add(t));
+      return { ...row, description: row.description || '', tag: tags, checked: false };
+    });
+    console.timeEnd("[initQuestions] toQuestions");
+
+    console.timeEnd("[initQuestions] total (Main)");
+    console.log("initQuestions success");
+
+    return { success: true, allTag: [...tagSet], questions };
+  } catch (error) {
+    console.error(error);
+    return { success: false, message: 'initQuestions fail' };
   }
 }
 
@@ -165,6 +263,85 @@ export function writeQuestionsCSVFile(csv) {
     return { success: true };
   } catch (error) {
     console.error('CSV write error:', error);
+    return { success: false, message: error.message };
+  }
+}
+
+function serializeRow(question) {
+  const { checked, ...rest } = question;
+  return {
+    ...rest,
+    ...(Array.isArray(rest.tag) ? { tag: rest.tag.join(',') } : {}),
+  };
+}
+
+export function appendQuestionToCSV(question) {
+  try {
+    console.time("[appendQuestionToCSV] readFileSync");
+    const csvFile = readFileSync(questionsCsvPath, 'utf-8');
+    console.timeEnd("[appendQuestionToCSV] readFileSync");
+
+    console.time("[appendQuestionToCSV] Papa.parse+unshift");
+    const parsed = Papa.parse(csvFile, { header: true, skipEmptyLines: true });
+    parsed.data.unshift(serializeRow(question));
+    console.timeEnd("[appendQuestionToCSV] Papa.parse+unshift");
+
+    console.time("[appendQuestionToCSV] Papa.unparse+writeFileSync");
+    writeFileSync(questionsCsvPath, Papa.unparse(parsed.data), 'utf-8');
+    console.timeEnd("[appendQuestionToCSV] Papa.unparse+writeFileSync");
+
+    return { success: true };
+  } catch (error) {
+    console.error('appendQuestionToCSV error:', error);
+    return { success: false, message: error.message };
+  }
+}
+
+export function updateQuestionInCSV(partialQuestion) {
+  try {
+    console.time("[updateQuestionInCSV] readFileSync");
+    const csvFile = readFileSync(questionsCsvPath, 'utf-8');
+    console.timeEnd("[updateQuestionInCSV] readFileSync");
+
+    console.time("[updateQuestionInCSV] Papa.parse+map");
+    const parsed = Papa.parse(csvFile, { header: true, skipEmptyLines: true });
+    const incoming = serializeRow(partialQuestion);
+    parsed.data = parsed.data.map(row =>
+      row.id === partialQuestion.id ? { ...row, ...incoming } : row
+    );
+    console.timeEnd("[updateQuestionInCSV] Papa.parse+map");
+
+    console.time("[updateQuestionInCSV] Papa.unparse+writeFileSync");
+    writeFileSync(questionsCsvPath, Papa.unparse(parsed.data), 'utf-8');
+    console.timeEnd("[updateQuestionInCSV] Papa.unparse+writeFileSync");
+
+    return { success: true };
+  } catch (error) {
+    console.error('updateQuestionInCSV error:', error);
+    return { success: false, message: error.message };
+  }
+}
+
+export function deleteQuestionsFromCSV(ids) {
+  try {
+    console.time("[deleteQuestionsFromCSV] readFileSync");
+    const csvFile = readFileSync(questionsCsvPath, 'utf-8');
+    console.timeEnd("[deleteQuestionsFromCSV] readFileSync");
+
+    console.time("[deleteQuestionsFromCSV] Papa.parse+filter");
+    const idSet = new Set(ids);
+    const parsed = Papa.parse(csvFile, { header: true, skipEmptyLines: true });
+    parsed.data = parsed.data.filter(row => !idSet.has(row.id));
+    console.timeEnd("[deleteQuestionsFromCSV] Papa.parse+filter");
+
+    console.time("[deleteQuestionsFromCSV] Papa.unparse+writeFileSync");
+    writeFileSync(questionsCsvPath, Papa.unparse(parsed.data), 'utf-8');
+    console.timeEnd("[deleteQuestionsFromCSV] Papa.unparse+writeFileSync");
+
+    console.log(`[deleteQuestionsFromCSV] ${ids.length}개 삭제 완료`);
+    return { success: true };
+  } catch (error) {
+    console.error('deleteQuestionsFromCSV error:', error);
     return { success: false, message: error.message };
   }
 }
