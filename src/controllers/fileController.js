@@ -14,7 +14,7 @@ import archiver from 'archiver';
 import extract from 'extract-zip';
 import os from 'os';
 import Papa from 'papaparse';
-import { imageDir, tempDir, userDataPath } from '../config/paths.js';
+import { imageDir, tempDir, userDataPath, questionsCsvPath } from '../config/paths.js';
 import { getTodayDate }  from '../utils/dateUtils.js';
 import { generateUniqueId }  from '../utils/idUtils.js';
 
@@ -98,12 +98,17 @@ export async function exportQuestions(questions, savePath) {
     archive.pipe(output);
     archive.file(csvPath, { name: 'questions.csv' });
 
+    const addedImages = new Set();
     for (const question of questions) {
       if (question.img) {
         const imgPath = path.join(userDataPath, question.img);
+        const archiveName = `images/${path.basename(imgPath)}`;
+
+        if (addedImages.has(archiveName)) continue;
 
         if (fs.existsSync(imgPath)) {
-          archive.file(imgPath, { name: `images/${path.basename(imgPath)}` });
+          archive.file(imgPath, { name: archiveName });
+          addedImages.add(archiveName);
         } else {
           console.warn(`Image not found: ${imgPath}`);
         }
@@ -151,8 +156,10 @@ export async function extractZip(fileName, content) {
 
     let csvFilePath = null;
     const questions = [];
+    // basename → absolute path in tempDir
+    const imageMap = new Map();
 
-    // 재귀적으로 디렉토리 탐색
+    // 재귀적으로 디렉토리 탐색 (이미지는 수집만, 아직 복사 안 함)
     const traverseDirectory = (dir) => {
       const files = fs.readdirSync(dir);
 
@@ -160,15 +167,11 @@ export async function extractZip(fileName, content) {
         const filePath = path.join(dir, file);
 
         if (fs.statSync(filePath).isDirectory()) {
-          // 서브 디렉토리 탐색
           traverseDirectory(filePath);
         } else if (file.endsWith('.csv')) {
-          // CSV 파일 발견
           csvFilePath = filePath;
         } else if (/\.(png|jpg|jpeg|gif)$/i.test(file)) {
-          // 이미지 파일 발견
-          const destPath = path.join(imageDir, file);
-          fs.copyFileSync(filePath, destPath);
+          imageMap.set(file, filePath);
         }
       });
     };
@@ -184,7 +187,7 @@ export async function extractZip(fileName, content) {
 
       // PapaParse로 CSV 파싱
       const { data } = Papa.parse(csvData, {
-        header: true, 
+        header: true,
         skipEmptyLines: true,
       });
 
@@ -192,6 +195,21 @@ export async function extractZip(fileName, content) {
       data.forEach(item => {
         const tags = item.tag ? item.tag.split(',').map(tag => tag.trim()) : [];
         tags.forEach(tag => tagSet.add(tag));
+
+        const newId = generateUniqueId();
+
+        // 이미지를 newId.ext 로 리네임해서 저장 → 충돌 없이 1:1 대응
+        let newImgPath = '';
+        if (item.img) {
+          const oldBasename = path.basename(item.img);
+          const srcPath = imageMap.get(oldBasename);
+          if (srcPath) {
+            const ext = path.extname(oldBasename);
+            const newFileName = newId + ext;
+            fs.copyFileSync(srcPath, path.join(imageDir, newFileName));
+            newImgPath = '/images/' + newFileName;
+          }
+        }
 
         questions.push({
           title: item.title || '',
@@ -201,7 +219,7 @@ export async function extractZip(fileName, content) {
           select3: item.select3 || '',
           select4: item.select4 || '',
           answer: item.answer || '',
-          img: item.img || '',
+          img: newImgPath,
           level: 0,
           date: today,
           recommenddate: today,
@@ -209,9 +227,19 @@ export async function extractZip(fileName, content) {
           description: item.description || '',
           solveddate: null,
           tag: tags,
-          id: generateUniqueId(),
+          id: newId,
+          checked: false,
         });
       });
+
+      // 기존 questions.csv 앞에 가져온 문제들을 삽입
+      const existingCsv = fs.readFileSync(questionsCsvPath, 'utf-8');
+      const existingParsed = Papa.parse(existingCsv, { header: true, skipEmptyLines: true });
+      const importedRows = questions.map(({ checked, ...rest }) => ({
+        ...rest,
+        tag: Array.isArray(rest.tag) ? rest.tag.join(',') : rest.tag,
+      }));
+      fs.writeFileSync(questionsCsvPath, Papa.unparse([...importedRows, ...existingParsed.data]), 'utf-8');
     } else {
       throw new Error('CSV 파일을 찾을 수 없습니다.');
     }
@@ -219,7 +247,7 @@ export async function extractZip(fileName, content) {
     console.log("extractZip success");
 
     // 결과 반환
-    result = { success: true, questions, csvFile: csvFilePath };
+    result = { success: true, questions };
   } catch (error) {
     result = { success: false, error: error.message };
   } finally {
