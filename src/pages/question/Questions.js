@@ -24,8 +24,6 @@ function Questions() {
 
   // 선택 시스템
   const [checkedIds, setCheckedIds] = useState(new Set());
-  const [isAllSelected, setIsAllSelected] = useState(false);
-  const [excludedIds, setExcludedIds] = useState(new Set());
 
   // 무한 스크롤
   const [displayCount, setDisplayCount] = useState(50);
@@ -70,42 +68,28 @@ function Questions() {
   };
 
   const handleCheckboxChange = useCallback((id) => {
-    if (isAllSelected) {
-      setExcludedIds(prev => {
-        const next = new Set(prev);
-        next.has(id) ? next.delete(id) : next.add(id);
-        return next;
-      });
-    } else {
-      setCheckedIds(prev => {
-        const next = new Set(prev);
-        next.has(id) ? next.delete(id) : next.add(id);
-        return next;
-      });
-    }
-  }, [isAllSelected]);
+    setCheckedIds(prev => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  }, []);
 
   const handleAllCheckboxChange = useCallback(() => {
-    setCheckedIds(new Set());
-    setExcludedIds(new Set());
-    setIsAllSelected(prev => !prev);
-  }, []);
+    setCheckedIds(prev => {
+      const allChecked = filterQuestions.every(({ question }) => prev.has(question.id));
+      const next = new Set(prev);
+      filterQuestions.forEach(({ question }) => {
+        allChecked ? next.delete(question.id) : next.add(question.id);
+      });
+      return next;
+    });
+  }, [filterQuestions]);
 
   const handleLoadMore = useCallback(() => {
     setDisplayCount(prev => prev + 50);
   }, []);
 
-  const onQuestionAdded = useCallback((newId) => {
-    if (isAllSelected) {
-      setExcludedIds(prev => new Set([...prev, newId]));
-    }
-  }, [isAllSelected]);
-
-  const onQuestionsAdded = useCallback((newIds) => {
-    if (isAllSelected && newIds.length > 0) {
-      setExcludedIds(prev => new Set([...prev, ...newIds]));
-    }
-  }, [isAllSelected]);
 
   //태그 필터링 이벤트트
   useEffect(() => {
@@ -155,20 +139,15 @@ function Questions() {
     setUpdateQuestion({ ...question });
   }, []);
 
-  const selectedCount = isAllSelected
-    ? filterQuestions.filter(({ question }) => !excludedIds.has(question.id)).length
-    : filterQuestions.filter(({ question }) => checkedIds.has(question.id)).length;
+  const selectedCount = checkedIds.size;
 
-  const isAllChecked = selectedCount > 0 && selectedCount === filterQuestions.length;
+  const isAllChecked = filterQuestions.length > 0 && filterQuestions.every(({ question }) => checkedIds.has(question.id));
 
   const handleDownloadToZip = async () => {
-    const isSelected = (question) =>
-      isAllSelected ? !excludedIds.has(question.id) : checkedIds.has(question.id);
-
-    const downloadQuestions = selectedCount > 0
-      ? filterQuestions
-          .filter(({ question }) => isSelected(question))
-          .map(({ question }) => { const { checked, id, ...rest } = question; return rest; })
+    const downloadQuestions = checkedIds.size > 0
+      ? questions
+          .filter((question) => checkedIds.has(question.id))
+          .map((question) => { const { checked, id, ...rest } = question; return rest; })
       : filterQuestions
           .map(({ question }) => { const { checked, id, ...rest } = question; return rest; });
 
@@ -241,19 +220,16 @@ function Questions() {
     isDeletingRef.current = true;
 
     try {
-      const isSelected = (question) =>
-        isAllSelected ? !excludedIds.has(question.id) : checkedIds.has(question.id);
-
       const deleteImagesSet = new Set();
-      const idsToDelete = filterQuestions
-        .filter(({ question }) => {
-          if (isSelected(question)) {
+      const idsToDelete = questions
+        .filter((question) => {
+          if (checkedIds.has(question.id)) {
             if (question.img) deleteImagesSet.add(question.img);
             return true;
           }
           return false;
         })
-        .map(({ question }) => question.id);
+        .map((question) => question.id);
 
       if (idsToDelete.length === 0) return;
 
@@ -262,8 +238,6 @@ function Questions() {
       window.electronAPI.deleteQuestions(idsToDelete);
 
       setCheckedIds(new Set());
-      setIsAllSelected(false);
-      setExcludedIds(new Set());
 
       const handleDelete = async (imagePath) => {
         try {
@@ -326,13 +300,11 @@ function Questions() {
   const navigate = useNavigate();
   const goSelectSolve = () => {
     const toSolveTags = new Set();
-    const isSelected = (question) =>
-      isAllSelected ? !excludedIds.has(question.id) : checkedIds.has(question.id);
 
-    const toSolveQuestions = selectedCount > 0
-      ? filterQuestions
-          .filter(({ question }) => isSelected(question))
-          .map(({ question }) => {
+    const toSolveQuestions = checkedIds.size > 0
+      ? questions
+          .filter((question) => checkedIds.has(question.id))
+          .map((question) => {
             const { checked, tag, ...rest } = question;
             if (tag) tag.forEach((t) => toSolveTags.add(t));
             return rest;
@@ -375,15 +347,12 @@ function Questions() {
         handleDownloadToZip={handleDownloadToZip}
         goSelectSolve={goSelectSolve}
         checkedIds={checkedIds}
-        isAllSelected={isAllSelected}
-        excludedIds={excludedIds}
         selectedCount={selectedCount}
         handleCheckboxChange={handleCheckboxChange}
         handleAllCheckboxChange={handleAllCheckboxChange}
         isAllChecked={isAllChecked}
         displayCount={displayCount}
         onLoadMore={handleLoadMore}
-        onQuestionsAdded={onQuestionsAdded}
       />
       {/* 오버레이는 모달이 열려있을 때만 렌더링 */}
       {(insertModal || updateModal) && (
@@ -411,7 +380,6 @@ function Questions() {
           <InsertModal
             setInsertModal={setInsertModal}
             expanded={expanded}
-            onQuestionAdded={onQuestionAdded}
           />
         )}
         {updateModal && (

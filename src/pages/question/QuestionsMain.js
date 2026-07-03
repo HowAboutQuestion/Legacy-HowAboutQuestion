@@ -8,12 +8,10 @@ function QuestionsMain({
   insertButtonClick, handleUpdateClick, handleDownloadToZip,
   deleteFilteredQuestions, goSelectSolve,
   // selection system
-  checkedIds, isAllSelected, excludedIds, selectedCount,
+  checkedIds, selectedCount,
   handleCheckboxChange, handleAllCheckboxChange, isAllChecked,
   // infinite scroll
   displayCount, onLoadMore,
-  // zip
-  onQuestionsAdded,
 }) {
   const questions = useRecoilValue(questionsAtom);
   const setQuestions = useSetRecoilState(questionsAtom);
@@ -38,7 +36,6 @@ function QuestionsMain({
         const result = await window.electronAPI.extractZip(file);
         if (result.success) {
           setQuestions([...result.questions, ...questions]);
-          onQuestionsAdded(result.questions.map(q => q.id));
         }
       } catch (error) {
         console.error("Zip 파일 처리 중 오류:", error);
@@ -50,9 +47,7 @@ function QuestionsMain({
   const visibleQuestions = filterQuestions.slice(0, displayCount);
 
   const questionsItems = visibleQuestions.map(({ question, index }) => {
-    const isChecked = isAllSelected
-      ? !excludedIds.has(question.id)
-      : checkedIds.has(question.id);
+    const isChecked = checkedIds.has(question.id);
     return (
       <QuestionItem
         key={question.id}
@@ -73,7 +68,7 @@ function QuestionsMain({
         <div>
           <h1 className="text-2xl font-semibold">문제 관리</h1>
           <h1 className="text-md font-normal text-gray-400">
-            총 {filterQuestions.length}개
+            총 {questions.length}개
             {selectedCount > 0 && ` 중 ${selectedCount}개 선택`}
           </h1>
         </div>
