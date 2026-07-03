@@ -353,6 +353,12 @@ function Questions() {
 
   return (
     <main className="ml-20 flex">
+      {!isCollapsed && (
+        <div
+          className="fixed inset-0 z-[39]"
+          onClick={() => setIsCollapsed(true)}
+        />
+      )}
         <Sidebar
           isCollapsed={isCollapsed}
           allTag={allTag}
