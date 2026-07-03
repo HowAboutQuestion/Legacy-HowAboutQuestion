@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { app, shell } from 'electron';
+import { app, shell, Menu } from 'electron';
 import { createWindow, getMainWindow, applyNavigationPolicy } from './services/windowService.js';
 import { setupAutoUpdater } from './services/updateService.js';
 import { setupIpcHandlers } from './handlers/ipcHandlers.js';
@@ -8,6 +8,9 @@ import { trackEvent } from "./services/gaService.js";
 
 
 dotenv.config();
+
+// macOS 앱 메뉴 제거 (app ready 이전에 호출)
+Menu.setApplicationMenu(null);
 
 // IPC 핸들러 설정
 setupIpcHandlers();

@@ -29,6 +29,7 @@ export async function createWindow() {
       contextIsolation: true,
       sandbox: true,
       preload: preloadPath,
+      devTools: false,
     },
   });
 
