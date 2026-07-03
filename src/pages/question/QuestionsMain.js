@@ -68,7 +68,7 @@ function QuestionsMain({
         <div>
           <h1 className="text-2xl font-semibold">문제 관리</h1>
           <h1 className="text-md font-normal text-gray-400">
-            총 {filterQuestions.length}개
+            총 {questions.length}개
             {selectedCount > 0 && ` 중 ${selectedCount}개 선택`}
           </h1>
         </div>
