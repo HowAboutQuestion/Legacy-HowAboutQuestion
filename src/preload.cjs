@@ -23,6 +23,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
   deleteImage: (imgPath) => ipcRenderer.invoke('delete-image', { imgPath }),
   updateQuestions: (questions) => ipcRenderer.invoke('update-questions-file', questions),
+  writeQuestionsCSV: (csv) => ipcRenderer.invoke('write-questions-csv', csv),
+  appendQuestion: (question) => ipcRenderer.invoke('append-question', question),
+  updateQuestion: (question) => ipcRenderer.invoke('update-question', question),
+  deleteQuestions: (ids) => ipcRenderer.invoke('delete-questions', ids),
   updateRecommendDates: () => ipcRenderer.invoke('update-recommend-dates'),
   exportQuestions: (questions) => ipcRenderer.invoke("export-questions", questions),
   extractZip: async (file) => {
@@ -42,6 +46,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
       reader.readAsArrayBuffer(file);
     });
   },
+  initQuestions: () => ipcRenderer.invoke('init-questions'),
   readQuestionsCSV: () => ipcRenderer.invoke('read-questions-csv'),
   readHistoryCSV: () => ipcRenderer.invoke('read-history-csv'),
   readAppPath:() => ipcRenderer.invoke('read-app-path'),

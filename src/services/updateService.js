@@ -24,13 +24,9 @@ let progressBar;
 export function setupAutoUpdater(mainWindow) {
   autoUpdater.autoDownload = false;
 
-  autoUpdater.on('checking-for-update', () => {
-    console.log('업데이트 확인 중');
-  });
+  autoUpdater.on('checking-for-update', () => {});
 
   autoUpdater.on('update-available', () => {
-    console.log('업데이트 버전 확인');
-
     dialog.showMessageBox({
       type: 'info',
       title: 'Update',
@@ -44,29 +40,19 @@ export function setupAutoUpdater(mainWindow) {
     });
   });
 
-  autoUpdater.on('update-not-available', () => {
-    console.log('업데이트 없음');
-  });
+  autoUpdater.on('update-not-available', () => {});
 
   autoUpdater.once('download-progress', () => {
-    console.log('설치 중');
-
     progressBar = new ProgressBar({
       text: '다운로드 중입니다...',
     });
 
     progressBar
-      .on('completed', () => {
-        console.log('설치 완료');
-      })
-      .on('aborted', () => {
-        console.log('다운로드 중단');
-      });
+      .on('completed', () => {})
+      .on('aborted', () => {});
   });
 
   autoUpdater.on('update-downloaded', () => {
-    console.log('업데이트 완료');
-
     if (progressBar) {
       progressBar.setCompleted();
     }

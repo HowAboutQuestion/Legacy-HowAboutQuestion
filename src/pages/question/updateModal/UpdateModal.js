@@ -183,12 +183,9 @@ function UpdateModal({
     };
 
     if (imageFile) {
-      // 기존 이미지가 있으면 삭제 (삭제에 실패해도 진행할 수 있도록 try-catch)
       if (question.img) {
         try {
-          const deleteResult = await window.electronAPI.deleteImage(
-            question.img
-          );
+          const deleteResult = await window.electronAPI.deleteImage(question.img);
           if (!deleteResult.success) {
             console.error("기존 이미지 삭제 실패:", deleteResult.message);
             // 삭제 실패 시 추가 처리가 필요하면 여기서 처리
@@ -205,7 +202,6 @@ function UpdateModal({
         const result = await handleSave(newFileName, imageFile);
         if (result.success) {
           updatedQuestion.img = result.path;
-          // 이미지 저장 후 파일 상태 초기화
           setImageFile(null);
         } else {
           console.error("이미지 저장 실패:", result.error);
@@ -229,12 +225,12 @@ function UpdateModal({
       updatedQuestion.img = thumbnail
     }
 
-    // 질문 업데이트
     setQuestions((prevQuestions) => {
       const updatedQuestions = [...prevQuestions];
       updatedQuestions[index] = updatedQuestion;
       return updatedQuestions;
     });
+    window.electronAPI.updateQuestion(updatedQuestion);
 
     setUpdateQuestion(null);
     setUpdateModal(false);

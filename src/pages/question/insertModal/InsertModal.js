@@ -8,7 +8,7 @@ import InsertModalExpanded from "./InserModalExpanded.js";
 import InsertModalCompact from "./InsertModalCompact.js";
 import { questionsAtom, allTagAtom } from "state/data.js";
 
-function InsertModal({ setInsertModal, expanded }) {
+function InsertModal({ setInsertModal, expanded, onQuestionAdded }) {
   //문제추가폼
   const [title, setTitle] = useState("");
   const [type, setType] = useState("객관식");
@@ -153,10 +153,7 @@ function InsertModal({ setInsertModal, expanded }) {
     // 이미지가 있는 경우 처리
     if (imageFile) {
       try {
-        const result = await handleSave(
-          question.id, // 질문의 id를 파일명으로 사용
-          imageFile // 파일 내용
-        );
+        const result = await handleSave(question.id, imageFile);
 
         if (result.success) {
           question.img = result.path; // 저장된 경로를 할당
@@ -190,6 +187,9 @@ function InsertModal({ setInsertModal, expanded }) {
     setSelectedOptionIndex(null);
     setImageFile(null);
     setQuestions((prevQuestions) => [question, ...prevQuestions]);
+    toast.success("문제가 추가됐습니다.", { position: "top-center", autoClose: 1500 });
+    onQuestionAdded(question.id);
+    window.electronAPI.appendQuestion(question);
 
     if (titleInputRef.current) {
       titleInputRef.current.focus();

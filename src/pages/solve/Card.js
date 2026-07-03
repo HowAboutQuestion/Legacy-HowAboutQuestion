@@ -92,7 +92,13 @@ function Card() {
       return updatedQuestions;
     });
 
-    // history.csv 업데이트 호출
+    window.electronAPI.updateQuestion({
+      id: currentQuestion.id,
+      level: newLevel.toString(),
+      update: newUpdateDate,
+      solveddate: formattedToday,
+    });
+
     try {
       const historyResponse = await window.electronAPI.updateHistory({ isCorrect: true });
       if (!historyResponse.success) {
@@ -136,7 +142,13 @@ function Card() {
       return updatedQuestions;
     });
 
-    // history.csv 업데이트 호출
+    window.electronAPI.updateQuestion({
+      id: currentQuestion.id,
+      level: newLevel.toString(),
+      update: newUpdateDate,
+      solveddate: formattedToday,
+    });
+
     try {
       const historyResponse = await window.electronAPI.updateHistory({ isCorrect: false });
       if (!historyResponse.success) {

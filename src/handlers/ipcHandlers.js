@@ -7,7 +7,7 @@
 
 import { ipcMain, dialog, app } from 'electron';
 import { getMainWindow } from '../services/windowService.js';
-import { readQuestionsCSV, updateRecommendDates, updateQuestionsFile } from '../controllers/questionController.js';
+import { initQuestions, readQuestionsCSV, updateRecommendDates, updateQuestionsFile, writeQuestionsCSVFile, appendQuestionToCSV, updateQuestionInCSV, deleteQuestionsFromCSV } from '../controllers/questionController.js';
 import { updateHistory, readHistoryCSV } from '../controllers/historyController.js';
 import { saveImage, deleteImage, exportQuestions, extractZip } from '../controllers/fileController.js';
 import { userDataPath } from '../config/paths.js';
@@ -19,12 +19,15 @@ import { getUserId } from '../services/settingService.js';
  * 이 함수는 애플리케이션에서 사용자가 요청할 수 있는 여러 가지 작업을 처리하는 IPC 핸들러들을 설정합니다.
  */
 function setupIpcHandlers() {
-    console.log("setupIpcHandlers called!");
-
     // 질문 관련 핸들러
+    ipcMain.handle('init-questions', () => initQuestions());
     ipcMain.handle('read-questions-csv', () => readQuestionsCSV());
     ipcMain.handle('update-recommend-dates', () => updateRecommendDates());
     ipcMain.handle('update-questions-file', (event, questions) => updateQuestionsFile(questions));
+    ipcMain.handle('write-questions-csv', (event, csv) => writeQuestionsCSVFile(csv));
+    ipcMain.handle('append-question', (event, question) => appendQuestionToCSV(question));
+    ipcMain.handle('update-question', (event, question) => updateQuestionInCSV(question));
+    ipcMain.handle('delete-questions', (event, ids) => deleteQuestionsFromCSV(ids));
 
     // 기록 관련 핸들러
     ipcMain.handle('read-history-csv', () => readHistoryCSV());

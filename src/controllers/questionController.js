@@ -1,6 +1,6 @@
 /**
  * @fileoverview
- * 이 모듈은 questions CSV 파일을 읽고, 업데이트하고, 추천 날짜를 계산하는 함수들을 제공합니다. 
+ * 이 모듈은 questions CSV 파일을 읽고, 업데이트하고, 추천 날짜를 계산하는 함수들을 제공합니다.
  * 이 파일은 문제 목록을 처리하고, 각 문제에 대해 추천 날짜를 업데이트하며, 문제 목록을 새로 저장하는 기능을 제공합니다.
  */
 
@@ -11,14 +11,7 @@ import { getTodayDate, parseISO, isValid, isBefore, isAfter, startOfDay, format 
 import { generateUniqueId } from '../utils/idUtils.js';
 
 
-/**
- * questions CSV 파일을 읽어 문제 목록과 모든 태그를 반환하는 함수입니다.
- * 
- * @returns {Object} - 성공 여부, 모든 태그 목록, 문제 목록 및 메시지를 포함한 객체.
- */
 export function readQuestionsCSV() {
-  console.log("readQuestionsCSV called!");
-
   try {
     if (!existsSync(questionsCsvPath)) {
       console.error(`cannot find questions.csv file: ${questionsCsvPath}`);
@@ -28,9 +21,11 @@ export function readQuestionsCSV() {
     const csvFile = readFileSync(questionsCsvPath, 'utf-8');
     let questions = [];
     const tagSet = new Set();
+    let needsMigration = false;
+    const existingIds = new Set();
 
     Papa.parse(csvFile, {
-      header: true, 
+      header: true,
       skipEmptyLines: true,
       complete: (result) => {
         questions = result.data.map((item) => {
@@ -38,16 +33,31 @@ export function readQuestionsCSV() {
           if (item.tag) item.tag = item.tag.split(',').map(t => t.trim());
           else item.tag = [];
 
-          item.tag.forEach(t => tagSet.add(t)); // 태그 집합에 추가
+          item.tag.forEach(t => tagSet.add(t));
 
-          item.id = generateUniqueId();
+          if (!item.id) {
+            let newId;
+            do { newId = `id-${Math.random().toString(36).slice(2, 11)}`; }
+            while (existingIds.has(newId));
+            item.id = newId;
+            needsMigration = true;
+          }
+          existingIds.add(item.id);
           item.checked = false;
           return item;
         });
       },
     });
 
-    console.log("questions read success");
+    if (needsMigration) {
+      const migratedCsv = Papa.unparse(
+        questions.map(({ checked, ...rest }) => ({
+          ...rest,
+          tag: Array.isArray(rest.tag) ? rest.tag.join(',') : rest.tag,
+        }))
+      );
+      writeFileSync(questionsCsvPath, migratedCsv, 'utf-8');
+    }
 
     return {
       success: true,
@@ -61,12 +71,64 @@ export function readQuestionsCSV() {
   }
 }
 
-/**
- * questions CSV 파일에서 추천 날짜를 업데이트하는 함수입니다.
- * 오늘 날짜를 기준으로 문제의 추천 날짜를 계산하여 업데이트합니다.
- *
- * @returns {Object} - 성공 여부와 메시지를 포함한 객체.
- */
+export function initQuestions() {
+  try {
+    if (!existsSync(questionsCsvPath)) {
+      return { success: false, message: 'CSV 파일을 찾을 수 없습니다.' };
+    }
+
+    const csvFile = readFileSync(questionsCsvPath, 'utf-8');
+    const { data } = Papa.parse(csvFile, { header: true, skipEmptyLines: true });
+
+    const today = getTodayDate();
+    const todayDate = parseISO(today);
+    let needsWrite = false;
+    const existingIds = new Set();
+
+    const updatedRows = data.map(row => {
+      if (!row.id) {
+        let newId;
+        do { newId = `id-${Math.random().toString(36).slice(2, 11)}`; }
+        while (existingIds.has(newId));
+        row = { ...row, id: newId };
+        needsWrite = true;
+      }
+      existingIds.add(row.id);
+
+      const recommendDate = parseISO(row.recommenddate);
+      const updateDate = parseISO(row.update);
+
+      if (isValid(recommendDate) && isValid(updateDate) && isBefore(startOfDay(recommendDate), todayDate)) {
+        needsWrite = true;
+        return {
+          ...row,
+          recommenddate: isAfter(startOfDay(updateDate), todayDate)
+            ? format(updateDate, 'yyyy-MM-dd')
+            : today,
+        };
+      }
+
+      return row;
+    });
+
+    if (needsWrite) {
+      writeFileSync(questionsCsvPath, Papa.unparse(updatedRows), 'utf-8');
+    }
+
+    const tagSet = new Set();
+    const questions = updatedRows.map(row => {
+      const tags = row.tag ? row.tag.split(',').map(t => t.trim()) : [];
+      tags.forEach(t => tagSet.add(t));
+      return { ...row, description: row.description || '', tag: tags, checked: false };
+    });
+
+    return { success: true, allTag: [...tagSet], questions };
+  } catch (error) {
+    console.error(error);
+    return { success: false, message: 'initQuestions fail' };
+  }
+}
+
 export function updateRecommendDates() {
   try {
     if (!existsSync(questionsCsvPath)) {
@@ -84,9 +146,7 @@ export function updateRecommendDates() {
       const recommendDate = parseISO(row.recommenddate);
       const updateDate = parseISO(row.update);
 
-      if (!isValid(recommendDate) || !isValid(updateDate)) {
-        return row;
-      }
+      if (!isValid(recommendDate) || !isValid(updateDate)) return row;
 
       if (isBefore(startOfDay(recommendDate), todayDate)) {
         if (isAfter(startOfDay(updateDate), todayDate)) {
@@ -99,10 +159,7 @@ export function updateRecommendDates() {
       return row;
     });
 
-    const newCsv = Papa.unparse(updatedData);
-    writeFileSync(questionsCsvPath, newCsv, 'utf-8');
-
-    console.log('recommenddate update success');
+    writeFileSync(questionsCsvPath, Papa.unparse(updatedData), 'utf-8');
     return { success: true, message: 'recommenddate가 성공적으로 업데이트되었습니다.' };
   } catch (error) {
     console.error('Error updating recommend dates:', error);
@@ -110,15 +167,7 @@ export function updateRecommendDates() {
   }
 }
 
-/**
- * 문제 목록을 기반으로 questions CSV 파일을 업데이트하는 함수입니다.
- * 
- * @param {Array} questions - 업데이트할 문제 목록.
- * @returns {Object} - 성공 여부를 포함한 객체.
- */
 export function updateQuestionsFile(questions) {
-  console.log("updateQuestionsFile called!");
-
   try {
     const csvString = Papa.unparse(
       questions.map(question => {
@@ -130,6 +179,67 @@ export function updateQuestionsFile(questions) {
     return { success: true };
   } catch (error) {
     console.error('CSV update error:', error);
+    return { success: false, message: error.message };
+  }
+}
+
+export function writeQuestionsCSVFile(csv) {
+  try {
+    writeFileSync(questionsCsvPath, csv, 'utf-8');
+    return { success: true };
+  } catch (error) {
+    console.error('CSV write error:', error);
+    return { success: false, message: error.message };
+  }
+}
+
+function serializeRow(question) {
+  const { checked, ...rest } = question;
+  return {
+    ...rest,
+    ...(Array.isArray(rest.tag) ? { tag: rest.tag.join(',') } : {}),
+  };
+}
+
+export function appendQuestionToCSV(question) {
+  try {
+    const csvFile = readFileSync(questionsCsvPath, 'utf-8');
+    const parsed = Papa.parse(csvFile, { header: true, skipEmptyLines: true });
+    parsed.data.unshift(serializeRow(question));
+    writeFileSync(questionsCsvPath, Papa.unparse(parsed.data), 'utf-8');
+    return { success: true };
+  } catch (error) {
+    console.error('appendQuestionToCSV error:', error);
+    return { success: false, message: error.message };
+  }
+}
+
+export function updateQuestionInCSV(partialQuestion) {
+  try {
+    const csvFile = readFileSync(questionsCsvPath, 'utf-8');
+    const parsed = Papa.parse(csvFile, { header: true, skipEmptyLines: true });
+    const incoming = serializeRow(partialQuestion);
+    parsed.data = parsed.data.map(row =>
+      row.id === partialQuestion.id ? { ...row, ...incoming } : row
+    );
+    writeFileSync(questionsCsvPath, Papa.unparse(parsed.data), 'utf-8');
+    return { success: true };
+  } catch (error) {
+    console.error('updateQuestionInCSV error:', error);
+    return { success: false, message: error.message };
+  }
+}
+
+export function deleteQuestionsFromCSV(ids) {
+  try {
+    const csvFile = readFileSync(questionsCsvPath, 'utf-8');
+    const idSet = new Set(ids);
+    const parsed = Papa.parse(csvFile, { header: true, skipEmptyLines: true });
+    parsed.data = parsed.data.filter(row => !idSet.has(row.id));
+    writeFileSync(questionsCsvPath, Papa.unparse(parsed.data), 'utf-8');
+    return { success: true };
+  } catch (error) {
+    console.error('deleteQuestionsFromCSV error:', error);
     return { success: false, message: error.message };
   }
 }

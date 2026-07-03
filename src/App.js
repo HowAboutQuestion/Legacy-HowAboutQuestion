@@ -16,93 +16,42 @@ const App = () => {
   const [userId, setUserId] = useRecoilState(userIdAtom);
   const [appInitStep, setAppInitStep] = useRecoilState(appInitStepAtom);
 
-  // CSV 데이터를 비동기적으로 읽어오는 함수
-  const readElectron = async () => {
-    try {
-      // 상태 업데이트 후 비동기적으로 CSV 데이터를 처리
-      const result = await window.electronAPI.readQuestionsCSV();
-      if (result.success) {
-        setAlltag(result.allTag);   // 모든 태그 설정
-        setQuestions(result.questions); // 질문 데이터 설정
-      } else {
-        console.error(result.message);
-      }
-    } catch (error) {
-      console.error('CSV 읽기 실패:', error);
-      setAppInitStep("error");
-    }
-  };
-
-  // setting 파일에서 userId 불러와서 Atom에 넣기 (옵션 추가 되면 그때 수정)
-  const initUserId = async() => {
-    try{
-      const id = await window.electronAPI.getUserId();
-      setUserId(id);
-      console.log("사용자 id : ", id);
-    }catch(error){
-      console.error("사용자 id를 Atom에 넣는 과정에서 문제가 발생했습니다.");
-      setAppInitStep("error");
-    }
-  }
-
-  const recommendations = async () => {
-    try{
-      const result = await window.electronAPI.updateRecommendDates();
-      if(!result.success){
-        console.error(result.message);
-        setAppInitStep("error");
-      }
-    }catch(error) {
-      console.error("추천 날자 보정 실패: ", error);
-      setAppInitStep("error");
-    }
-  };
-
-
   useEffect(() => {
     const initializeApp = async () => {
-      try{
-        // TODO : 메서드 하나 더 추가되면 그때 패턴 적용하거나 정리좀 하기
-        setAppInitStep("loading-settings");
-        await initUserId(); // setting 값 읽어오기
+      try {
+        setAppInitStep("loading");
 
-        setAppInitStep("loading-questions");
-        await readElectron(); // 컴포넌트가 마운트되면 CSV 데이터를 읽기
-
-        setAppInitStep("recommendations");
-        await recommendations();
-
-        setAppInitStep("loading-updateQuestions");
-        await readElectron();
+        await Promise.all([
+          (async () => {
+            const id = await window.electronAPI.getUserId();
+            setUserId(id);
+          })(),
+          (async () => {
+            const result = await window.electronAPI.initQuestions();
+            if (result.success) {
+              setAlltag(result.allTag);
+              setQuestions(result.questions);
+            } else {
+              console.error(result.message);
+              setAppInitStep("error");
+            }
+          })(),
+        ]);
 
         setAppInitStep("ready");
-      } catch(error) {
+      } catch (error) {
         console.error("앱 초기화 실패: ", error);
         setAppInitStep("error");
       }
     };
 
-    initializeApp()
+    initializeApp();
   }, []);
 
   useEffect(() => {
     const tagSet = new Set();
-    questions.map((question) => question.tag.map((item) => { tagSet.add(item) }));
+    questions.forEach(question => question.tag.forEach(item => tagSet.add(item)));
     setAlltag([...tagSet]);
-
-
-    const updateQuestionsAsync = async () => {
-      try {
-        // 상태 업데이트 후 비동기적으로 questions를 처리
-        const result = await window.electronAPI.updateQuestions(questions);
-      } catch (error) {
-        console.error("[App.js] updateQuestionsAsync", error)
-      }
-    };
-
-    if (questions.length > 0) {
-      updateQuestionsAsync(); // 비동기로 호출
-    }
   }, [questions]);
 
   useEffect(() => {
@@ -112,7 +61,6 @@ const App = () => {
         if (result && result.appPath) {
           setAppPath(`file:///${result.appPath.replace(/\\/g, "/")}/`);
         }
-        console.log(result);
       } catch (error) {
         console.error("cannot read appPath :", error);
       }
