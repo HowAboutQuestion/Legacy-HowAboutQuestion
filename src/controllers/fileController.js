@@ -92,7 +92,7 @@ export async function exportQuestions(questions, savePath) {
     const output = fs.createWriteStream(savePath);
     const archive = archiver('zip', { zlib: { level: 9 } });
 
-    output.on('close', () => console.log(`ZIP file created: ${savePath}`));
+    output.on('close', () => {});
     archive.on('error', (err) => { throw err; });
 
     archive.pipe(output);
@@ -118,7 +118,6 @@ export async function exportQuestions(questions, savePath) {
     await archive.finalize();
     fs.rmSync(tempDir, { recursive: true, force: true });
 
-    console.log("exportQuestions success");
     return { success: true, path: savePath };
   } catch (error) {
     console.error('Error exporting questions:', error);
@@ -244,9 +243,6 @@ export async function extractZip(fileName, content) {
       throw new Error('CSV 파일을 찾을 수 없습니다.');
     }
 
-    console.log("extractZip success");
-
-    // 결과 반환
     result = { success: true, questions };
   } catch (error) {
     result = { success: false, error: error.message };

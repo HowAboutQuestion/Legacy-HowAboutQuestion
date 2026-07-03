@@ -19,15 +19,12 @@ const App = () => {
   useEffect(() => {
     const initializeApp = async () => {
       try {
-        console.time("[init] total");
         setAppInitStep("loading");
 
-        console.time("[init] parallel (getUserId + initQuestions)");
         await Promise.all([
           (async () => {
             const id = await window.electronAPI.getUserId();
             setUserId(id);
-            console.log("사용자 id : ", id);
           })(),
           (async () => {
             const result = await window.electronAPI.initQuestions();
@@ -40,10 +37,8 @@ const App = () => {
             }
           })(),
         ]);
-        console.timeEnd("[init] parallel (getUserId + initQuestions)");
 
         setAppInitStep("ready");
-        console.timeEnd("[init] total");
       } catch (error) {
         console.error("앱 초기화 실패: ", error);
         setAppInitStep("error");
@@ -66,7 +61,6 @@ const App = () => {
         if (result && result.appPath) {
           setAppPath(`file:///${result.appPath.replace(/\\/g, "/")}/`);
         }
-        console.log(result);
       } catch (error) {
         console.error("cannot read appPath :", error);
       }

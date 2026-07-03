@@ -92,21 +92,15 @@ function Card() {
       return updatedQuestions;
     });
 
-    console.time("[card] updateQuestion IPC (correct)");
     window.electronAPI.updateQuestion({
       id: currentQuestion.id,
       level: newLevel.toString(),
       update: newUpdateDate,
       solveddate: formattedToday,
-    }).then(() => {
-      console.timeEnd("[card] updateQuestion IPC (correct)");
     });
 
-    // history.csv 업데이트 호출
     try {
-      console.time("[card] updateHistory (correct)");
       const historyResponse = await window.electronAPI.updateHistory({ isCorrect: true });
-      console.timeEnd("[card] updateHistory (correct)");
       if (!historyResponse.success) {
         console.error(historyResponse.message);
       }
@@ -148,21 +142,15 @@ function Card() {
       return updatedQuestions;
     });
 
-    console.time("[card] updateQuestion IPC (wrong)");
     window.electronAPI.updateQuestion({
       id: currentQuestion.id,
       level: newLevel.toString(),
       update: newUpdateDate,
       solveddate: formattedToday,
-    }).then(() => {
-      console.timeEnd("[card] updateQuestion IPC (wrong)");
     });
 
-    // history.csv 업데이트 호출
     try {
-      console.time("[card] updateHistory (wrong)");
       const historyResponse = await window.electronAPI.updateHistory({ isCorrect: false });
-      console.timeEnd("[card] updateHistory (wrong)");
       if (!historyResponse.success) {
         console.error(`history.csv 업데이트 실패: ${historyResponse.message}`);
       }

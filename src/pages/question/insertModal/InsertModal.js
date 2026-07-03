@@ -103,14 +103,12 @@ function InsertModal({ setInsertModal, expanded, onQuestionAdded }) {
   }
 
   const insertEvent = async () => {
-    console.time("[insertModal] insertEvent total");
     if (!title) {
       if (!toast.isActive("insert-title-error")) {
         toast.error("제목은 필수 입력 항목입니다", {
           toastId: "insert-title-error",
         });
       }
-      console.timeEnd("[insertModal] insertEvent total");
       return;
     }
 
@@ -155,12 +153,7 @@ function InsertModal({ setInsertModal, expanded, onQuestionAdded }) {
     // 이미지가 있는 경우 처리
     if (imageFile) {
       try {
-        console.time("[insertModal] saveImage");
-        const result = await handleSave(
-          question.id,
-          imageFile
-        );
-        console.timeEnd("[insertModal] saveImage");
+        const result = await handleSave(question.id, imageFile);
 
         if (result.success) {
           question.img = result.path; // 저장된 경로를 할당
@@ -196,11 +189,7 @@ function InsertModal({ setInsertModal, expanded, onQuestionAdded }) {
     setQuestions((prevQuestions) => [question, ...prevQuestions]);
     toast.success("문제가 추가됐습니다.", { position: "top-center", autoClose: 1500 });
     onQuestionAdded(question.id);
-    console.time("[insertModal] appendQuestion IPC");
-    window.electronAPI.appendQuestion(question).then(() => {
-      console.timeEnd("[insertModal] appendQuestion IPC");
-    });
-    console.timeEnd("[insertModal] insertEvent total");
+    window.electronAPI.appendQuestion(question);
 
     if (titleInputRef.current) {
       titleInputRef.current.focus();

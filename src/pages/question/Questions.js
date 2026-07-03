@@ -17,7 +17,6 @@ function Questions() {
   const setQuestions = useSetRecoilState(questionsAtom);
 
   const [filterQuestions, setFilterQuestions] = useState([]);
-  const renderTimerRef = useRef(null);
 
   //존재하는 중복 없는 모든 태그
   const allTag = useRecoilValue(allTagAtom);
@@ -108,19 +107,12 @@ function Questions() {
     }
   }, [isAllSelected]);
 
-  // questions 변경 시작 시점 기록
-  useEffect(() => {
-    renderTimerRef.current = performance.now();
-  }, [questions]);
-
   //태그 필터링 이벤트트
   useEffect(() => {
-    console.time("[questions] filterQuestions (연산)");
     if (selectedTag.length === 0) {
       setFilterQuestions(
         questions.map((question, index) => ({ question, index }))
       );
-      console.timeEnd("[questions] filterQuestions (연산)");
       return;
     }
 
@@ -130,17 +122,7 @@ function Questions() {
         question.tag.some((tag) => selectedTag.includes(tag))
       );
     setFilterQuestions(filtered);
-    console.timeEnd("[questions] filterQuestions (연산)");
   }, [questions, selectedTag]);
-
-  // filterQuestions 세팅 완료 시점 → Recoil 변경부터 여기까지가 렌더 준비 시간
-  useEffect(() => {
-    if (renderTimerRef.current !== null) {
-      const elapsed = performance.now() - renderTimerRef.current;
-      console.log(`[questions] Recoil→filterQuestions 완료: ${elapsed.toFixed(2)}ms (문제 수: ${questions.length}개)`);
-      renderTimerRef.current = null;
-    }
-  }, [filterQuestions]);
 
   useEffect(() => {
     const collapseHandler = () => {
@@ -277,10 +259,7 @@ function Questions() {
 
       const newQuestions = questions.filter((q) => !idsToDelete.includes(q.id));
       setQuestions(newQuestions);
-      console.time("[questions] deleteQuestions IPC");
-      window.electronAPI.deleteQuestions(idsToDelete).then(() => {
-        console.timeEnd("[questions] deleteQuestions IPC");
-      });
+      window.electronAPI.deleteQuestions(idsToDelete);
 
       setCheckedIds(new Set());
       setIsAllSelected(false);
@@ -289,9 +268,7 @@ function Questions() {
       const handleDelete = async (imagePath) => {
         try {
           const result = await window.electronAPI.deleteImage(imagePath);
-          if (result.success) {
-            console.log("이미지가 성공적으로 삭제되었습니다.");
-          } else {
+          if (!result.success) {
             console.error("삭제 실패:", result.message);
           }
         } catch (error) {

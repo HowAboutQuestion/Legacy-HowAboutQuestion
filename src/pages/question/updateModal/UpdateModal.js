@@ -118,14 +118,12 @@ function UpdateModal({
   }
 
   const updateEvent = async () => {
-    console.time("[updateModal] updateEvent total");
     if (!title) {
       if (!toast.isActive("update-title-error")) {
         toast.error("제목은 필수 입력 항목입니다", {
           toastId: "update-title-error",
         });
       }
-      console.timeEnd("[updateModal] updateEvent total");
       return;
     }
 
@@ -187,11 +185,7 @@ function UpdateModal({
     if (imageFile) {
       if (question.img) {
         try {
-          console.time("[updateModal] deleteImage");
-          const deleteResult = await window.electronAPI.deleteImage(
-            question.img
-          );
-          console.timeEnd("[updateModal] deleteImage");
+          const deleteResult = await window.electronAPI.deleteImage(question.img);
           if (!deleteResult.success) {
             console.error("기존 이미지 삭제 실패:", deleteResult.message);
             // 삭제 실패 시 추가 처리가 필요하면 여기서 처리
@@ -205,9 +199,7 @@ function UpdateModal({
       const newFileName = generateUniqueId(questions);
 
       try {
-        console.time("[updateModal] saveImage");
         const result = await handleSave(newFileName, imageFile);
-        console.timeEnd("[updateModal] saveImage");
         if (result.success) {
           updatedQuestion.img = result.path;
           setImageFile(null);
@@ -238,11 +230,7 @@ function UpdateModal({
       updatedQuestions[index] = updatedQuestion;
       return updatedQuestions;
     });
-    console.time("[updateModal] updateQuestion IPC");
-    window.electronAPI.updateQuestion(updatedQuestion).then(() => {
-      console.timeEnd("[updateModal] updateQuestion IPC");
-    });
-    console.timeEnd("[updateModal] updateEvent total");
+    window.electronAPI.updateQuestion(updatedQuestion);
 
     setUpdateQuestion(null);
     setUpdateModal(false);

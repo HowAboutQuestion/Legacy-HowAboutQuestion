@@ -19,8 +19,6 @@ import { getUserId } from '../services/settingService.js';
  * 이 함수는 애플리케이션에서 사용자가 요청할 수 있는 여러 가지 작업을 처리하는 IPC 핸들러들을 설정합니다.
  */
 function setupIpcHandlers() {
-    console.log("setupIpcHandlers called!");
-
     // 질문 관련 핸들러
     ipcMain.handle('init-questions', () => initQuestions());
     ipcMain.handle('read-questions-csv', () => readQuestionsCSV());

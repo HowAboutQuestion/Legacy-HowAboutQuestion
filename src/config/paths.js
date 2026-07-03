@@ -15,9 +15,6 @@ const historyCsvPath = path.join(userDataPath, 'history.csv');
 const imageDir = path.join(userDataPath, 'images');
 const tempDir = path.join(app.getPath('temp'), 'questions_export');
 
-console.log('questionsCsvPath:', questionsCsvPath);
-console.log('historyCsvPath:', historyCsvPath);
-
 export {
   exeDir,
   userDataPath,

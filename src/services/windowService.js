@@ -45,10 +45,6 @@ export async function createWindow() {
     mainWindow = null;
   });
 
-  mainWindow.webContents.on('console-message', (_, level, message) => {
-    console.log('[Renderer]', message);
-  });
-
   return mainWindow;
 }
 
