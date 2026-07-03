@@ -139,19 +139,15 @@ function Questions() {
     setUpdateQuestion({ ...question });
   }, []);
 
-  const selectedCount = filterQuestions.filter(
-    ({ question }) => checkedIds.has(question.id)
-  ).length;
+  const selectedCount = checkedIds.size;
 
-  const isAllChecked = selectedCount > 0 && selectedCount === filterQuestions.length;
+  const isAllChecked = filterQuestions.length > 0 && filterQuestions.every(({ question }) => checkedIds.has(question.id));
 
   const handleDownloadToZip = async () => {
-    const isSelected = (question) => checkedIds.has(question.id);
-
-    const downloadQuestions = selectedCount > 0
-      ? filterQuestions
-          .filter(({ question }) => isSelected(question))
-          .map(({ question }) => { const { checked, id, ...rest } = question; return rest; })
+    const downloadQuestions = checkedIds.size > 0
+      ? questions
+          .filter((question) => checkedIds.has(question.id))
+          .map((question) => { const { checked, id, ...rest } = question; return rest; })
       : filterQuestions
           .map(({ question }) => { const { checked, id, ...rest } = question; return rest; });
 
@@ -224,18 +220,16 @@ function Questions() {
     isDeletingRef.current = true;
 
     try {
-      const isSelected = (question) => checkedIds.has(question.id);
-
       const deleteImagesSet = new Set();
-      const idsToDelete = filterQuestions
-        .filter(({ question }) => {
-          if (isSelected(question)) {
+      const idsToDelete = questions
+        .filter((question) => {
+          if (checkedIds.has(question.id)) {
             if (question.img) deleteImagesSet.add(question.img);
             return true;
           }
           return false;
         })
-        .map(({ question }) => question.id);
+        .map((question) => question.id);
 
       if (idsToDelete.length === 0) return;
 
@@ -306,12 +300,11 @@ function Questions() {
   const navigate = useNavigate();
   const goSelectSolve = () => {
     const toSolveTags = new Set();
-    const isSelected = (question) => checkedIds.has(question.id);
 
-    const toSolveQuestions = selectedCount > 0
-      ? filterQuestions
-          .filter(({ question }) => isSelected(question))
-          .map(({ question }) => {
+    const toSolveQuestions = checkedIds.size > 0
+      ? questions
+          .filter((question) => checkedIds.has(question.id))
+          .map((question) => {
             const { checked, tag, ...rest } = question;
             if (tag) tag.forEach((t) => toSolveTags.add(t));
             return rest;
