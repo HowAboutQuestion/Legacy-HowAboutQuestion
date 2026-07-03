@@ -386,7 +386,6 @@ function Questions() {
     
       <QuestionsMain
         filterQuestions={filterQuestions}
-        isCollapsed={isCollapsed}
         deleteFilteredQuestions={deleteFilteredQuestions}
         insertButtonClick={insertButtonClick}
         handleUpdateClick={handleUpdateClick}
@@ -416,8 +415,7 @@ function Questions() {
       {/* 모달 컨테이너는 항상 렌더링, 높이는 상태에 따라 변경 */}
       <div
         data-tour-id="insert-modal-root"
-        className={`transition-all duration-500 width-fill-available shadow-[10px_0px_10px_10px_rgba(0,0,0,0.1)] rounded-t-2xl fixed bottom-0 bg-white ${isCollapsed ? "ml-10" : "ml-80"
-          } z-50`}
+        className="width-fill-available shadow-[10px_0px_10px_10px_rgba(0,0,0,0.1)] rounded-t-2xl fixed bottom-0 bg-white ml-10 z-50"
         style={{ height: insertModal || updateModal ? modalHeight : 0 }}
       >
         {/* 드래그 핸들 (모달 상단 중앙에 위치) */}

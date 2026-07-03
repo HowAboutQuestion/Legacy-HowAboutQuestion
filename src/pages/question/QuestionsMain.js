@@ -4,7 +4,7 @@ import { questionsAtom } from "state/data.js";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 function QuestionsMain({
-  isCollapsed, filterQuestions,
+  filterQuestions,
   insertButtonClick, handleUpdateClick, handleDownloadToZip,
   deleteFilteredQuestions, goSelectSolve,
   // selection system
@@ -25,7 +25,7 @@ function QuestionsMain({
     if (!sentinel) return;
     const observer = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) onLoadMore(); },
-      { threshold: 0 }
+      { threshold: 0, rootMargin: "0px 0px 1000px 0px" }
     );
     observer.observe(sentinel);
     return () => observer.disconnect();
@@ -67,14 +67,14 @@ function QuestionsMain({
 
   return (
     <div
-      className={`mb-[300px] transition-all duration-500 flex-1 sm:rounded-lg bg-white ${isCollapsed ? "ml-10" : "ml-80"}`}
+      className="mb-[300px] flex-1 sm:rounded-lg bg-white ml-10"
     >
       <div className="px-8 py-4 flex justify-between border-b">
         <div>
           <h1 className="text-2xl font-semibold">문제 관리</h1>
           <h1 className="text-md font-normal text-gray-400">
             총 {filterQuestions.length}개
-            {selectedCount > 0 && ` · ${filterQuestions.length}개 중 ${selectedCount}개 선택`}
+            {selectedCount > 0 && ` 중 ${selectedCount}개 선택`}
           </h1>
         </div>
         <div className="flex items-center flex">
