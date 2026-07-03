@@ -24,8 +24,6 @@ function Questions() {
 
   // 선택 시스템
   const [checkedIds, setCheckedIds] = useState(new Set());
-  const [isAllSelected, setIsAllSelected] = useState(false);
-  const [excludedIds, setExcludedIds] = useState(new Set());
 
   // 무한 스크롤
   const [displayCount, setDisplayCount] = useState(50);
@@ -70,42 +68,28 @@ function Questions() {
   };
 
   const handleCheckboxChange = useCallback((id) => {
-    if (isAllSelected) {
-      setExcludedIds(prev => {
-        const next = new Set(prev);
-        next.has(id) ? next.delete(id) : next.add(id);
-        return next;
-      });
-    } else {
-      setCheckedIds(prev => {
-        const next = new Set(prev);
-        next.has(id) ? next.delete(id) : next.add(id);
-        return next;
-      });
-    }
-  }, [isAllSelected]);
+    setCheckedIds(prev => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  }, []);
 
   const handleAllCheckboxChange = useCallback(() => {
-    setCheckedIds(new Set());
-    setExcludedIds(new Set());
-    setIsAllSelected(prev => !prev);
-  }, []);
+    setCheckedIds(prev => {
+      const allChecked = filterQuestions.every(({ question }) => prev.has(question.id));
+      const next = new Set(prev);
+      filterQuestions.forEach(({ question }) => {
+        allChecked ? next.delete(question.id) : next.add(question.id);
+      });
+      return next;
+    });
+  }, [filterQuestions]);
 
   const handleLoadMore = useCallback(() => {
     setDisplayCount(prev => prev + 50);
   }, []);
 
-  const onQuestionAdded = useCallback((newId) => {
-    if (isAllSelected) {
-      setExcludedIds(prev => new Set([...prev, newId]));
-    }
-  }, [isAllSelected]);
-
-  const onQuestionsAdded = useCallback((newIds) => {
-    if (isAllSelected && newIds.length > 0) {
-      setExcludedIds(prev => new Set([...prev, ...newIds]));
-    }
-  }, [isAllSelected]);
 
   //태그 필터링 이벤트트
   useEffect(() => {
@@ -155,15 +139,14 @@ function Questions() {
     setUpdateQuestion({ ...question });
   }, []);
 
-  const selectedCount = isAllSelected
-    ? filterQuestions.filter(({ question }) => !excludedIds.has(question.id)).length
-    : filterQuestions.filter(({ question }) => checkedIds.has(question.id)).length;
+  const selectedCount = filterQuestions.filter(
+    ({ question }) => checkedIds.has(question.id)
+  ).length;
 
   const isAllChecked = selectedCount > 0 && selectedCount === filterQuestions.length;
 
   const handleDownloadToZip = async () => {
-    const isSelected = (question) =>
-      isAllSelected ? !excludedIds.has(question.id) : checkedIds.has(question.id);
+    const isSelected = (question) => checkedIds.has(question.id);
 
     const downloadQuestions = selectedCount > 0
       ? filterQuestions
@@ -241,8 +224,7 @@ function Questions() {
     isDeletingRef.current = true;
 
     try {
-      const isSelected = (question) =>
-        isAllSelected ? !excludedIds.has(question.id) : checkedIds.has(question.id);
+      const isSelected = (question) => checkedIds.has(question.id);
 
       const deleteImagesSet = new Set();
       const idsToDelete = filterQuestions
@@ -262,8 +244,6 @@ function Questions() {
       window.electronAPI.deleteQuestions(idsToDelete);
 
       setCheckedIds(new Set());
-      setIsAllSelected(false);
-      setExcludedIds(new Set());
 
       const handleDelete = async (imagePath) => {
         try {
@@ -326,8 +306,7 @@ function Questions() {
   const navigate = useNavigate();
   const goSelectSolve = () => {
     const toSolveTags = new Set();
-    const isSelected = (question) =>
-      isAllSelected ? !excludedIds.has(question.id) : checkedIds.has(question.id);
+    const isSelected = (question) => checkedIds.has(question.id);
 
     const toSolveQuestions = selectedCount > 0
       ? filterQuestions
@@ -375,15 +354,12 @@ function Questions() {
         handleDownloadToZip={handleDownloadToZip}
         goSelectSolve={goSelectSolve}
         checkedIds={checkedIds}
-        isAllSelected={isAllSelected}
-        excludedIds={excludedIds}
         selectedCount={selectedCount}
         handleCheckboxChange={handleCheckboxChange}
         handleAllCheckboxChange={handleAllCheckboxChange}
         isAllChecked={isAllChecked}
         displayCount={displayCount}
         onLoadMore={handleLoadMore}
-        onQuestionsAdded={onQuestionsAdded}
       />
       {/* 오버레이는 모달이 열려있을 때만 렌더링 */}
       {(insertModal || updateModal) && (
@@ -411,7 +387,6 @@ function Questions() {
           <InsertModal
             setInsertModal={setInsertModal}
             expanded={expanded}
-            onQuestionAdded={onQuestionAdded}
           />
         )}
         {updateModal && (
