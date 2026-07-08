@@ -52,23 +52,27 @@ const DashboardStats = ({
                   maintainAspectRatio: false,
                   plugins: {
                     legend: {
-                      display: true,
-                      position: 'top',
-                    },
-                    title: {
-                      display: true,
+                      display: false, // 단일 시리즈라 범례 불필요 (제목이 이미 설명)
                     },
                   },
                   scales: {
                     x: {
                       type: 'time',
                       time: {
-                        unit: 'month',
+                        unit: 'day',
                         tooltipFormat: 'yyyy년 M월 d일',
                         displayFormats: {
-                          month: 'yyyy년 M월',
+                          day: 'M월 d일',
                         },
                         locale: ko, // 한글 locale 사용
+                      },
+                      ticks: {
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        color: '#9CA3AF', // 회색 계열, 그리드 대비 recessive
+                      },
+                      grid: {
+                        color: '#F3F4F6', // 서피스 대비 한 단계 진한 헤어라인 그레이
                       },
                       title: {
                         display: true,
@@ -78,6 +82,12 @@ const DashboardStats = ({
                     y: {
                       beginAtZero: true,
                       max: 100,
+                      ticks: {
+                        color: '#9CA3AF',
+                      },
+                      grid: {
+                        color: '#F3F4F6',
+                      },
                       title: {
                         display: true,
                         text: '정답률 (%)',
