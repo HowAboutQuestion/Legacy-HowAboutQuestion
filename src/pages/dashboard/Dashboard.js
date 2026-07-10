@@ -141,9 +141,16 @@ const Dashboard = () => {
         {
           label: "정답률",
           data: correctRates,
-          fill: false,
+          fill: true,
           borderColor: "#34D399", // Tailwind의 녹색 계열 색상
+          backgroundColor: "rgba(52, 211, 153, 0.1)", // 선 아래 옅은 영역
           tension: 0.1,
+          borderWidth: 2,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          pointBackgroundColor: "#34D399",
+          pointBorderColor: "#F9FAFB", // 카드 배경(bg-gray-50)과 맞춘 서피스 링
+          pointBorderWidth: 2,
         },
       ],
     };
