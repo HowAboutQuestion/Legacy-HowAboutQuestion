@@ -41,5 +41,9 @@ const userIdAtom = atom({
   default: null,
 })
 
+const appInitStepAtom = atom({
+  key: "appInitStepAtom",
+  default: "idle",
+});
 
-export {questionsAtom, allTagAtom, historyDataAtom, recommendedQuestionsAtom, selectedTagsAtom, selectedQuestionsAtom, appPathAtom, userIdAtom};
+export {questionsAtom, allTagAtom, historyDataAtom, recommendedQuestionsAtom, selectedTagsAtom, selectedQuestionsAtom, appPathAtom, userIdAtom, appInitStepAtom};

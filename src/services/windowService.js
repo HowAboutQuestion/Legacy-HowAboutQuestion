@@ -29,6 +29,7 @@ export async function createWindow() {
       contextIsolation: true,
       sandbox: true,
       preload: preloadPath,
+      devTools: false,
     },
   });
 
@@ -42,10 +43,6 @@ export async function createWindow() {
 
   mainWindow.on('closed', () => {
     mainWindow = null;
-  });
-
-  mainWindow.webContents.on('console-message', (_, level, message) => {
-    console.log('[Renderer]', message);
   });
 
   return mainWindow;

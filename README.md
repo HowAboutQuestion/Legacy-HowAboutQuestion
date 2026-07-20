@@ -3,8 +3,11 @@
 
 > **문제어때는 문제를 직접 제작하고, 공유하고 스스로 풀어볼 수 있는 학습 프로그램입니다.**
 
-[<img src="https://img.shields.io/badge/다운로드-000000?style=flat&logo=toggltrack&logoColor=white" width="180" />](https://github.com/HowAboutQuestion/Legacy-HowAboutQuestion/releases/download/v1.3.1/HowAboutQuestion-Setup-1.3.1.exe)
-[<img src="https://img.shields.io/badge/업데이트-000000?style=flat&logo=readdotcv&logoColor=white" width="180" />](https://github.com/HowAboutQuestion/Legacy-HowAboutQuestion/releases)
+<a href="https://github.com/HowAboutQuestion/Legacy-HowAboutQuestion/releases/latest/download/HowAboutQuestion.exe">
+  <img src="https://img.shields.io/badge/Windows-414141?style=flat&logo=electron&logoColor=white" width="180" alt="Windows"></a>
+<a href="https://github.com/HowAboutQuestion/Legacy-HowAboutQuestion/releases/latest/download/HowAboutQuestion.dmg">
+  <img src="https://img.shields.io/badge/Mac OS-0D96F6?style=flat&logo=appstore&logoColor=white" width="160" alt="macOS">
+</a>
 
 ## 서비스 소개
 사용자가 직접 문제를 제작하고, 제작한 문제를 스스로 풀어볼 수 있는 학습 프로그램입니다.
@@ -22,7 +25,7 @@
 ### 🛠️설치 방법
 <img width="100" height="100" alt="문제 어때" src="https://github.com/user-attachments/assets/ddec9a6f-97e8-473d-82d3-8e19d33654cb" />
 
-[다운로드](https://github.com/HowAboutQuestion/Legacy-HowAboutQuestion/releases/download/v1.3.1/HowAboutQuestion-Setup-1.3.1.exe) 를 통해 받은 `exe` 파일을 실행하여 설치를 완료해 주세요.
+상단 버튼이나 [홈페이지](https://howaboutquestion.com/) 를 통해 받은 `exe`나 `dmg` 파일을 실행하여 설치를 완료해 주세요.
 
 > [!NOTE]
 > 설치 과정에서 **Windows의 PC 보호** 화면이 나타난다면 `추가 정보`를 클릭해 `실행`버튼을 눌러 주세요

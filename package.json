@@ -1,6 +1,6 @@
 {
   "name": "HowAboutQuestion",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "homepage": ".",
   "main": "src/main.js",
   "files": [
@@ -88,11 +88,14 @@
     "appId": "com.HowAboutQuestion.www",
     "productName": "HowAboutQuestion",
     "mac": {
-      "category": "public.app-category.utilities"
+      "category": "public.app-category.utilities",
+      "icon": "assets/icons/icon.icns",
+      "artifactName": "${productName}.${ext}"
     },
     "win": {
       "target": "nsis",
-      "icon": "assets/icons/icon.ico"
+      "icon": "assets/icons/icon.ico",
+      "artifactName": "${productName}.${ext}"
     },
     "linux": {
       "target": "AppImage"

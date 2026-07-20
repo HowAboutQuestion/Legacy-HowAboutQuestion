@@ -101,8 +101,6 @@ const Dashboard = () => {
 
     setRecommendedQuestions(filtered);
     setSolvedCount(solved);
-    console.log("Filtered Questions:", filtered);
-    console.log("Solved Count:", solved);
   }, [questions, today]);
 
   // 오늘 풀어야 할 문제들 리스트 정의
@@ -121,7 +119,6 @@ const Dashboard = () => {
 
     setTodayProblemsToSolve(filtered);
     setToSolveCount(filtered.length);
-    console.log("todayProblemsToSolve:", filtered);
   }, [recommendedQuestions, today, questions]);
 
   // 차트 데이터 상태 관리: 최근 30개의 기록만 표시
@@ -144,9 +141,16 @@ const Dashboard = () => {
         {
           label: "정답률",
           data: correctRates,
-          fill: false,
+          fill: true,
           borderColor: "#34D399", // Tailwind의 녹색 계열 색상
+          backgroundColor: "rgba(52, 211, 153, 0.1)", // 선 아래 옅은 영역
           tension: 0.1,
+          borderWidth: 2,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          pointBackgroundColor: "#34D399",
+          pointBorderColor: "#F9FAFB", // 카드 배경(bg-gray-50)과 맞춘 서피스 링
+          pointBorderWidth: 2,
         },
       ],
     };
@@ -180,7 +184,6 @@ const Dashboard = () => {
 
   // 총 추천 문제 수, 총 문제 수, 완료 퍼센트 계산
   const totalRecommendToday = useMemo(() => toSolveCount + solvedCount, [toSolveCount, solvedCount]);
-  console.log("toSolveCount:", toSolveCount, "solvedCount:", solvedCount);
 
   const totalProblems = useMemo(() => totalRecommendToday, [totalRecommendToday]);
   const completedProblems = useMemo(() => solvedCount, [solvedCount]);
@@ -208,8 +211,6 @@ const Dashboard = () => {
 
   // 문제풀기 버튼 클릭 핸들러
   const handleSolveProblems = () => {
-    console.log(`풀 문제 수: ${selectedProblemCount}`);
-    // 문제풀기 로직 또는 navigate 호출
   };
 
   if (loadingHistory || loadingRecommendations) {

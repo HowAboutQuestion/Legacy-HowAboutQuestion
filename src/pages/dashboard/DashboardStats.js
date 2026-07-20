@@ -30,14 +30,14 @@ const DashboardStats = ({
         </div>
       </section>
       <section data-tour-id="dashboard-graph">
-        <div className="h-auto mb-4 rounded bg-gray-50 dark:bg-gray-800 p-6">
+        <div className="h-auto mb-4 rounded bg-gray-50 p-6">
           <div className="flex flex-col items-start w-full">
-            <p className="text-lg font-bold text-gray-800 dark:text-white">정답률</p>
-            <p className="text-4xl font-extrabold text-gray-900 dark:text-white mt-2">
+            <p className="text-lg font-bold text-gray-800">정답률</p>
+            <p className="text-4xl font-extrabold text-gray-900 mt-2">
               {todayCorrectRate}% 맞춤!
             </p>
             <div className="flex items-center mt-1">
-              <p className="text-sm text-gray-500 dark:text-gray-400 mr-1">어제보다</p>
+              <p className="text-sm text-gray-500 mr-1">어제보다</p>
               <p className={`text-sm font-medium ${rateChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
                 {rateChange >= 0 ? `+${rateChange}%` : `${rateChange}%`}
               </p>
@@ -52,23 +52,27 @@ const DashboardStats = ({
                   maintainAspectRatio: false,
                   plugins: {
                     legend: {
-                      display: true,
-                      position: 'top',
-                    },
-                    title: {
-                      display: true,
+                      display: false, // 단일 시리즈라 범례 불필요 (제목이 이미 설명)
                     },
                   },
                   scales: {
                     x: {
                       type: 'time',
                       time: {
-                        unit: 'month',
+                        unit: 'day',
                         tooltipFormat: 'yyyy년 M월 d일',
                         displayFormats: {
-                          month: 'yyyy년 M월',
+                          day: 'M월 d일',
                         },
                         locale: ko, // 한글 locale 사용
+                      },
+                      ticks: {
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        color: '#9CA3AF', // 회색 계열, 그리드 대비 recessive
+                      },
+                      grid: {
+                        color: '#F3F4F6', // 서피스 대비 한 단계 진한 헤어라인 그레이
                       },
                       title: {
                         display: true,
@@ -78,6 +82,12 @@ const DashboardStats = ({
                     y: {
                       beginAtZero: true,
                       max: 100,
+                      ticks: {
+                        color: '#9CA3AF',
+                      },
+                      grid: {
+                        color: '#F3F4F6',
+                      },
                       title: {
                         display: true,
                         text: '정답률 (%)',

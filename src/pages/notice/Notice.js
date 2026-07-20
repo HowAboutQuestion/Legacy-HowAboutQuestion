@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import PatchNotes131 from "./patchNote/patchNotes_1.3.1.js";
+import PatchNotes140 from "./patchNote/patchNotes_1.4.0.js";
 
 const Notice = ({ closeNotice }) => {
 
@@ -19,7 +19,7 @@ const Notice = ({ closeNotice }) => {
       <div className="flex flex-col top-0 max-h-[80vh] overflow-y-auto p-4">
         
         <div className= "flex justify-center items-center">
-          <PatchNotes131/>
+          <PatchNotes140/>
         </div>
         <div className="flex justify-end px-8 pb-4">
           <a
@@ -53,7 +53,7 @@ const Notice = ({ closeNotice }) => {
               href="https://github.com/HowAboutQuestion/Lagacy-HowAboutQuestion/discussions"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-lg font-bold text-gray-800 dark:text-white mb-2 hover:underline"
+              className="text-lg font-bold text-gray-800 mb-2 hover:underline"
             >
               HowAboutQuestion
             </a>

@@ -92,7 +92,13 @@ function Card() {
       return updatedQuestions;
     });
 
-    // history.csv 업데이트 호출
+    window.electronAPI.updateQuestion({
+      id: currentQuestion.id,
+      level: newLevel.toString(),
+      update: newUpdateDate,
+      solveddate: formattedToday,
+    });
+
     try {
       const historyResponse = await window.electronAPI.updateHistory({ isCorrect: true });
       if (!historyResponse.success) {
@@ -136,7 +142,13 @@ function Card() {
       return updatedQuestions;
     });
 
-    // history.csv 업데이트 호출
+    window.electronAPI.updateQuestion({
+      id: currentQuestion.id,
+      level: newLevel.toString(),
+      update: newUpdateDate,
+      solveddate: formattedToday,
+    });
+
     try {
       const historyResponse = await window.electronAPI.updateHistory({ isCorrect: false });
       if (!historyResponse.success) {
@@ -156,20 +168,20 @@ function Card() {
   const closeModal = () => setIsModalOpen(false);
 
   return (
-    <main className="ml-20 h-[100vh]">
+    <main className="ml-20 h-[100vh] overflow-x-hidden">
       <div className="sm:rounded-lg h-full flex flex-col">
         <div className="p-4 flex justify-between border-b">
-          <div>
+          <div className="flex-1 min-w-0">
             <div className="relative group w-full">
-                  <h1 className="truncate text-2xl font-semibold overflow-hidden">
-                    {tags.length === 0 && "문제 풀이 결과"}
-                    {tags.map((tag) => `${tag} `)}
-                  </h1>
-                  <span className="opacity-50 absolute top-full left-0 mt-1 hidden group-hover:block bg-gray-800 text-white text-sm rounded px-2 py-1 whitespace-pre-wrap z-10">
-                    {tags.length === 0 ? "문제 풀이 결과" : tags.join(" ")}
-                  </span>
-              </div>
-            <h1 className=" text-md font-normal text-gray-400">총 {questions.length} 문제</h1>
+              <h1 className="truncate text-2xl font-semibold overflow-hidden">
+                {tags.length === 0 && "문제 풀이"}
+                {tags.map((tag) => `${tag} `)}
+              </h1>
+              <span className="opacity-50 absolute top-full left-0 mt-1 hidden group-hover:block bg-gray-800 text-white text-sm rounded px-2 py-1 whitespace-pre-wrap z-10">
+                {tags.length === 0 ? "문제 풀이" : tags.join(" ")}
+              </span>
+            </div>
+            <h1 className="text-md font-normal text-gray-400">총 {questions.length} 문제</h1>
           </div>
         </div>
 
@@ -194,16 +206,16 @@ function Card() {
           )}
 
           {!questions[questionIndex].img && (
-            <div className="w-3/4 h-[300px] bg-white rounded-2xl">
+            <div className="w-3/4 h-[300px] bg-white rounded-2xl overflow-hidden">
               <div
                 style={{
-                  fontSize: "clamp(0.8rem, 2vw, 1.3rem)", 
+                  fontSize: "clamp(0.8rem, 2vw, 1.3rem)",
                 }}
                 className="w-full text-center text-lg font-bold mt-10 px-3">
                 {questions[questionIndex].title}
               </div>
 
-              <div className="w-full text-md whitespace-nowrap font-semibold mt-5 text-gray-500 flex justify-center items-center">
+              <div className="w-full text-md font-semibold mt-5 text-gray-500 flex justify-center items-center">
                 {showAnswer && <div>
                   <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkBreaks]}>
                    {questions[questionIndex].answer}
@@ -239,7 +251,7 @@ function Card() {
             </div>
           )}
 
-          <div className="w-3/4 bg-gray-200 rounded-full h-2 dark:bg-gray-700">
+          <div className="w-3/4 bg-gray-200 rounded-full h-2">
             <div
               className="bg-blue-500 h-2 rounded-full"
               style={{ width: `${((questionIndex + 1) / questions.length) * 100}%` }}
