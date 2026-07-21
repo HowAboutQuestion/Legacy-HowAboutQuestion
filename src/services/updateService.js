@@ -38,7 +38,7 @@ function checkPreviousUpdateResult() {
       dialog.showMessageBox({
         type: 'warning',
         title: 'Update',
-        message: `업데이트(${expectedVersion}) 설치에 실패한 것으로 보입니다. 현재 버전: ${currentVersion}.\n문제가 반복되면 다운로드된 설치 파일을 직접 실행해주세요.`,
+        message: `업데이트(${expectedVersion}) 설치에 실패한 것으로 보입니다. 현재 버전: ${currentVersion}.\n문제가 반복되면 고객센터(https://www.howaboutquestion.com/support)에 문의해주세요.`,
         buttons: ['확인'],
       });
     } else {
