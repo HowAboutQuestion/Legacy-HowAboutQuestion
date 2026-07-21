@@ -1,6 +1,6 @@
 {
   "name": "HowAboutQuestion",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "homepage": ".",
   "main": "src/main.js",
   "files": [
@@ -19,6 +19,7 @@
     "cra-template": "1.2.0",
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
+    "electron-log": "^5.4.4",
     "electron-progressbar": "^2.2.1",
     "electron-squirrel-startup": "^1.0.1",
     "electron-updater": "^6.6.2",
