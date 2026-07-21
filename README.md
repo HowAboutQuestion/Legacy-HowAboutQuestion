@@ -3,7 +3,7 @@
 
 > **문제어때는 문제를 직접 제작하고, 공유하고 스스로 풀어볼 수 있는 학습 프로그램입니다.**
 
-<a href="https://github.com/HowAboutQuestion/Legacy-HowAboutQuestion/releases/latest/download/HowAboutQuestion.exe">
+<a href="https://github.com/HowAboutQuestion/Legacy-HowAboutQuestion/releases/latest/download/HowAboutQuestion_Install.exe">
   <img src="https://img.shields.io/badge/Windows-414141?style=flat&logo=electron&logoColor=white" width="180" alt="Windows"></a>
 <a href="https://github.com/HowAboutQuestion/Legacy-HowAboutQuestion/releases/latest/download/HowAboutQuestion.dmg">
   <img src="https://img.shields.io/badge/Mac OS-0D96F6?style=flat&logo=appstore&logoColor=white" width="160" alt="macOS">
