@@ -96,7 +96,8 @@
     "win": {
       "target": "nsis",
       "icon": "assets/icons/icon.ico",
-      "artifactName": "${productName}.${ext}"
+      "artifactName": "${productName}.${ext}",
+      "executableName": "HowAboutQuestionApp"
     },
     "linux": {
       "target": "AppImage"
