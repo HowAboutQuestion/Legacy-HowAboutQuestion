@@ -1,6 +1,6 @@
 {
   "name": "HowAboutQuestion",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "homepage": ".",
   "main": "src/main.js",
   "files": [
@@ -96,8 +96,7 @@
     "win": {
       "target": "nsis",
       "icon": "assets/icons/icon.ico",
-      "artifactName": "${productName}.${ext}",
-      "executableName": "HowAboutQuestionApp"
+      "artifactName": "${productName}_Install.${ext}"
     },
     "linux": {
       "target": "AppImage"
